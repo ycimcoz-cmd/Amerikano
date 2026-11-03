@@ -10,8 +10,8 @@ table{width:100%;table-layout:fixed;border-collapse:collapse;font-size:13px}
 th,td{padding:5px 2px;border-bottom:1px solid #ddd;text-align:center;vertical-align:top}
 th{font-size:12px}
 td.r{text-align:left;padding-top:8px}
-td.r[data-rule]{cursor:pointer;text-decoration:underline dotted #aaa}
-td.r small{display:block;color:#888;font-size:11px;text-decoration:none}
+.rn{cursor:pointer;text-decoration:underline dotted #aaa}
+.dl{width:100%;font-size:11px;height:22px;margin-top:4px;border:1px solid #ddd;border-radius:4px;background:#fff;color:#666;padding:0}
 td input{width:100%;height:32px;text-align:center;font-size:15px;border:1px solid #ccc;border-radius:6px}
 td.win input{border-color:#5a5;background:#eef8ec}
 .pen{display:flex;gap:2px;margin-top:3px}
@@ -26,7 +26,7 @@ tfoot tr.tot td{font-weight:600;font-size:16px;color:#222}
 #rule{background:#eef3fb;border-radius:8px;padding:10px 12px;font-size:13px;margin:8px 0;display:none}
 .bar{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
 .bar button,.set button{padding:8px 12px;border-radius:8px;border:1px solid #ccc;background:#fff;font-size:14px}
-.set input,.set select{height:34px;font-size:14px;border:1px solid #ccc;border-radius:6px;padding:0 8px}
+.set input{height:34px;font-size:14px;border:1px solid #ccc;border-radius:6px;padding:0 8px}
 .set div{display:flex;gap:6px;margin:6px 0;align-items:center}
 .hist{font-size:13px;border-bottom:1px solid #ddd;padding:6px 0}
 #toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:8px 14px;border-radius:8px;font-size:13px;display:none}
@@ -67,12 +67,13 @@ const N=ROUNDS.length,KEY="amerikano-v2",HKEY="amerikano-history";
 const $=id=>document.getElementById(id);
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function grid(n,v){return ROUNDS.map(()=>Array(n).fill(v));}
-function blank(names){const n=names.length;return{names:names.slice(),base:grid(n,""),jk:grid(n,0),mp:grid(n,0),out:Array(N).fill(-1),dealer:0,outScore:-50};}
+function blank(names){const n=names.length;return{names:names.slice(),base:grid(n,""),jk:grid(n,0),mp:grid(n,0),out:Array(N).fill(-1),dealt:Array(N).fill(-1),outScore:-50};}
 function load(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 let S=load(KEY);
 if(!S){const o=load("amerikano-v1");if(o){S=blank(o.names);S.base=o.base;S.jk=o.jk;S.mp=o.mp;}}
 if(!S){S=blank(["Hebe","Clara","Sam","Yusuf"]);S.base[0]=[0,11,41,21];S.jk[0][2]=1;S.mp[0][3]=1;S.out[0]=0;S.base[1]=[1,2,31,0];S.out[1]=3;S.base[3]=[-50,46,41,6];S.mp[3][2]=1;S.out[3]=0;}
+if(!S.dealt){S.dealt=Array(N).fill(-1);const f=x=>S.names.indexOf(x);S.dealt[0]=f("Yusuf");S.dealt[1]=f("Clara");S.dealt[3]=f("Hebe");delete S.dealer;}
 let H=load(HKEY)||[],undoStack=[],pending=null;
 function snap(){undoStack.push(JSON.stringify(S));if(undoStack.length>50)undoStack.shift();}
 function num(v){const n=parseInt(String(v).replace(/[^\d-]/g,""),10);return isNaN(n)?null:n;}
@@ -81,11 +82,11 @@ function totals(){const n=S.names.length,t=Array(n).fill(0);let played=0;for(let
 function cells(pre){let s='';for(let p=0;p<S.names.length;p++)s+='<td id="'+pre+p+'"></td>';return s;}
 function render(){
  const n=S.names.length;
- let h='<colgroup><col style="width:78px">'+'<col>'.repeat(n)+'</colgroup><thead><tr><th style="text-align:left">Round</th>';
+ let h='<colgroup><col style="width:80px">'+'<col>'.repeat(n)+'</colgroup><thead><tr><th style="text-align:left">Round</th>';
  S.names.forEach(x=>h+='<th>'+esc(x)+'</th>');
  h+='</tr></thead><tbody>';
  ROUNDS.forEach((r,i)=>{
-  h+='<tr><td class="r" data-rule="'+i+'">'+r[0]+'<small>Deals: '+esc(S.names[(S.dealer+i)%n])+'</small></td>';
+  h+='<tr><td class="r"><span class="rn" data-rule="'+i+'">'+r[0]+'</span><select class="dl" data-d="'+i+'" aria-label="Dealer for '+r[0]+'"><option value="-1">Dealer</option>'+S.names.map((x,p)=>'<option value="'+p+'"'+(S.dealt[i]===p?' selected':'')+'>'+esc(x)+'</option>').join('')+'</select></td>';
   for(let p=0;p<n;p++){
    h+='<td'+(S.out[i]===p?' class="win"':'')+'><input inputmode="text" data-r="'+i+'" data-p="'+p+'" value="'+esc(S.base[i][p])+'">'
    +'<div class="pen"><button data-k="j" data-r="'+i+'" data-p="'+p+'" class="'+(S.jk[i][p]?'on':'')+'">×2</button>'
@@ -113,7 +114,6 @@ function renderSettings(){
  let h='';
  S.names.forEach((x,p)=>h+='<div><input data-n="'+p+'" value="'+esc(x)+'" style="flex:1"><button data-del="'+p+'">Remove</button></div>');
  h+='<div><button id="addp">Add player</button></div>';
- h+='<div>First dealer <select id="dealer">'+S.names.map((x,p)=>'<option value="'+p+'"'+(p===S.dealer?' selected':'')+'>'+esc(x)+'</option>').join('')+'</select></div>';
  h+='<div>Going-out score <input id="os" inputmode="text" value="'+S.outScore+'" style="width:70px"></div>';
  $('set').innerHTML=h;
 }
@@ -126,19 +126,19 @@ function renderHistory(){
 }
 function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',1800);}
 function summary(){const {t,played}=totals();return 'Amerikano — '+new Date().toLocaleDateString('en-GB')+' ('+played+'/'+N+' rounds)\n'+S.names.map((x,p)=>[x,t[p]]).sort((a,b)=>a[1]-b[1]).map((x,k)=>(k+1)+'. '+x[0]+': '+x[1]).join('\n');}
-function newGame(){const keep=S.names,d=(S.dealer+1)%S.names.length,os=S.outScore;S=blank(keep);S.dealer=d;S.outScore=os;undoStack=[];render();}
+function newGame(){const keep=S.names,os=S.outScore;S=blank(keep);S.outScore=os;undoStack=[];render();}
 
 document.addEventListener('focusin',e=>{const d=e.target.dataset;if(d.r!==undefined||d.n!==undefined)pending=JSON.stringify(S);});
 document.addEventListener('input',e=>{const d=e.target.dataset;if(d.r!==undefined){S.base[d.r][d.p]=e.target.value;calc();}});
 document.addEventListener('change',e=>{
  const el=e.target,d=el.dataset;
+ if(d.d!==undefined){snap();S.dealt[+d.d]=+el.value;store(KEY,S);return;}
  if(d.n!==undefined){if(pending){undoStack.push(pending);pending=null;}S.names[d.n]=el.value.trim()||('Player '+(+d.n+1));render();return;}
- if(el.id==='dealer'){snap();S.dealer=+el.value;render();return;}
  if(el.id==='os'){const v=num(el.value);if(v===null){toast('Enter a number');el.value=S.outScore;return;}snap();S.outScore=v;store(KEY,S);return;}
  if(pending){undoStack.push(pending);pending=null;}
 });
 $('tbl').addEventListener('click',e=>{
- const rc=e.target.closest('td.r[data-rule]');
+ const rc=e.target.closest('[data-rule]');
  if(rc){const i=+rc.dataset.rule,box=$('rule');box.style.display='block';box.innerHTML='<b>'+ROUNDS[i][0]+'</b><br>'+ROUNDS[i][1]+'<br><small>Nobody can lay down cards on their first turn. Tap to close.</small>';box.scrollIntoView({behavior:'smooth',block:'nearest'});return;}
  const b=e.target.closest('button');if(!b)return;
  const r=+b.dataset.r,p=+b.dataset.p;snap();
@@ -158,7 +158,7 @@ $('set').addEventListener('click',e=>{
   if(S.names.length<=2){toast('Need at least two players');return;}
   const p=+b.dataset.del;if(!confirm('Remove '+S.names[p]+' and their scores?'))return;
   snap();S.names.splice(p,1);[S.base,S.jk,S.mp].forEach(g=>g.forEach(r=>r.splice(p,1)));
-  S.out=S.out.map(o=>o===p?-1:o>p?o-1:o);S.dealer=S.dealer%S.names.length;render();
+  const fix=o=>o===p?-1:o>p?o-1:o;S.out=S.out.map(fix);S.dealt=S.dealt.map(fix);render();
  }
 });
 $('undo').onclick=()=>{const s=undoStack.pop();if(!s){toast('Nothing to undo');return;}S=JSON.parse(s);render();toast('Undone');};
@@ -168,3 +168,4 @@ $('newg').onclick=()=>{if(confirm('Start a new game without saving? This clears 
 $('hist').addEventListener('click',e=>{if(e.target.id==='clearh'&&confirm('Delete all past games?')){H=[];store(HKEY,H);renderHistory();}});
 render();
 </script></body></html>
+
