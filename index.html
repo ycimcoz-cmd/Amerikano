@@ -23,6 +23,8 @@ td.win input{border-color:#5a5;background:#eef8ec}
 tfoot td{border:none;font-size:12px;color:#666}
 tfoot tr.tot td{font-weight:600;font-size:16px;color:#222}
 .lead{background:#e3f4e1;color:#2b6a1f;border-radius:6px}
+tr.cur td{background:#fff6d9}
+tr.cur td.r .rn{font-weight:600}
 #rule{background:#eef3fb;border-radius:8px;padding:10px 12px;font-size:13px;margin:8px 0;display:none}
 .bar{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
 .bar button,.set button{padding:8px 12px;border-radius:8px;border:1px solid #ccc;background:#fff;font-size:14px}
@@ -60,7 +62,7 @@ const ROUNDS=[
 ["2× 4 seri","Open with two runs of 4. Jokers allowed."],
 ["4 küt + 4 seri","Open with one set of 4 and one run of 4. Jokers allowed."],
 ["5li seri","Open with one run of 5. Jokers allowed."],
-["Pairs","Your house rules for the pairs round."],
+["Pairs","Open with 4 pairs. Each pair is two of the exact same card: same number and same suit."],
 ["Final","Go out in one go: arrange your whole hand into melds, discard one card and lay everything down, like okey."]
 ];
 const N=ROUNDS.length,KEY="amerikano-v2",HKEY="amerikano-history";
@@ -72,13 +74,15 @@ function load(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return 
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 let S=load(KEY);
 if(!S){const o=load("amerikano-v1");if(o){S=blank(o.names);S.base=o.base;S.jk=o.jk;S.mp=o.mp;}}
-if(!S){S=blank(["Hebe","Clara","Sam","Yusuf"]);S.base[0]=[0,11,41,21];S.jk[0][2]=1;S.mp[0][3]=1;S.out[0]=0;S.base[1]=[1,2,31,0];S.out[1]=3;S.base[3]=[-50,46,41,6];S.mp[3][2]=1;S.out[3]=0;}
-if(!S.dealt){S.dealt=Array(N).fill(-1);const f=x=>S.names.indexOf(x);S.dealt[0]=f("Yusuf");S.dealt[1]=f("Clara");S.dealt[3]=f("Hebe");delete S.dealer;}
+if(!S)S=blank(["Hebe","Clara","Sam","Yusuf"]);
+if(!S.dealt){S.dealt=Array(N).fill(-1);delete S.dealer;}
+if(!S.out)S.out=Array(N).fill(-1);
+if(S.outScore===undefined)S.outScore=-50;
 let H=load(HKEY)||[],undoStack=[],pending=null;
 function snap(){undoStack.push(JSON.stringify(S));if(undoStack.length>50)undoStack.shift();}
 function num(v){const n=parseInt(String(v).replace(/[^\d-]/g,""),10);return isNaN(n)?null:n;}
 function score(i,p){const b=num(S.base[i][p]),pen=S.jk[i][p]||S.mp[i][p];if(b===null&&!pen)return null;return(b||0)*(S.jk[i][p]?2:1)+50*S.mp[i][p];}
-function totals(){const n=S.names.length,t=Array(n).fill(0);let played=0;for(let i=0;i<N;i++){let any=false;for(let p=0;p<n;p++){const s=score(i,p);if(s!==null){t[p]+=s;any=true;}}if(any)played++;}return{t,played};}
+function totals(){const n=S.names.length,t=Array(n).fill(0);let played=0,cur=-1;for(let i=0;i<N;i++){let any=false;for(let p=0;p<n;p++){const s=score(i,p);if(s!==null){t[p]+=s;any=true;}}if(any)played++;else if(cur<0)cur=i;}return{t,played,cur};}
 function cells(pre){let s='';for(let p=0;p<S.names.length;p++)s+='<td id="'+pre+p+'"></td>';return s;}
 function render(){
  const n=S.names.length;
@@ -86,7 +90,7 @@ function render(){
  S.names.forEach(x=>h+='<th>'+esc(x)+'</th>');
  h+='</tr></thead><tbody>';
  ROUNDS.forEach((r,i)=>{
-  h+='<tr><td class="r"><span class="rn" data-rule="'+i+'">'+r[0]+'</span><select class="dl" data-d="'+i+'" aria-label="Dealer for '+r[0]+'"><option value="-1">Dealer</option>'+S.names.map((x,p)=>'<option value="'+p+'"'+(S.dealt[i]===p?' selected':'')+'>'+esc(x)+'</option>').join('')+'</select></td>';
+  h+='<tr id="row'+i+'"><td class="r"><span class="rn" data-rule="'+i+'">'+r[0]+'</span><select class="dl" data-d="'+i+'" aria-label="Dealer for '+r[0]+'"><option value="-1">Dealer</option>'+S.names.map((x,p)=>'<option value="'+p+'"'+(S.dealt[i]===p?' selected':'')+'>'+esc(x)+'</option>').join('')+'</select></td>';
   for(let p=0;p<n;p++){
    h+='<td'+(S.out[i]===p?' class="win"':'')+'><input inputmode="text" data-r="'+i+'" data-p="'+p+'" value="'+esc(S.base[i][p])+'">'
    +'<div class="pen"><button data-k="j" data-r="'+i+'" data-p="'+p+'" class="'+(S.jk[i][p]?'on':'')+'">×2</button>'
@@ -101,13 +105,14 @@ function render(){
  renderSettings();renderHistory();calc();
 }
 function calc(){
- const n=S.names.length,{t,played}=totals();
+ const n=S.names.length,{t,played,cur}=totals();
+ for(let i=0;i<N;i++)$('row'+i).classList.toggle('cur',i===cur);
  for(let i=0;i<N;i++)for(let p=0;p<n;p++){const pen=S.jk[i][p]||S.mp[i][p],s=score(i,p);$('f'+i+'_'+p).textContent=pen&&s!==null?'= '+s:'';}
  const min=Math.min(...t),wins=Array(n).fill(0);
  S.out.forEach(o=>{if(o>=0&&o<n)wins[o]++;});
  t.forEach((v,p)=>{const el=$('t'+p);el.textContent=v;el.className=v===min?'lead':'';$('g'+p).textContent=v===min?'–':'+'+(v-min);$('w'+p).textContent=wins[p];});
  const leaders=S.names.filter((x,p)=>t[p]===min);
- $('status').textContent=played+' of '+N+' rounds played, '+(N-played)+' left. Lowest total wins — '+leaders.join(' and ')+(leaders.length>1?' are':' is')+' leading. Tap a round name for its rules.';
+ $('status').textContent=(played?played+' of '+N+' rounds played, '+(N-played)+' left. Lowest total wins — '+leaders.join(' and ')+(leaders.length>1?' are':' is')+' leading.':'No rounds played yet. Lowest total wins.')+' Tap a round name for its rules.';
  store(KEY,S);
 }
 function renderSettings(){
@@ -134,7 +139,7 @@ document.addEventListener('change',e=>{
  const el=e.target,d=el.dataset;
  if(d.d!==undefined){snap();S.dealt[+d.d]=+el.value;store(KEY,S);return;}
  if(d.n!==undefined){if(pending){undoStack.push(pending);pending=null;}S.names[d.n]=el.value.trim()||('Player '+(+d.n+1));render();return;}
- if(el.id==='os'){const v=num(el.value);if(v===null){toast('Enter a number');el.value=S.outScore;return;}snap();S.outScore=v;store(KEY,S);return;}
+ if(el.id==='os'){const v=num(el.value);if(v===null){toast('Enter a number');el.value=S.outScore;return;}snap();const old=S.outScore;S.out.forEach((o,i)=>{if(o>=0&&num(S.base[i][o])===old)S.base[i][o]=String(v);});S.outScore=v;render();return;}
  if(pending){undoStack.push(pending);pending=null;}
 });
 $('tbl').addEventListener('click',e=>{
@@ -167,5 +172,6 @@ $('finish').onclick=()=>{const {t,played}=totals();if(!played){toast('No scores 
 $('newg').onclick=()=>{if(confirm('Start a new game without saving? This clears all scores.'))newGame();};
 $('hist').addEventListener('click',e=>{if(e.target.id==='clearh'&&confirm('Delete all past games?')){H=[];store(HKEY,H);renderHistory();}});
 render();
+{const c=totals().cur;if(c>2)$('row'+c).scrollIntoView({block:'center'});}
 </script></body></html>
 
