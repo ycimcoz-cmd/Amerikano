@@ -63,23 +63,21 @@ h1{font-size:28px;font-weight:700;margin:0;letter-spacing:-.01em}
 .pn{min-width:0}
 .pn b{display:block;font-weight:600;color:var(--pc);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pn small{display:block;font-size:12px;color:var(--pen)}
+.pn small.ok{color:var(--muted)}
+.prow input[readonly]{background:transparent;color:var(--ink)}
+.tg button:disabled{opacity:.35;cursor:default}
 .prow input{width:100%;height:44px;font-size:19px;font-weight:600;text-align:center;border:1px solid var(--line);border-radius:9px;background:var(--bg)}
 .prow.out input{border-color:var(--ink);border-width:2px}
 .tg{display:flex;gap:4px}
 .tg button{height:36px;padding:0 8px;font-size:13px;font-weight:600;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
 .tg button.pen[aria-pressed=true]{background:var(--pen-bg);color:var(--pen);border-color:transparent}
-.tg button.go[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.roles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;padding-top:10px;border-top:1px solid var(--line)}
-.roles label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
-.roles select{width:100%}
-.ofoot>span{font-size:13px;color:var(--muted)}
 .ofoot .btn{flex:none;white-space:nowrap}
 .osl.two{margin-top:8px;padding-top:0;border-top:0}
 .btn.mv{width:36px;padding:0;flex:none}
 .btn:disabled{opacity:.35;cursor:default}
 .ofoot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;padding-top:10px;border-top:1px solid var(--line)}
 .ofoot label{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px}
-select{font-size:15px;height:38px;border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:0 6px}
+select{font-size:16px;height:38px;border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:0 6px}
 
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:18px 0 0}
 .sec h2{font-size:18px;font-weight:700;margin:30px 0 6px}
@@ -93,11 +91,18 @@ select{font-size:15px;height:38px;border:1px solid var(--line);border-radius:8px
 /* Players dialog */
 dialog{border:0;border-radius:16px;padding:18px;width:min(92vw,420px);max-height:86vh;overflow:auto;background:var(--surface);color:var(--ink)}
 .hb{display:flex;gap:8px}
-.step,.tg button[data-k="m+"].pen{width:76px}
+.step,.mbtn{width:76px}
+.mbtn{height:36px;font-size:13px;font-weight:600;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer;padding:0}
 .step{display:inline-flex;align-items:center;justify-content:space-between;height:36px;border-radius:8px;background:var(--pen-bg);color:var(--pen)}
 .step button{width:30px;height:36px;border:0;background:none;color:inherit;font-size:19px;font-weight:600;line-height:1;cursor:pointer;padding:0}
 .step b{min-width:14px;text-align:center;font-size:16px}
 .rules{font-size:15px}
+.rules .muted{color:var(--muted);font-size:14px}
+.rules .fld{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:8px 0}
+.rules .fld input:not([type]){width:80px;height:40px;text-align:center;border:1px solid var(--line);border-radius:9px;background:var(--bg);font-size:16px}
+.rules input[type=checkbox]{width:22px;height:22px;accent-color:var(--ink)}
+.rules .dl{display:block;font-weight:600;margin:12px 0 4px}
+.rules textarea{display:block;width:100%;font:inherit;font-size:16px;line-height:1.35;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);padding:8px 10px;resize:vertical}
 .rules h3{font-size:17px;margin:18px 0 4px}
 .rules p{margin:6px 0}
 .rules ol{padding-left:24px;margin:6px 0}
@@ -105,7 +110,7 @@ dialog{border:0;border-radius:16px;padding:18px;width:min(92vw,420px);max-height
 .rules li span{display:block;color:var(--muted);font-size:14px}
 .rules li.now>b::after{content:" (this round)";font-weight:400;color:var(--muted)}
 dialog::backdrop{background:rgba(14,16,15,.5)}
-.dhead{display:flex;justify-content:space-between;align-items:center}
+.dhead{display:flex;justify-content:space-between;align-items:center;position:sticky;top:-18px;z-index:2;background:var(--surface);margin:-18px -18px 0;padding:18px 18px 10px}
 .dhead h2{margin:0;font-size:22px}
 .dnote{font-size:14px;color:var(--muted);margin:6px 0 10px}
 .srow{display:flex;gap:8px;align-items:center;margin:8px 0}
@@ -115,8 +120,35 @@ dialog::backdrop{background:rgba(14,16,15,.5)}
 .osl{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:15px}
 .osl input{width:80px;text-align:center}
 
+/* Round flow: pick, play, score */
+#flow{scroll-margin-top:124px}
+.flow{background:var(--surface);border:1px solid var(--ink);border-radius:14px;margin:12px -6px 8px;padding:12px 12px 14px}
+.sub{margin:4px 0 0;font-size:14px}
+.turn{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:10px 0 4px}
+.turn label{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600}
+.turn p{margin:0;font-size:14px;color:var(--muted)}
+.rchips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.rchip{height:48px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-size:16px;font-weight:600;text-align:left;padding:0 12px;cursor:pointer}
+.rchip:disabled{opacity:.4;cursor:default}
+.hint{font-size:13px;color:var(--muted);margin:8px 0 0}
+.lab{display:block;font-size:14px;font-weight:600;margin:12px 0 4px}
+.mrow{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
+.mrow b{color:var(--pc);font-weight:600;font-size:17px}
+.mrow .mbtn,.mrow .step{width:124px;height:44px;font-size:15px}
+.mrow .step button{width:44px;height:44px;font-size:22px}
+.wout{margin:10px 0 8px}
+.pchips{display:flex;flex-wrap:wrap;gap:6px}
+.pchip{height:40px;padding:0 14px;border-radius:20px;border:1px solid var(--line);background:var(--bg);color:var(--pc);font-weight:600;cursor:pointer}
+.pchip.none{color:var(--muted)}
+.pchip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.lhd{display:flex;justify-content:space-between;align-items:baseline;padding:16px 0 6px;font-weight:600;font-size:15px}
+.lhd span{font-weight:400;font-size:13px;color:var(--muted)}
+.tile{touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:grab}
+.tile.lift{position:relative;z-index:7;box-shadow:0 12px 24px rgba(0,0,0,.25);cursor:grabbing}
+.tile.drop{outline:2px dashed var(--ink);outline-offset:2px}
+
 /* End of game */
-.final{background:var(--surface);border:1px solid var(--ink);border-radius:14px;padding:14px 12px;margin:12px -6px 4px}
+.final{background:var(--surface);border:1px solid var(--ink);border-radius:14px;padding:14px 12px;margin:12px -6px 8px}
 .final h2{margin:0 0 6px;font-size:22px}
 .final ol{list-style:none;margin:0;padding:0}
 .final li{display:grid;grid-template-columns:2.6rem 1fr auto;align-items:baseline;gap:6px;padding:8px 0;border-top:1px solid var(--line)}
@@ -153,13 +185,13 @@ dialog::backdrop{background:rgba(14,16,15,.5)}
 <header class="top"><h1>Amerikano</h1><div class="hb"><button class="btn" id="rulesBtn">Rules</button><button class="btn" id="playersBtn">Players</button></div></header>
 <div id="board">
  <div class="stand grid" id="stand"></div>
- <div id="final"></div>
+ <div id="flow"></div>
  <ol class="rounds" id="rounds"></ol>
 </div>
 <div class="actions">
  <button class="btn" id="undo">Undo</button>
  <button class="btn" id="share">Share results</button>
- <button class="btn primary" id="finish">Finish and save game</button>
+ <button class="btn primary" id="finish">Save game</button>
  <button class="btn" id="newg">New game</button>
 </div>
 <section class="sec"><h2>Running totals</h2><div class="chart" id="chart" tabindex="0" aria-label="Running totals chart. Tap or use arrow keys to read each round."></div></section>
@@ -170,11 +202,11 @@ dialog::backdrop{background:rgba(14,16,15,.5)}
 </div>
 <dialog id="pd" aria-labelledby="pdt">
  <div class="dhead"><h2 id="pdt">Players</h2><button class="btn" id="pdone">Done</button></div>
- <p class="dnote">List players in seating order: who picks the rule and who deals are suggested in this order. Scores stay with each player when you rename or move them.</p>
+ <p class="dnote">Keep players in seating order: turns to pick the rule go round in this order, and the player before the picker deals. You can also press and hold a tile on the main screen and drag it.</p>
  <div id="pbody"></div>
 </dialog>
 <dialog id="rd" aria-labelledby="rdt">
- <div class="dhead"><h2 id="rdt">Rules</h2><button class="btn" id="rdone">Done</button></div>
+ <div class="dhead"><h2 id="rdt">Rules</h2><div class="hb" id="rhead"></div></div>
  <div class="rules" id="rbody"></div>
 </dialog>
 <div id="toast" role="status"></div>
@@ -194,7 +226,21 @@ const ROUNDS=[
 ["Pairs","Open with 4 pairs. Each pair is two of the exact same card: same number and same suit."],
 ["Final","Go out in one go: arrange your whole hand into melds, discard one card and lay everything down, like okey."]
 ];
-const N=ROUNDS.length,KEY="amerikano-v2",HKEY="amerikano-history";
+const N=ROUNDS.length,FINAL=N-1,KEY="amerikano-v2",HKEY="amerikano-history";
+const RKEY="amerikano-rules";
+const DEF_GENERAL='Before you can lay cards down, you have to open with that round\u2019s rule. Jokers can\u2019t be used to open the first five rules (the 3-card ones).\nA k\u00fct is a set: the same number in different suits. A seri is a run: consecutive cards in the same suit.';
+const DEF_EVERY='Nobody can lay down cards on their first turn.';
+// House rules, kept across games. Scoring settings here drive the maths.
+function fixRules(r,g){
+ const d={outPick:g&&typeof g.outScore==='number'?g.outScore:-50,outOther:g&&typeof g.outOther==='number'?g.outOther:0,misplay:50,joker:2,finalLast:true,every:DEF_EVERY,general:DEF_GENERAL,desc:Array(N).fill(null),notes:''};
+ if(!r||typeof r!=='object')return d;
+ ['outPick','outOther','misplay','joker'].forEach(k=>{if(typeof r[k]==='number')d[k]=r[k];});
+ if(typeof r.finalLast==='boolean')d.finalLast=r.finalLast;
+ ['every','general','notes'].forEach(k=>{if(typeof r[k]==='string')d[k]=r[k];});
+ if(Array.isArray(r.desc))d.desc=ROUNDS.map((x,i)=>typeof r.desc[i]==='string'&&r.desc[i].trim()?r.desc[i]:null);
+ return d;
+}
+const desc=i=>R.desc[i]||ROUNDS[i][1];
 const $=id=>document.getElementById(id);
 const fmt=v=>String(v).replace('-','−');
 const cv=p=>'var(--p'+S.col[p]+')';
@@ -203,32 +249,27 @@ const ORD=['1st','2nd','3rd','4th','5th','6th'];
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function andList(a){return a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a[a.length-1];}
 function grid(n,v){return ROUNDS.map(()=>Array(n).fill(v));}
-function blank(names){const n=names.length;return{names:names.slice(),base:grid(n,""),jk:grid(n,0),mp:grid(n,0),out:Array(N).fill(-1),dealt:Array(N).fill(-1),picked:Array(N).fill(-1),col:names.map((x,p)=>p%6),seq:[],outScore:-50,outOther:0};}
+function blank(names){const n=names.length;return{names:names.slice(),base:grid(n,""),jk:grid(n,0),mp:grid(n,0),out:Array(N).fill(-1),dealt:Array(N).fill(-1),picked:Array(N).fill(-1),col:names.map((x,p)=>p%6),seq:[],outScore:-50,outOther:0,live:-1,stage:null,nextPick:-1,open:-1};}
 function load(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 function num(v){const n=parseInt(String(v).replace(/[^\d-]/g,""),10);return isNaN(n)?null:n;}
-function score(i,p){const b=num(S.base[i][p]),pen=S.jk[i][p]||S.mp[i][p];if(b===null&&!pen)return null;return(b||0)*(S.jk[i][p]?2:1)+50*S.mp[i][p];}
+function score(i,p){const b=num(S.base[i][p]),pen=S.jk[i][p]||S.mp[i][p];if(b===null&&!pen)return null;return(b||0)*(S.jk[i][p]?R.joker:1)+R.misplay*S.mp[i][p];}
 function rowPlayed(i){for(let p=0;p<S.names.length;p++)if(score(i,p)!==null)return true;return false;}
-function pickNext(from){for(let i=from+1;i<N;i++)if(!rowPlayed(i))return i;for(let i=0;i<from;i++)if(!rowPlayed(i))return i;return -1;}
-// Open a round. A round not yet scored joins the play order, and gets suggested
-// roles: whoever sits after the last player who picked the rule / dealt.
-function setOpen(i){
- const prev=S.open;
- if(prev>=0&&prev!==i&&!rowPlayed(prev)){S.dealt[prev]=-1;S.picked[prev]=-1;}
- S.open=i;
- if(i<0)return;
- if(!rowPlayed(i)){S.seq=S.seq.filter(x=>x!==i&&rowPlayed(x));S.seq.push(i);}
- suggest(S.dealt,i);suggest(S.picked,i);
-}
-function suggest(role,i){
- const pos=S.seq.indexOf(i);if(role[i]>=0||pos<0)return;
- for(let k=pos-1;k>=0;k--){const r=S.seq[k];if(role[r]>=0){role[i]=(role[r]+pos-k)%S.names.length;return;}}
-}
-// What going out is worth: the full bonus only for whoever picked the rule.
-function outValue(i,p){return S.picked[i]<0||S.picked[i]===p?S.outScore:S.outOther;}
-// Re-apply going-out values after a rule or picker change, leaving hand-typed scores alone.
-function reapplyOut(before){S.out.forEach((o,i)=>{if(o>=0&&num(S.base[i][o])===before[i])S.base[i][o]=String(outValue(i,o));});}
+// A round is done once it has scores and isn't the one being played right now.
+function isDone(i){return i>=0&&i<N&&i!==S.live&&rowPlayed(i);}
+// Done rounds in the order they were played.
+function doneOrder(){const s=S.seq.filter(isDone);for(let i=0;i<N;i++)if(isDone(i)&&!s.includes(i))s.push(i);return s;}
+const nm=p=>esc(S.names[p]);
+// The player before the picker (in seating order) shuffles and deals.
+function dealerOf(p){const n=S.names.length;return p<0?-1:(p-1+n)%n;}
+function suggestPick(){const d=doneOrder();for(let k=d.length-1;k>=0;k--){const p=S.picked[d[k]];if(p>=0)return(p+1)%S.names.length;}return -1;}
+// Going out is worth the full bonus only for whoever picked the rule.
+function outValue(i,p){return S.picked[i]<0||S.picked[i]===p?R.outPick:R.outOther;}
+// Keep every going-out score locked to its rule value.
+function lockOuts(){S.out.forEach((o,i)=>{if(o>=0&&o<S.names.length){S.base[i][o]=String(outValue(i,o));S.jk[i][o]=0;}});}
 function outBefore(){return S.out.map((o,i)=>o>=0?outValue(i,o):null);}
+function reapplyOut(before){S.out.forEach((o,i)=>{if(o>=0&&num(S.base[i][o])===before[i])S.base[i][o]=String(outValue(i,o));});}
+
 // Fill in fields older saves or backups may lack; reject anything that isn't a game.
 function fixState(s){
  if(!s||!Array.isArray(s.names)||s.names.length<2||!Array.isArray(s.base)||s.base.length!==N)return null;
@@ -244,84 +285,216 @@ function fixState(s){
  if(!Array.isArray(s.seq)){s.seq=[];for(let i=0;i<N;i++)if(s.base[i].some(v=>num(v)!==null)||s.jk[i].some(Boolean)||s.mp[i].some(Boolean))s.seq.push(i);}
  return s;
 }
+// Bring a save from before the Pick, Play, Score flow into it.
+function migrate(){
+ if(typeof S.live!=='number'){
+  S.live=-1;S.stage=null;
+  const o=S.open;
+  if(typeof o==='number'&&o>=0&&rowPlayed(o)&&S.names.some((x,p)=>score(o,p)===null)){S.live=o;S.stage='score';if(!S.seq.includes(o))S.seq.push(o);}
+  for(let i=0;i<N;i++)if(i!==S.live&&!rowPlayed(i)){S.picked[i]=-1;S.dealt[i]=-1;}
+  S.open=-1;
+ }
+ if(typeof S.open!=='number'||!isDone(S.open))S.open=-1;
+ if(typeof S.nextPick!=='number')S.nextPick=-1;
+ if(S.live<0&&S.nextPick<0)S.nextPick=suggestPick();
+}
 
+let R=fixRules(load(RKEY),load(KEY));store(RKEY,R);
 let S=fixState(load(KEY));
 if(!S){const o=load("amerikano-v1");if(o)S=fixState(Object.assign(blank(o.names||[]),{base:o.base,jk:o.jk,mp:o.mp}));}
 if(!S)S=blank(["Hebe","Clara","Sam","Yusuf"]);
-if(S.open===undefined){S.open=-1;setOpen(pickNext(-1));}
+migrate();
 let H=load(HKEY)||[],undoStack=[],pending=null,chartModel=null;
 function snap(){undoStack.push(JSON.stringify(S));if(undoStack.length>50)undoStack.shift();}
 
-function totals(){const n=S.names.length,t=Array(n).fill(0),rp=[];let played=0;for(let i=0;i<N;i++){let any=false;for(let p=0;p<n;p++){const s=score(i,p);if(s!==null){t[p]+=s;any=true;}}rp.push(any);if(any)played++;}return{t,played,rp};}
-function outCounts(){const n=S.names.length,w=Array(n).fill(0);S.out.forEach(o=>{if(o>=0&&o<n)w[o]++;});return w;}
+function totals(){const n=S.names.length,t=Array(n).fill(0);for(let i=0;i<N;i++)for(let p=0;p<n;p++){const s=score(i,p);if(s!==null)t[p]+=s;}return{t,played:doneOrder().length};}
+function outCounts(){const n=S.names.length,w=Array(n).fill(0);S.out.forEach((o,i)=>{if(o>=0&&o<n&&isDone(i))w[o]++;});return w;}
 
+// ---------- Rendering ----------
 function render(){
+ lockOuts();
  const n=S.names.length;
  $('board').style.setProperty('--n',n);
- $('stand').innerHTML='<div class="slead"><b>Total</b><span id="prog"></span></div>'+S.names.map((x,p)=>'<div class="tile" id="tile'+p+'" style="'+pc(p)+'"><span class="tn">'+esc(x)+'</span><span class="tt" id="tot'+p+'">0</span><span class="tb" id="beh'+p+'"></span><span class="pips" id="pip'+p+'"></span></div>').join('');
- $('rounds').innerHTML=ROUNDS.map((r,i)=>i===S.open?openRow(i):
-  '<li id="row'+i+'"><button class="rb grid" data-open="'+i+'"><span class="rname">'+r[0]+'</span>'+S.names.map((x,p)=>'<span class="rc" id="c'+i+'_'+p+'" style="'+pc(p)+'"></span>').join('')+'</button></li>').join('');
+ $('stand').innerHTML='<div class="slead"><b>Total</b><span id="prog"></span></div>'+S.names.map((x,p)=>'<div class="tile" data-p="'+p+'" id="tile'+p+'" style="'+pc(p)+'"><span class="tn">'+esc(x)+'</span><span class="tt" id="tot'+p+'">0</span><span class="tb" id="beh'+p+'"></span><span class="pips" id="pip'+p+'"></span></div>').join('');
+ renderFlow();
+ const d=doneOrder();
+ $('rounds').innerHTML=d.length?'<li class="lhd">Played rounds<span>Tap one to correct it</span></li>'+d.map(i=>i===S.open?editRow(i):
+  '<li id="row'+i+'" class="done"><button class="rb grid" data-open="'+i+'"><span class="rname">'+ROUNDS[i][0]+'</span>'+S.names.map((x,p)=>'<span class="rc" id="c'+i+'_'+p+'" style="'+pc(p)+'"></span>').join('')+'</button></li>').join(''):'';
  renderHistory();calc();
 }
-function openRow(i){
- const r=ROUNDS[i];
- return '<li class="open" id="row'+i+'"><div class="ohead"><h2>'+r[0]+'</h2><span>Round '+(i+1)+' of '+N+'</span></div>'
- +'<p class="rule">'+r[1]+' Nobody can lay down cards on their first turn.</p>'
- +S.names.map((x,p)=>'<div class="prow'+(S.out[i]===p?' out':'')+'" style="'+pc(p)+'"><div class="pn"><b>'+esc(x)+'</b><small id="f'+p+'"></small></div>'
-  +'<input inputmode="numeric" autocomplete="off" aria-label="'+esc(x)+' points" data-r="'+i+'" data-p="'+p+'" value="'+esc(S.base[i][p])+'">'
-  +'<div class="tg"><button class="pen" data-k="j" data-r="'+i+'" data-p="'+p+'" aria-pressed="'+!!S.jk[i][p]+'">Joker</button>'
-  +(S.mp[i][p]
-    ?'<span class="step"><button data-k="m-" data-r="'+i+'" data-p="'+p+'" aria-label="One fewer misplay for '+esc(x)+'">−</button><b>'+S.mp[i][p]+'</b><button data-k="m+" data-r="'+i+'" data-p="'+p+'" aria-label="Another misplay for '+esc(x)+'">+</button></span>'
-    :'<button class="pen" data-k="m+" data-r="'+i+'" data-p="'+p+'" aria-pressed="false">Misplay</button>')
-  +'<button class="go" data-k="o" data-r="'+i+'" data-p="'+p+'" aria-pressed="'+(S.out[i]===p)+'">Out</button></div></div>').join('')
- +'<div class="roles"><label>Picked the rule'+who('pk',S.picked,i)+'</label><label>Shuffles and deals'+who('d',S.dealt,i)+'</label></div>'
- +'<div class="ofoot"><span>'+(S.picked[i]>=0?esc(S.names[S.picked[i]])+' scores '+fmt(S.outScore)+' for going out. Anyone else, '+fmt(S.outOther)+'.':'Set who picked the rule so going out scores correctly.')+'</span>'
- +'<button class="btn primary sm" id="nextr">Next round</button></div></li>';
+function who(key,val,extra){
+ return '<select data-'+key+'="'+(extra===undefined?1:extra)+'"><option value="-1">Choose</option>'+S.names.map((x,p)=>'<option value="'+p+'"'+(val===p?' selected':'')+'>'+esc(x)+'</option>').join('')+'</select>';
 }
-function who(key,role,i){
- return '<select data-'+key+'="'+i+'"><option value="-1">Not set</option>'+S.names.map((x,p)=>'<option value="'+p+'"'+(role[i]===p?' selected':'')+'>'+esc(x)+'</option>').join('')+'</select>';
+function head(i,right){return '<div class="ohead"><h2>'+ROUNDS[i][0]+'</h2>'+right+'</div>';}
+function roundNo(){return '<span>Round '+(doneOrder().length+1)+' of '+N+'</span>';}
+function roleLine(i){const p=S.picked[i];return p>=0?nm(p)+' picked the rule. '+nm(dealerOf(p))+' shuffled and dealt.':'Nobody is set as picking the rule.';}
+function outNote(i){const p=S.picked[i];return p>=0?'Going out scores '+fmt(R.outPick)+' for '+nm(p)+', '+fmt(R.outOther)+' for anyone else.':'Set who picked the rule so going out scores correctly.';}
+function mpCtl(i,p){
+ const m=S.mp[i][p],a=' data-r="'+i+'" data-p="'+p+'"';
+ return m?'<span class="step"><button data-k="m-"'+a+' aria-label="One fewer misplay for '+nm(p)+'">−</button><b>'+m+'</b><button data-k="m+"'+a+' aria-label="Another misplay for '+nm(p)+'">+</button></span>'
+  :'<button class="mbtn" data-k="m+"'+a+'>Misplay</button>';
+}
+function outChips(i){
+ return '<div class="wout"><span class="lab">Who went out?</span><div class="pchips">'+S.names.map((x,p)=>'<button class="pchip" style="'+pc(p)+'" data-out="'+p+'" data-r="'+i+'" aria-pressed="'+(S.out[i]===p)+'">'+esc(x)+'</button>').join('')
+ +'<button class="pchip none" data-out="-1" data-r="'+i+'">Nobody</button></div></div>';
+}
+function scoreRows(i){
+ return S.names.map((x,p)=>{
+  const out=S.out[i]===p;
+  return '<div class="prow'+(out?' out':'')+'" style="'+pc(p)+'"><div class="pn"><b>'+esc(x)+'</b><small id="f'+i+'_'+p+'"></small></div>'
+  +(out?'<input readonly tabindex="-1" aria-label="'+esc(x)+' went out, '+fmt(S.base[i][p])+'" value="'+fmt(S.base[i][p])+'">'
+       :'<input inputmode="numeric" enterkeyhint="next" autocomplete="off" aria-label="'+esc(x)+' hand points" data-r="'+i+'" data-p="'+p+'" value="'+esc(S.base[i][p])+'">')
+  +'<div class="tg"><button class="pen" data-k="j" data-r="'+i+'" data-p="'+p+'" aria-pressed="'+!!S.jk[i][p]+'"'+(out?' disabled':'')+'>Joker</button>'+mpCtl(i,p)+'</div></div>';
+ }).join('');
+}
+function renderFlow(){
+ const done=doneOrder().length;let h;
+ if(S.live>=0)h=S.stage==='score'?scorePanel(S.live):playPanel(S.live);
+ else if(done===N)h=finalPanel();
+ else h=pickPanel();
+ $('flow').innerHTML=h;
+}
+// Step 1: whose turn it is, and which rule they pick.
+function pickPanel(){
+ const np=S.nextPick,rem=[];for(let i=0;i<N;i++)if(!isDone(i))rem.push(i);
+ const lockFinal=R.finalLast&&rem.length>1;
+ return '<section class="flow"><div class="ohead"><h2>Pick the next rule</h2>'+roundNo()+'</div>'
+ +'<div class="turn"><label>Turn to pick '+who('np',np)+'</label><p>'+(np>=0?nm(dealerOf(np))+' shuffles and deals.':'Choose who picks first.')+'</p></div>'
+ +'<div class="rchips">'+rem.map(i=>'<button class="rchip" data-pick="'+i+'"'+(i===FINAL&&lockFinal?' disabled':'')+'>'+ROUNDS[i][0]+'</button>').join('')+'</div>'
+ +(lockFinal&&rem.includes(FINAL)?'<p class="hint">Final is played last.</p>':'')+'</section>';
+}
+// Step 2: the round is being played. Log misplays as they happen.
+function playPanel(i){
+ return '<section class="flow">'+head(i,roundNo())+'<p class="sub">'+roleLine(i)+'</p><p class="rule">'+esc(desc(i))+(R.every.trim()?' '+esc(R.every.trim()):'')+'</p>'
+ +'<span class="lab">Misplays</span>'+S.names.map((x,p)=>'<div class="mrow" style="'+pc(p)+'"><b>'+esc(x)+'</b>'+mpCtl(i,p)+'</div>').join('')
+ +'<div class="ofoot"><button class="btn sm" id="rchange">Change rule</button><button class="btn primary" id="rover">Round over</button></div></section>';
+}
+// Step 3: who went out, then everyone else's hand points.
+function scorePanel(i){
+ return '<section class="flow">'+head(i,roundNo())+'<p class="sub">'+outNote(i)+'</p>'+outChips(i)+scoreRows(i)
+ +'<div class="ofoot"><button class="btn sm" id="rback">Back</button><button class="btn primary" id="rsave">Save round</button></div></section>';
+}
+// Correcting a round that's already been played.
+function editRow(i){
+ const p=S.picked[i];
+ return '<li class="open" id="row'+i+'">'+head(i,'<button class="btn sm" id="edone">Done</button>')
+ +'<div class="turn"><label>Picked the rule '+who('pk',p,i)+'</label><p>'+(p>=0?nm(dealerOf(p))+' shuffled and dealt.':'')+'</p></div>'
+ +'<p class="sub">'+outNote(i)+'</p>'+outChips(i)+scoreRows(i)+'</li>';
+}
+function finalPanel(){
+ const {t}=totals(),order=S.names.map((x,p)=>p).sort((a,b)=>t[a]-t[b]);
+ return '<div class="final"><h2>Final standings</h2><ol>'+order.map(p=>{const place=t.filter(v=>v<t[p]).length;return '<li style="'+pc(p)+'"><span class="place">'+ORD[place]+'</span><b>'+nm(p)+'</b><span class="ft">'+fmt(t[p])+'</span></li>';}).join('')
+ +'</ol><div class="factions"><button class="btn" data-act="share">Share results</button><button class="btn primary" data-act="finish">Save game</button></div></div>';
 }
 function calc(){
- const n=S.names.length,{t,played,rp}=totals();
- const min=Math.min(...t),wins=outCounts();
+ const n=S.names.length,{t,played}=totals(),d=doneOrder();
+ const min=Math.min(...t),wins=outCounts(),any=t.some((v,p)=>v!==0)||played>0;
  $('prog').textContent=played+' of '+N+' played';
  t.forEach((v,p)=>{
   $('tot'+p).textContent=fmt(v);
-  const lead=played&&v===min;
+  const lead=any&&v===min;
   $('tile'+p).classList.toggle('lead',!!lead);
-  $('beh'+p).textContent=!played?'':lead?'Leads':'+'+(v-min);
+  $('beh'+p).textContent=!any?'':lead?'Leads':'+'+(v-min);
   $('pip'+p).innerHTML='<i></i>'.repeat(wins[p]);
  });
- for(let i=0;i<N;i++){
-  $('row'+i).classList.toggle('done',rp[i]);
-  for(let p=0;p<n;p++){
-   if(i===S.open){
-    const s=score(i,p),m=S.mp[i][p],parts=[];
-    if(S.jk[i][p])parts.push('Joker');
-    if(m)parts.push(m+' misplay'+(m>1?'s':''));
-    $('f'+p).textContent=parts.length&&s!==null?parts.join(', ')+', counts as '+fmt(s):'';
-   }
-   else{const el=$('c'+i+'_'+p),s=score(i,p);el.textContent=s===null?'':fmt(s);el.classList.toggle('out',S.out[i]===p);}
-  }
- }
- renderFinal(t,played);
- drawChart(rp);
+ d.forEach(i=>{if(i===S.open)return;for(let p=0;p<n;p++){const el=$('c'+i+'_'+p),s=score(i,p);el.textContent=s===null?'':fmt(s);el.classList.toggle('out',S.out[i]===p);}});
+ [S.open,S.stage==='score'?S.live:-1].forEach(i=>{if(i<0)return;for(let p=0;p<n;p++){
+  const el=$('f'+i+'_'+p);if(!el)continue;
+  const s=score(i,p),m=S.mp[i][p],out=S.out[i]===p,parts=out?['Went out']:[];
+  if(S.jk[i][p])parts.push('Joker');
+  if(m)parts.push(m+' misplay'+(m>1?'s':''));
+  el.className=out&&!m?'ok':'';
+  el.textContent=!parts.length?'':out&&!m?parts[0]:num(S.base[i][p])===null?parts.join(', ')+', add hand points':parts.join(', ')+', counts as '+fmt(s);
+ }});
+ if(S.live<0&&played===N)$('flow').innerHTML=finalPanel();
+ drawChart(d);
  store(KEY,S);
 }
 
-// End-of-game standings, shown once every round has scores and none is open.
-function renderFinal(t,played){
- if(played<N||S.open>=0){$('final').innerHTML='';return;}
- const order=S.names.map((x,p)=>p).sort((a,b)=>t[a]-t[b]);
- $('final').innerHTML='<div class="final"><h2>Final standings</h2><ol>'+order.map(p=>{const place=t.filter(v=>v<t[p]).length;return '<li style="'+pc(p)+'"><span class="place">'+ORD[place]+'</span><b>'+esc(S.names[p])+'</b><span class="ft">'+fmt(t[p])+'</span></li>';}).join('')
- +'</ol><div class="factions"><button class="btn" data-act="share">Share results</button><button class="btn primary" data-act="finish">Save game</button></div></div>';
+// ---------- Round flow actions ----------
+function startRound(i){
+ if(S.nextPick<0){toast('Choose who picks first');return;}
+ snap();S.live=i;S.stage='play';S.picked[i]=S.nextPick;S.dealt[i]=dealerOf(S.nextPick);
+ S.seq=S.seq.filter(x=>x!==i&&isDone(x));S.seq.push(i);S.nextPick=-1;S.open=-1;
+ render();scrollFlow();
 }
+function changeRule(){
+ const i=S.live;
+ if(S.mp[i].some(Boolean)&&!confirm('Change the rule? Misplays logged for this round will be cleared.'))return;
+ snap();S.nextPick=S.picked[i];S.picked[i]=-1;S.dealt[i]=-1;
+ S.base[i]=S.base[i].map(()=>"");S.jk[i]=S.jk[i].map(()=>0);S.mp[i]=S.mp[i].map(()=>0);S.out[i]=-1;
+ S.seq=S.seq.filter(x=>x!==i);S.live=-1;S.stage=null;render();scrollFlow();
+}
+function saveRound(){
+ const i=S.live,miss=S.names.filter((x,p)=>p!==S.out[i]&&num(S.base[i][p])===null),msg=[];
+ if(!rowPlayed(i))msg.push('No scores entered, so this rule will go back to the pick list.');
+ else{if(miss.length)msg.push(andList(miss)+(miss.length>1?' have':' has')+' no score.');if(S.out[i]<0)msg.push('Nobody is marked as going out.');}
+ if(msg.length&&!confirm(msg.join(' ')+' Save anyway?'))return;
+ snap();const p=S.picked[i];S.live=-1;S.stage=null;
+ if(!rowPlayed(i)){S.seq=S.seq.filter(x=>x!==i);S.picked[i]=-1;S.dealt[i]=-1;}
+ S.nextPick=p>=0?(p+1)%S.names.length:suggestPick();
+ render();scrollFlow();
+}
+function setOut(r,q){
+ const o=S.out[r];
+ if(o>=0&&num(S.base[r][o])===outValue(r,o))S.base[r][o]="";
+ if(q<0||o===q){S.out[r]=-1;return;}
+ S.out[r]=q;S.base[r][q]=String(outValue(r,q));S.jk[r][q]=0;
+}
+function scrollFlow(){const el=$('flow');if(el&&el.getBoundingClientRect().top<0)el.scrollIntoView({block:'start'});}
+function scrollToRow(i){const el=$('row'+i);if(el)el.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});}
 
-// Running-totals line chart: one line per player, direct name labels at the line ends.
+// ---------- Seating order ----------
+// order[newSeat] = old player index.
+function applyOrder(order){
+ const inv=[];order.forEach((o,k)=>inv[o]=k);
+ S.names=order.map(o=>S.names[o]);S.col=order.map(o=>S.col[o]);
+ [S.base,S.jk,S.mp].forEach(g=>g.forEach((row,i)=>{g[i]=order.map(o=>row[o]);}));
+ const m=x=>x>=0?inv[x]:x;
+ S.out=S.out.map(m);S.dealt=S.dealt.map(m);S.picked=S.picked.map(m);S.nextPick=m(S.nextPick);
+ S.picked.forEach((p,i)=>{if(p>=0)S.dealt[i]=dealerOf(p);});
+}
+function movePlayer(from,to){
+ if(from===to||to<0||to>=S.names.length)return;
+ snap();const order=S.names.map((x,p)=>p);order.splice(to,0,order.splice(from,1)[0]);applyOrder(order);render();
+}
+// Press and hold a tile, then drag it sideways to change seating order.
+let drag=null;
+// Nearest seat to the finger, measured from where the tiles sat when one was picked up.
+function dropTarget(x){
+ let best=drag.p,bd=Infinity;
+ drag.centers.forEach((c,k)=>{const dd=Math.abs(x-c);if(dd<bd){bd=dd;best=k;}});
+ return best;
+}
+function endDrag(){
+ if(!drag)return;clearTimeout(drag.timer);drag=null;
+ document.querySelectorAll('.tile').forEach(t=>{t.classList.remove('lift','drop');t.style.transform='';});
+}
+$('stand').addEventListener('pointerdown',e=>{
+ const t=e.target.closest('.tile');if(!t||e.button>0)return;
+ drag={p:+t.dataset.p,el:t,x0:e.clientX,y0:e.clientY,id:e.pointerId,on:false,centers:[...document.querySelectorAll('.tile')].map(x=>{const r=x.getBoundingClientRect();return r.left+r.width/2;})};
+ drag.timer=setTimeout(()=>{if(!drag)return;drag.on=true;t.classList.add('lift');try{t.setPointerCapture(drag.id)}catch(err){}if(navigator.vibrate)navigator.vibrate(12);},320);
+});
+document.addEventListener('pointermove',e=>{
+ if(!drag||e.pointerId!==drag.id)return;
+ if(!drag.on){if(Math.hypot(e.clientX-drag.x0,e.clientY-drag.y0)>8){clearTimeout(drag.timer);drag=null;}return;}
+ drag.el.style.transform='translateX('+(e.clientX-drag.x0)+'px)';
+ const to=dropTarget(e.clientX);
+ document.querySelectorAll('.tile').forEach((t,k)=>t.classList.toggle('drop',k===to&&k!==drag.p));
+});
+document.addEventListener('pointerup',e=>{
+ if(!drag||e.pointerId!==drag.id)return;
+ const on=drag.on,p=drag.p,to=on?dropTarget(e.clientX):p;endDrag();
+ if(to!==p){movePlayer(p,to);toast(S.names[to]+' moved');}
+});
+document.addEventListener('pointercancel',endDrag);
+document.addEventListener('touchmove',e=>{if(drag&&drag.on)e.preventDefault();},{passive:false});
+$('stand').addEventListener('contextmenu',e=>{if(e.target.closest('.tile'))e.preventDefault();});
+
+// ---------- Chart ----------
 function niceStep(x){const p=Math.pow(10,Math.floor(Math.log10(x||1))),f=x/p;return(f<=1?1:f<=2?2:f<=5?5:10)*p;}
-function drawChart(rp){
- const box=$('chart'),idx=[];
- for(let i=0;i<N;i++)if(rp[i])idx.push(i);
+function drawChart(idx){
+ const box=$('chart');
  if(idx.length<2){chartModel=null;box.innerHTML='<p class="empty">The chart fills in after two rounds.</p>';return;}
  const series=S.names.map((x,p)=>{let c=0;const v=[0];idx.forEach(i=>{c+=score(i,p)||0;v.push(c);});return v;});
  const W=360,HH=200,L=36,R=60,T=12,B=24,m=idx.length,all=series.flat();
@@ -331,15 +504,14 @@ function drawChart(rp){
  let s='<svg viewBox="0 0 '+W+' '+HH+'" aria-hidden="true">';
  for(let v=lo;v<=hi;v+=step)s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="var(--line)" stroke-width="'+(v===0?1.5:1)+'"/><text x="'+(L-6)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+fmt(v)+'</text>';
  s+='<text x="2" y="'+(HH-6)+'">Round</text>';
- idx.forEach((i,k)=>s+='<text x="'+X(k+1)+'" y="'+(HH-6)+'" text-anchor="middle">'+(i+1)+'</text>');
+ idx.forEach((i,k)=>s+='<text x="'+X(k+1)+'" y="'+(HH-6)+'" text-anchor="middle">'+(k+1)+'</text>');
  s+='<line id="xh" y1="'+T+'" y2="'+(HH-B)+'" stroke="var(--muted)" stroke-width="1" visibility="hidden"/>';
  series.forEach((v,p)=>{s+='<polyline fill="none" stroke="'+cv(p)+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="'+v.map((y,k)=>X(k)+','+Y(y)).join(' ')+'"/>';});
  series.forEach((v,p)=>{s+='<circle cx="'+X(m)+'" cy="'+Y(v[m])+'" r="4" fill="'+cv(p)+'" stroke="var(--bg)" stroke-width="2"/>';});
- // End labels, nudged apart so close totals don't overlap.
  const labs=series.map((v,p)=>({p,y:Y(v[m])})).sort((a,b)=>a.y-b.y);
  for(let j=1;j<labs.length;j++)if(labs[j].y<labs[j-1].y+13)labs[j].y=labs[j-1].y+13;
  for(let j=labs.length-1;j>=0;j--){const cap=j===labs.length-1?HH-B:labs[j+1].y-13;if(labs[j].y>cap)labs[j].y=cap;}
- labs.forEach(l=>{s+='<text class="el" x="'+(X(m)+9)+'" y="'+(l.y+4)+'">'+esc(S.names[l.p])+'</text>';});
+ labs.forEach(l=>{s+='<text class="el" x="'+(X(m)+9)+'" y="'+(l.y+4)+'">'+nm(l.p)+'</text>';});
  s+='</svg><div class="tip" id="tip"></div><div class="legend">'+S.names.map((x,p)=>'<span style="'+pc(p)+'"><i></i>'+esc(x)+'</span>').join('')+'</div>';
  box.innerHTML=s;
  chartModel={idx,series,X,m,W,k:null};
@@ -350,7 +522,7 @@ function showTip(k){
  const box=$('chart'),svg=box.querySelector('svg'),tip=$('tip'),xh=$('xh');
  xh.setAttribute('x1',c.X(k));xh.setAttribute('x2',c.X(k));xh.setAttribute('visibility','visible');
  tip.textContent='';
- const th=document.createElement('div');th.className='th';th.textContent='After '+ROUNDS[c.idx[k-1]][0];tip.appendChild(th);
+ const th=document.createElement('div');th.className='th';th.textContent='Round '+k+', '+ROUNDS[c.idx[k-1]][0];tip.appendChild(th);
  c.series.map((v,p)=>({p,v:v[k]})).sort((a,b)=>a.v-b.v).forEach(o=>{
   const r=document.createElement('div');r.className='r';r.style.cssText=pc(o.p);
   const i=document.createElement('i'),b=document.createElement('b'),n=document.createElement('span');
@@ -379,27 +551,58 @@ $('chart').addEventListener('keydown',e=>{
  else if(e.key==='Escape')hideTip();
 });
 
+// ---------- Players, rules, history ----------
 function renderSettings(){
  const last=S.names.length-1;
  $('pbody').innerHTML=S.names.map((x,p)=>'<div class="srow"><i style="background:'+cv(p)+'"></i><input data-n="'+p+'" value="'+esc(x)+'" aria-label="Player '+(p+1)+' name">'
-  +'<button class="btn sm mv" data-mv="'+p+',-1" aria-label="Move '+esc(x)+' up"'+(p===0?' disabled':'')+'>\u2191</button>'
-  +'<button class="btn sm mv" data-mv="'+p+',1" aria-label="Move '+esc(x)+' down"'+(p===last?' disabled':'')+'>\u2193</button>'
+  +'<button class="btn sm mv" data-mv="'+p+',-1" aria-label="Move '+esc(x)+' up"'+(p===0?' disabled':'')+'>↑</button>'
+  +'<button class="btn sm mv" data-mv="'+p+',1" aria-label="Move '+esc(x)+' down"'+(p===last?' disabled':'')+'>↓</button>'
   +'<button class="btn sm" data-del="'+p+'">Remove</button></div>').join('')
  +'<button class="btn sm" id="addp">Add player</button>'
- +'<label class="osl">Going out, picked the rule <input id="os" inputmode="text" value="'+S.outScore+'"></label>'
- +'<label class="osl two">Going out, didn\u2019t pick <input id="oo" inputmode="text" value="'+S.outOther+'"></label>';
+ +'<p class="dnote" style="margin-top:14px">Scoring values are under Rules.</p>';
 }
+let rulesEdit=false;
+const para=s=>esc(s).split('\n').filter(x=>x.trim()).map(x=>'<p>'+x+'</p>').join('');
 function renderRules(){
- const os=fmt(S.outScore);
- $('rbody').innerHTML='<p>Amerikano is played over '+N+' rounds, each with its own opening combination. The lowest total after the last round wins.</p>'
- +'<h3>Picking the rule</h3><p>Each round, one player picks which of the remaining combinations to play. Picking, and shuffling and dealing, pass to the next player round by round.</p>'
- +'<h3>Playing a round</h3><p>Before you can lay cards down, you have to open with that round’s combination. Nobody can lay down cards on their first turn. Jokers can’t be used to open until round 6.</p>'
- +'<p>A <b>küt</b> is a set: the same number in different suits. A <b>seri</b> is a run: consecutive cards in the same suit.</p>'
- +'<h3>Scoring</h3><p>The round ends when someone goes out by getting rid of all their cards. If they picked the rule, they score <b>'+os+'</b>; anyone else who goes out scores <b>'+fmt(S.outOther)+'</b>. Everyone else scores the points left in their hand.</p>'
- +'<p><b>Joker in hand:</b> ending the round holding a joker doubles that hand’s points.</p>'
- +'<p><b>Misplay:</b> each misplayed card adds 50.</p>'
- +'<h3>The rounds</h3><ol>'+ROUNDS.map((r,i)=>'<li'+(i===S.open?' class="now"':'')+'><b>'+r[0]+'</b><span>'+r[1]+'</span></li>').join('')+'</ol>'
- +'<h3>Using the scoreboard</h3><p>Type each player’s hand points. Set who picked the rule and who deals at the bottom of each round. Tap <b>Out</b> for whoever went out: it fills in the right score and adds a dot to their tile. Tap <b>Joker</b> to double a hand. Tap <b>Misplay</b> for a misplayed card, then use − and + to change the count.</p><p>Players are listed in seating order; reorder them under Players so the suggestions for who picks and deals are right.</p>';
+ $('rhead').innerHTML=rulesEdit?'<button class="btn" id="rcancel">Cancel</button><button class="btn primary" id="rsaveRules">Save</button>'
+  :'<button class="btn" id="redit">Edit</button><button class="btn" id="rdone">Done</button>';
+ if(rulesEdit){renderRulesEdit();return;}
+ const jk=R.joker===2?'doubles that hand’s points':'multiplies that hand’s points by '+R.joker;
+ $('rbody').innerHTML='<p>Amerikano is played over '+N+' rounds, each with its own opening rule. The lowest total after the last round wins.</p>'
+ +'<h3>Taking turns</h3><p>Players take turns, in seating order, to pick which of the remaining rules to play next. The player before the picker shuffles and deals.'+(R.finalLast?' Final is always played last.':'')+'</p>'
+ +'<h3>Playing a round</h3>'+para(R.general)+(R.every.trim()?'<p><b>Every round:</b> '+esc(R.every.trim())+'</p>':'')
+ +'<h3>Scoring</h3><p>The round ends when someone goes out by getting rid of all their cards. If they picked the rule, they score <b>'+fmt(R.outPick)+'</b>; anyone else who goes out scores <b>'+fmt(R.outOther)+'</b>. Everyone else scores the points left in their hand.</p>'
+ +'<p><b>Joker in hand:</b> ending the round holding a joker '+jk+'.</p>'
+ +'<p><b>Misplay:</b> each misplayed card adds '+R.misplay+', including for whoever went out.</p>'
+ +'<h3>The rules</h3><ol>'+ROUNDS.map((r,i)=>'<li'+(i===S.live?' class="now"':'')+'><b>'+r[0]+'</b><span>'+esc(desc(i))+'</span></li>').join('')+'</ol>'
+ +'<h3>House rules</h3>'+(R.notes.trim()?para(R.notes):'<p class="muted">None yet. Tap Edit to add your own.</p>')
+ +'<h3>Using the scoreboard</h3><p><b>Pick:</b> check whose turn it is, then tap the rule they choose. <b>Play:</b> tap Misplay for a player as soon as it happens. <b>Score:</b> tap Round over, choose who went out, type everyone else’s hand points, tick Joker where needed, then Save round.</p>'
+ +'<p>To change seating order, press and hold a player’s tile at the top and drag it sideways. To correct a played round, tap it in the list.</p>';
+}
+function renderRulesEdit(){
+ const f=(id,label,v,mode)=>'<label class="fld">'+label+'<input id="'+id+'" inputmode="'+(mode||'numeric')+'" value="'+v+'"></label>';
+ $('rbody').innerHTML='<p class="muted">Scoring changes apply to the whole game, including rounds already played.</p>'
+ +'<h3>Scoring</h3>'
+ +f('r-op','Going out, picked the rule',R.outPick,'text')+f('r-oo','Going out, anyone else',R.outOther,'text')
+ +f('r-mp','Each misplay adds',R.misplay)+f('r-jk','Joker in hand multiplies by',R.joker)
+ +'<label class="fld">Final is always played last<input type="checkbox" id="r-fl"'+(R.finalLast?' checked':'')+'></label>'
+ +'<h3>Playing a round</h3><textarea id="r-gen" rows="5">'+esc(R.general)+'</textarea>'
+ +'<label class="dl" for="r-ev">Reminder shown every round</label><textarea id="r-ev" rows="2">'+esc(R.every)+'</textarea>'
+ +'<h3>The rules</h3><p class="muted">Leave a description empty to go back to the original.</p>'
+ +ROUNDS.map((r,i)=>'<label class="dl" for="r-d'+i+'">'+r[0]+'</label><textarea id="r-d'+i+'" rows="2">'+esc(desc(i))+'</textarea>').join('')
+ +'<h3>House rules</h3><textarea id="r-notes" rows="6" placeholder="Card values, how you settle disputes, anything else">'+esc(R.notes)+'</textarea>';
+}
+function saveRules(){
+ const v=id=>$(id).value,nums={};
+ for(const [id,k,label,min] of [['r-op','outPick','going out (picked)',null],['r-oo','outOther','going out (anyone else)',null],['r-mp','misplay','misplay',0],['r-jk','joker','joker',1]]){
+  const n=num(v(id));
+  if(n===null||(min!==null&&n<min)){toast('Enter a valid number for '+label);$(id).focus();return;}
+  nums[k]=n;
+ }
+ Object.assign(R,nums);
+ R.finalLast=$('r-fl').checked;R.general=v('r-gen').trim();R.every=v('r-ev').trim();R.notes=v('r-notes').trim();
+ R.desc=ROUNDS.map((r,i)=>{const t=v('r-d'+i).trim();return t&&t!==r[1]?t:null;});
+ store(RKEY,R);rulesEdit=false;render();renderRules();$('rd').scrollTop=0;toast('Rules saved');
 }
 function renderHistory(){
  if(!H.length){$('lb').innerHTML='<p class="empty">Finish a game to start the leaderboard.</p>';$('hist').innerHTML='<p class="empty">Saved games will appear here.</p>';return;}
@@ -417,84 +620,95 @@ function renderHistory(){
  $('hist').innerHTML=H.map((g,k)=>'<div class="hrow"><div>'+new Date(g.date).toLocaleDateString('en-GB')+', won by <b>'+g.winners.map(esc).join(' and ')+'</b><small>'+g.names.map((x,p)=>esc(x)+' '+fmt(g.totals[p])).join(', ')+'</small></div><button class="btn sm" data-delg="'+k+'">Delete</button></div>').join('')+'<button class="btn sm clear" id="clearh">Clear history</button>';
 }
 function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',2000);}
-function scrollToRow(i,smooth){const el=$('row'+i);if(el)el.scrollIntoView({block:'start',behavior:smooth&&!matchMedia('(prefers-reduced-motion: reduce)').matches?'smooth':'auto'});}
 function summary(){const {t,played}=totals();return 'Amerikano, '+new Date().toLocaleDateString('en-GB')+' ('+played+'/'+N+' rounds)\n'+S.names.map((x,p)=>[x,t[p]]).sort((a,b)=>a[1]-b[1]).map((x,k)=>(k+1)+'. '+x[0]+': '+x[1]).join('\n');}
-function newGame(){const o=S;S=blank(o.names);S.col=o.col.slice();S.outScore=o.outScore;S.outOther=o.outOther;undoStack=[];S.open=-1;setOpen(0);render();window.scrollTo(0,0);}
+function newGame(){
+ const o=S,n=o.names.length,np=o.live>=0&&o.picked[o.live]>=0?(o.picked[o.live]+1)%n:suggestPick();
+ S=blank(o.names);S.col=o.col.slice();S.nextPick=np;
+ undoStack=[];render();window.scrollTo(0,0);
+}
 async function copyText(txt,done){try{await navigator.clipboard.writeText(txt);toast(done);}catch(e){prompt('Copy this:',txt);}}
 
+// ---------- Events ----------
 document.addEventListener('focusin',e=>{const d=e.target.dataset;if(d&&(d.r!==undefined||d.n!==undefined))pending=JSON.stringify(S);});
-document.addEventListener('input',e=>{const d=e.target.dataset;if(d.r!==undefined){S.base[d.r][d.p]=e.target.value;calc();}});
+document.addEventListener('input',e=>{
+ const el=e.target,d=el.dataset;if(d.r===undefined||el.tagName!=='INPUT')return;
+ const v=el.value.replace(/\D/g,'').slice(0,4);if(v!==el.value)el.value=v;
+ S.base[d.r][d.p]=v;calc();
+});
+document.addEventListener('keydown',e=>{
+ const el=e.target;if(e.key!=='Enter'||el.tagName!=='INPUT'||el.dataset.r===undefined)return;
+ e.preventDefault();const all=[...el.closest('section,li').querySelectorAll('input[data-r]')],nx=all[all.indexOf(el)+1];
+ if(nx)nx.focus();else el.blur();
+});
 document.addEventListener('change',e=>{
  const el=e.target,d=el.dataset;
- if(d.d!==undefined){snap();S.dealt[+d.d]=+el.value;store(KEY,S);return;}
- if(d.pk!==undefined){snap();const b=outBefore();S.picked[+d.pk]=+el.value;reapplyOut(b);render();return;}
+ if(d.np!==undefined){snap();S.nextPick=+el.value;render();return;}
+ if(d.pk!==undefined){
+  snap();const i=+d.pk,b=outBefore(),dn=doneOrder();S.picked[i]=+el.value;S.dealt[i]=dealerOf(S.picked[i]);reapplyOut(b);
+  // Correcting the most recent round also corrects whose turn is next.
+  if(S.live<0&&dn[dn.length-1]===i&&S.picked[i]>=0)S.nextPick=(S.picked[i]+1)%S.names.length;
+  render();return;
+ }
  if(d.n!==undefined){if(pending){undoStack.push(pending);pending=null;}S.names[d.n]=el.value.trim()||('Player '+(+d.n+1));render();return;}
- if(el.id==='os'||el.id==='oo'){const k=el.id==='os'?'outScore':'outOther',v=num(el.value);if(v===null){toast('Enter a number');el.value=S[k];return;}snap();const b=outBefore();S[k]=v;reapplyOut(b);render();return;}
  if(pending){undoStack.push(pending);pending=null;}
 });
 document.addEventListener('click',e=>{
  const b=e.target.closest('button');if(!b)return;
  const d=b.dataset;
- if(d.open!==undefined){setOpen(+d.open);render();scrollToRow(S.open,true);return;}
+ if(d.pick!==undefined){startRound(+d.pick);return;}
+ if(d.open!==undefined){S.open=+d.open;render();scrollToRow(S.open);return;}
+ if(d.out!==undefined){snap();setOut(+d.r,+d.out);render();return;}
  if(d.k){
   const r=+d.r,p=+d.p;snap();
   if(d.k==='j')S.jk[r][p]=S.jk[r][p]?0:1;
   else if(d.k==='m+')S.mp[r][p]=Math.min(9,S.mp[r][p]+1);
   else if(d.k==='m-')S.mp[r][p]=Math.max(0,S.mp[r][p]-1);
-  else{
-   if(S.out[r]===p){S.out[r]=-1;if(num(S.base[r][p])===outValue(r,p))S.base[r][p]="";}
-   else{const o=S.out[r];if(o>=0&&num(S.base[r][o])===outValue(r,o))S.base[r][o]="";S.out[r]=p;S.base[r][p]=String(outValue(r,p));}
-  }
   render();return;
  }
  if(d.del!==undefined){
   if(S.names.length<=2){toast('You need at least two players');return;}
   const p=+d.del;if(!confirm('Remove '+S.names[p]+' and their scores?'))return;
-  snap();S.names.splice(p,1);[S.base,S.jk,S.mp].forEach(g=>g.forEach(r=>r.splice(p,1)));
-  S.col.splice(p,1);const fix=o=>o===p?-1:o>p?o-1:o;S.out=S.out.map(fix);S.dealt=S.dealt.map(fix);S.picked=S.picked.map(fix);render();renderSettings();return;
+  snap();S.names.splice(p,1);S.col.splice(p,1);[S.base,S.jk,S.mp].forEach(g=>g.forEach(r=>r.splice(p,1)));
+  const fix=o=>o===p?-1:o>p?o-1:o;S.out=S.out.map(fix);S.dealt=S.dealt.map(fix);S.picked=S.picked.map(fix);S.nextPick=fix(S.nextPick);
+  render();renderSettings();return;
  }
  if(d.mv!==undefined){
-  const [p,dir]=d.mv.split(',').map(Number),q=p+dir;if(q<0||q>=S.names.length)return;
-  snap();const sw=a=>{const t=a[p];a[p]=a[q];a[q]=t;};
-  sw(S.names);sw(S.col);[S.base,S.jk,S.mp].forEach(g=>g.forEach(sw));
-  const m=o=>o===p?q:o===q?p:o;S.out=S.out.map(m);S.dealt=S.dealt.map(m);S.picked=S.picked.map(m);
-  render();renderSettings();const b=document.querySelector('[data-mv="'+q+','+dir+'"]')||document.querySelector('[data-mv="'+q+','+(-dir)+'"]');if(b)b.focus();return;
+  const [p,dir]=d.mv.split(',').map(Number);movePlayer(p,p+dir);renderSettings();
+  const nb=document.querySelector('[data-mv="'+(p+dir)+','+dir+'"]:not([disabled])')||document.querySelector('[data-mv="'+(p+dir)+','+(-dir)+'"]');if(nb)nb.focus();return;
  }
  if(d.delg!==undefined){
   const g=H[+d.delg];if(!g||!confirm('Delete the game from '+new Date(g.date).toLocaleDateString('en-GB')+' won by '+andList(g.winners)+'?'))return;
   H.splice(+d.delg,1);store(HKEY,H);renderHistory();toast('Game deleted');return;
  }
  switch(d.act||b.id){
-  case 'nextr':{
-   const i=S.open,miss=S.names.filter((x,p)=>score(i,p)===null),msg=[];
-   if(miss.length===S.names.length)msg.push('No scores entered for this round.');
-   else{if(miss.length)msg.push(andList(miss)+(miss.length>1?' have':' has')+' no score.');if(S.out[i]<0)msg.push('Nobody is marked as Out.');}
-   if(msg.length&&!confirm(msg.join(' ')+' Go to the next round anyway?'))break;
-   setOpen(pickNext(i));render();
-   if(S.open<0)$('board').scrollIntoView({block:'start'});else scrollToRow(S.open,true);
-   break;
-  }
+  case 'rover':snap();S.stage='score';render();scrollFlow();break;
+  case 'rback':S.stage='play';render();break;
+  case 'rsave':saveRound();break;
+  case 'rchange':changeRule();break;
+  case 'edone':S.open=-1;render();break;
   case 'playersBtn':renderSettings();$('pd').showModal();break;
   case 'pdone':$('pd').close();break;
-  case 'rulesBtn':renderRules();$('rd').showModal();$('rbody').scrollTop=0;break;
+  case 'rulesBtn':rulesEdit=false;renderRules();$('rd').showModal();$('rd').scrollTop=0;break;
+  case 'redit':rulesEdit=true;renderRules();$('rd').scrollTop=0;break;
+  case 'rcancel':rulesEdit=false;renderRules();$('rd').scrollTop=0;break;
+  case 'rsaveRules':saveRules();break;
   case 'rdone':$('rd').close();break;
   case 'addp':if(S.names.length>=6){toast('Six players is the maximum');break;}snap();S.col.push([0,1,2,3,4,5].find(c=>!S.col.includes(c)));S.names.push('Player '+(S.names.length+1));S.base.forEach(r=>r.push(''));S.jk.forEach(r=>r.push(0));S.mp.forEach(r=>r.push(0));render();renderSettings();break;
   case 'undo':{const s=undoStack.pop();if(!s){toast('Nothing to undo');break;}S=JSON.parse(s);render();toast('Undone');break;}
   case 'share':(async()=>{const txt=summary();try{if(navigator.share){await navigator.share({text:txt});return;}}catch(e){if(e.name==='AbortError')return;}copyText(txt,'Copied');})();break;
-  case 'finish':{const {t,played}=totals();if(!played){toast('No scores yet');break;}if(!confirm('Save this game to history and start a new one?'))break;const min=Math.min(...t);H.unshift({date:new Date().toISOString(),names:S.names.slice(),totals:t,winners:S.names.filter((x,p)=>t[p]===min),played,outs:outCounts()});store(HKEY,H);newGame();toast('Game saved');break;}
+  case 'finish':{const {t,played}=totals();if(!played){toast('No scores yet');break;}if(!confirm((S.live>=0?ROUNDS[S.live][0]+' is still in progress; anything entered for it so far will count. ':'')+'Save this game to history and start a new one?'))break;const min=Math.min(...t);H.unshift({date:new Date().toISOString(),names:S.names.slice(),totals:t,winners:S.names.filter((x,p)=>t[p]===min),played,outs:outCounts()});store(HKEY,H);newGame();toast('Game saved');break;}
   case 'newg':if(confirm('Start a new game without saving? This clears all scores.'))newGame();break;
   case 'clearh':if(confirm('Delete all past games?')){H=[];store(HKEY,H);renderHistory();}break;
-  case 'bcopy':copyText(JSON.stringify({app:'amerikano',v:1,game:S,history:H}),'Backup copied. Paste it somewhere safe.');break;
+  case 'bcopy':copyText(JSON.stringify({app:'amerikano',v:2,game:S,history:H,rules:R}),'Backup copied. Paste it somewhere safe.');break;
   case 'brestore':{
    const txt=prompt('Paste your backup here');if(!txt)break;
    let o,g;try{o=JSON.parse(txt);g=fixState(o.game);}catch(err){}
    if(!g||!Array.isArray(o.history)){toast("That isn't an Amerikano backup");break;}
    if(!confirm('Replace the current game and history with this backup?'))break;
-   snap();S=g;if(S.open===undefined)setOpen(pickNext(-1));H=o.history;store(HKEY,H);render();toast('Backup restored');break;
+   snap();if(o.rules){R=fixRules(o.rules);store(RKEY,R);}S=g;migrate();H=o.history;store(HKEY,H);render();toast('Backup restored');break;
   }
  }
 });
 render();
-if(S.open>1)scrollToRow(S.open,false);
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script></body></html>
