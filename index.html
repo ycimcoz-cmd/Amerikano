@@ -9,14 +9,14 @@
 :root{
  --bg:#ECEFEA;--surface:#F7F8F5;--ink:#1C1F1D;--muted:#646C66;--line:#D3D9D1;
  --tile:#FFFDF7;--tile-edge:#D9D2BF;--tile-depth:#E3DCC8;
- --pen:#B3261E;--pen-bg:#FBE4E1;--focus:#1E5AA8;
+ --pen:#B3261E;--pen-bg:#FBE4E1;--focus:#1E5AA8;--card-red:#C62828;
  --p0:#C62828;--p1:#8A5E00;--p2:#1E5AA8;--p3:#1C1F1D;--p4:#276C44;--p5:#7B3F8C;
  color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root{
  --bg:#141715;--surface:#1C201D;--ink:#E9ECE7;--muted:#9AA39C;--line:#2E3430;
  --tile:#232825;--tile-edge:#363D38;--tile-depth:#0E100F;
- --pen:#FF8A80;--pen-bg:#3A201E;--focus:#74A7F2;
+ --pen:#FF8A80;--pen-bg:#3A201E;--focus:#74A7F2;--card-red:#FF7A6E;
  --p0:#FF7A6E;--p1:#E8B23A;--p2:#74A7F2;--p3:#E9ECE7;--p4:#63C98C;--p5:#C690DA;
  color-scheme:dark;
 }}
@@ -97,6 +97,42 @@ dialog{border:0;border-radius:16px;padding:18px;width:min(92vw,420px);max-height
 .step button{width:30px;height:36px;border:0;background:none;color:inherit;font-size:19px;font-weight:600;line-height:1;cursor:pointer;padding:0}
 .step b{min-width:14px;text-align:center;font-size:16px}
 .rules{font-size:15px}
+.dhead{flex-wrap:wrap}
+.jump{display:flex;flex-basis:100%;gap:6px;margin-top:10px;overflow-x:auto}
+.jump:empty{display:none}
+.jump button{flex:1 0 auto;height:32px;padding:0 9px;border-radius:16px;font-size:13px!important;border:1px solid var(--line);background:var(--bg);font-size:14px;font-weight:600;cursor:pointer}
+.rules h3{scroll-margin-top:120px}
+.rules .lead{font-size:17px;margin-top:4px}
+.steps{padding-left:22px;margin:6px 0}
+.steps li{margin:8px 0}
+.terms{margin:6px 0}
+.terms dt{font-weight:700;margin-top:12px}
+.terms dd{margin:2px 0 0}
+.terms .meld{display:flex;margin-top:6px}
+.cards{display:flex;flex-wrap:wrap;gap:6px 12px;margin:8px 0 4px}
+.meld{display:inline-flex;gap:3px}
+.card{width:26px;height:36px;border-radius:5px;background:var(--tile);border:1px solid var(--tile-edge);box-shadow:0 2px 0 var(--tile-depth);display:inline-flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;font-weight:700;line-height:1.05;color:var(--ink)}
+.card i{font-style:normal;font-size:13px}
+.card.r{color:var(--card-red)}
+.card.jk{color:var(--p5)}
+.card.jk i{font-size:18px}
+.rl{list-style:none;padding:0;margin:6px 0}
+.rl li{margin:0;padding:10px 0;border-top:1px solid var(--line)}
+.rl li>span{display:block;color:var(--muted);font-size:14px}
+.rl li.now{background:var(--bg);margin:0 -10px;padding:10px;border-radius:10px;border-top-color:transparent}
+.rlh{display:flex;align-items:center;gap:8px}
+.tag{font-size:12px;font-weight:600;padding:1px 8px;border-radius:9px;background:var(--line);color:var(--muted)}
+.tag.now{background:var(--ink);color:var(--bg)}
+.stbl{width:100%;border-collapse:collapse;margin:6px 0;font-size:15px}
+.stbl td{padding:7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.stbl td:last-child{text-align:right;padding-left:12px;white-space:nowrap}
+.ex{background:var(--bg);border-radius:12px;padding:10px 12px;margin:12px 0}
+.ex .stbl td{font-size:14px}
+.ex .stbl tr:last-child td{border-bottom:0}
+.rules details{margin-top:18px;border-top:1px solid var(--line);padding-top:10px}
+.rules summary{font-weight:700;font-size:17px;cursor:pointer}
+.linkbtn{border:0;background:none;padding:0;color:var(--ink);text-decoration:underline;text-underline-offset:2px;font-size:13px;cursor:pointer}
+.flow .cards{margin:10px 0 2px}
 .rules .muted{color:var(--muted);font-size:14px}
 .rules .fld{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:8px 0}
 .rules .fld input:not([type]){width:80px;height:40px;text-align:center;border:1px solid var(--line);border-radius:9px;background:var(--bg);font-size:16px}
@@ -105,10 +141,7 @@ dialog{border:0;border-radius:16px;padding:18px;width:min(92vw,420px);max-height
 .rules textarea{display:block;width:100%;font:inherit;font-size:16px;line-height:1.35;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);padding:8px 10px;resize:vertical}
 .rules h3{font-size:17px;margin:18px 0 4px}
 .rules p{margin:6px 0}
-.rules ol{padding-left:24px;margin:6px 0}
-.rules li{margin:7px 0}
-.rules li span{display:block;color:var(--muted);font-size:14px}
-.rules li.now>b::after{content:" (this round)";font-weight:400;color:var(--muted)}
+
 dialog::backdrop{background:rgba(14,16,15,.5)}
 .dhead{display:flex;justify-content:space-between;align-items:center;position:sticky;top:-18px;z-index:2;background:var(--surface);margin:-18px -18px 0;padding:18px 18px 10px}
 .dhead h2{margin:0;font-size:22px}
@@ -146,6 +179,25 @@ dialog::backdrop{background:rgba(14,16,15,.5)}
 .tile{touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:grab}
 .tile.lift{position:relative;z-index:7;box-shadow:0 12px 24px rgba(0,0,0,.25);cursor:grabbing}
 .tile.drop{outline:2px dashed var(--ink);outline-offset:2px}
+
+/* Setup */
+body.setup .stand,body.setup #rounds,body.setup .actions{display:none}
+.setup-panel .lab{margin-top:16px}
+.setup-panel .hint{margin:2px 0 6px}
+.seats{list-style:none;margin:0 0 8px;padding:0}
+.seat{display:flex;align-items:center;gap:8px;padding:5px 0;background:var(--surface);position:relative}
+.seat>i{flex:none;width:12px;height:12px;border-radius:50%;background:var(--pc)}
+.seat input{flex:1;min-width:0;height:44px;border:1px solid var(--line);border-radius:9px;background:var(--bg);padding:0 10px;font-size:17px;font-weight:600;color:var(--pc)}
+.grip,.xbtn{flex:none;width:40px;height:44px;border-radius:9px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:22px;line-height:1;cursor:pointer;padding:0}
+.grip{touch-action:none;cursor:grab}
+.xbtn:disabled{opacity:.3;cursor:default}
+.seat.lift{z-index:3;box-shadow:0 10px 22px rgba(0,0,0,.22);border-radius:10px}
+.seat.drop{outline:2px dashed var(--ink);outline-offset:1px;border-radius:10px}
+.past{margin-top:10px}
+.past .pchip{height:36px;font-size:15px}
+.setup-panel .turn{margin-top:4px}
+.srules{display:flex;gap:8px;margin-top:6px}
+.sbig{width:100%;height:50px;font-size:18px;margin-top:18px}
 
 /* End of game */
 .final{background:var(--surface);border:1px solid var(--ink);border-radius:14px;padding:14px 12px;margin:12px -6px 8px}
@@ -206,41 +258,68 @@ dialog::backdrop{background:rgba(14,16,15,.5)}
  <div id="pbody"></div>
 </dialog>
 <dialog id="rd" aria-labelledby="rdt">
- <div class="dhead"><h2 id="rdt">Rules</h2><div class="hb" id="rhead"></div></div>
+ <div class="dhead"><h2 id="rdt">Rules</h2><div class="hb" id="rhead"></div><nav class="jump" id="rjump" aria-label="Rules sections"></nav></div>
  <div class="rules" id="rbody"></div>
 </dialog>
 <div id="toast" role="status"></div>
 <script>
 const ROUNDS=[
-["1× 3 küt","Open with one set of 3: same number, different suits. No jokers when opening."],
-["1× 3 seri","Open with one run of 3 in the same suit, e.g. 4-5-6. No jokers when opening."],
-["2× 3 küt","Open with two sets of 3. No jokers when opening."],
-["2× 3 seri","Open with two runs of 3. No jokers when opening."],
-["3 küt + 3 seri","Open with one set of 3 and one run of 3. No jokers when opening."],
-["1× 4 küt","Open with one set of 4. Jokers can now be used to open."],
-["1× 4 seri","Open with one run of 4. Jokers allowed."],
-["2× 4 küt","Open with two sets of 4. Jokers allowed."],
-["2× 4 seri","Open with two runs of 4. Jokers allowed."],
-["4 küt + 4 seri","Open with one set of 4 and one run of 4. Jokers allowed."],
-["5li seri","Open with one run of 5. Jokers allowed."],
-["Pairs","Open with 4 pairs. Each pair is two of the exact same card: same number and same suit."],
+["1× 3 küt","One set of 3: the same number in three different suits."],
+["1× 3 seri","One run of 3 in the same suit, like 4-5-6."],
+["2× 3 küt","Two sets of 3."],
+["2× 3 seri","Two runs of 3."],
+["3 küt + 3 seri","One set of 3 and one run of 3."],
+["1× 4 küt","One set of 4: the same number in all four suits."],
+["1× 4 seri","One run of 4 in the same suit."],
+["2× 4 küt","Two sets of 4."],
+["2× 4 seri","Two runs of 4."],
+["4 küt + 4 seri","One set of 4 and one run of 4."],
+["5li seri","One run of 5 in the same suit."],
+["Pairs","4 pairs. Each pair is two of the exact same card: same number and same suit."],
 ["Final","Go out in one go: arrange your whole hand into melds, discard one card and lay everything down, like okey."]
+];
+// What each rule looks like, drawn as example cards: [rank, suit] per card, one array per meld.
+const SHAPES=[
+ [[['7','h'],['7','s'],['7','c']]],
+ [[['4','d'],['5','d'],['6','d']]],
+ [[['7','h'],['7','s'],['7','c']],[['K','d'],['K','c'],['K','h']]],
+ [[['4','d'],['5','d'],['6','d']],[['9','s'],['10','s'],['J','s']]],
+ [[['7','h'],['7','s'],['7','c']],[['4','d'],['5','d'],['6','d']]],
+ [[['7','h'],['7','s'],['7','d'],['7','c']]],
+ [[['8','c'],['9','c'],['10','c'],['J','c']]],
+ [[['7','h'],['7','s'],['7','d'],['7','c']],[['K','d'],['K','c'],['K','h'],['K','s']]],
+ [[['8','c'],['9','c'],['10','c'],['J','c']],[['3','h'],['4','h'],['5','h'],['6','h']]],
+ [[['7','h'],['7','s'],['7','d'],['7','c']],[['8','c'],['9','c'],['10','c'],['J','c']]],
+ [[['5','h'],['6','h'],['7','h'],['8','h'],['9','h']]],
+ [[['9','c'],['9','c']],[['Q','d'],['Q','d']],[['3','h'],['3','h']],[['A','s'],['A','s']]],
+ null
 ];
 const N=ROUNDS.length,FINAL=N-1,KEY="amerikano-v2",HKEY="amerikano-history";
 const RKEY="amerikano-rules";
-const DEF_GENERAL='Before you can lay cards down, you have to open with that round\u2019s rule. Jokers can\u2019t be used to open the first five rules (the 3-card ones).\nA k\u00fct is a set: the same number in different suits. A seri is a run: consecutive cards in the same suit.';
+const OLD_GENERAL='Before you can lay cards down, you have to open with that round\u2019s rule. Jokers can\u2019t be used to open the first five rules (the 3-card ones).\nA k\u00fct is a set: the same number in different suits. A seri is a run: consecutive cards in the same suit.';
 const DEF_EVERY='Nobody can lay down cards on their first turn.';
 // House rules, kept across games. Scoring settings here drive the maths.
 function fixRules(r,g){
- const d={outPick:g&&typeof g.outScore==='number'?g.outScore:-50,outOther:g&&typeof g.outOther==='number'?g.outOther:0,misplay:50,joker:2,finalLast:true,every:DEF_EVERY,general:DEF_GENERAL,desc:Array(N).fill(null),notes:''};
+ const d={outPick:g&&typeof g.outScore==='number'?g.outScore:-50,outOther:g&&typeof g.outOther==='number'?g.outOther:0,misplay:50,joker:2,finalLast:true,every:DEF_EVERY,desc:Array(N).fill(null),notes:''};
  if(!r||typeof r!=='object')return d;
  ['outPick','outOther','misplay','joker'].forEach(k=>{if(typeof r[k]==='number')d[k]=r[k];});
  if(typeof r.finalLast==='boolean')d.finalLast=r.finalLast;
- ['every','general','notes'].forEach(k=>{if(typeof r[k]==='string')d[k]=r[k];});
+ ['every','notes'].forEach(k=>{if(typeof r[k]==='string')d[k]=r[k];});
+ // Older versions had an editable "Playing a round" text; if it was changed, keep it in House rules.
+ if(typeof r.general==='string'&&r.general.trim()&&r.general!==OLD_GENERAL)d.notes=(d.notes.trim()?d.notes+'\n':'')+r.general.trim();
  if(Array.isArray(r.desc))d.desc=ROUNDS.map((x,i)=>typeof r.desc[i]==='string'&&r.desc[i].trim()?r.desc[i]:null);
  return d;
 }
 const desc=i=>R.desc[i]||ROUNDS[i][1];
+const SUIT={h:['\u2665','hearts',1],d:['\u2666','diamonds',1],s:['\u2660','spades',0],c:['\u2663','clubs',0]};
+const RANKW={A:'ace',K:'king',Q:'queen',J:'jack'};
+function card(c){if(c==='jk')return '<span class="card jk"><i>\u2605</i></span>';const s=SUIT[c[1]];return '<span class="card'+(s[2]?' r':'')+'">'+c[0]+'<i>'+s[0]+'</i></span>';}
+function cardName(c){return c==='jk'?'joker':(RANKW[c[0]]||c[0])+' of '+SUIT[c[1]][1];}
+function meld(cards,label){return '<span class="meld" role="img" aria-label="'+esc(label+': '+cards.map(cardName).join(', '))+'">'+cards.map(card).join('')+'</span>';}
+function shapeCards(i){
+ const sh=SHAPES[i];if(!sh)return '';
+ return '<div class="cards">'+sh.map(m=>{const set=m.every(c=>c[0]===m[0][0]),kind=m.length===2?'Pair':set?'Set of '+m.length:'Run of '+m.length;return meld(m,kind);}).join('')+'</div>';
+}
 const $=id=>document.getElementById(id);
 const fmt=v=>String(v).replace('-','−');
 const cv=p=>'var(--p'+S.col[p]+')';
@@ -297,12 +376,14 @@ function migrate(){
  if(typeof S.open!=='number'||!isDone(S.open))S.open=-1;
  if(typeof S.nextPick!=='number')S.nextPick=-1;
  if(S.live<0&&S.nextPick<0)S.nextPick=suggestPick();
+ // A game with nothing played yet hasn't started: show the setup screen.
+ if(typeof S.setup!=='boolean')S.setup=S.live<0&&!S.seq.length&&!S.base.some(r=>r.some(v=>num(v)!==null))&&!S.mp.some(r=>r.some(Boolean));
 }
 
 let R=fixRules(load(RKEY),load(KEY));store(RKEY,R);
 let S=fixState(load(KEY));
 if(!S){const o=load("amerikano-v1");if(o)S=fixState(Object.assign(blank(o.names||[]),{base:o.base,jk:o.jk,mp:o.mp}));}
-if(!S)S=blank(["Hebe","Clara","Sam","Yusuf"]);
+if(!S){S=blank(["Hebe","Clara","Sam","Yusuf"]);S.setup=true;}
 migrate();
 let H=load(HKEY)||[],undoStack=[],pending=null,chartModel=null;
 function snap(){undoStack.push(JSON.stringify(S));if(undoStack.length>50)undoStack.shift();}
@@ -313,6 +394,7 @@ function outCounts(){const n=S.names.length,w=Array(n).fill(0);S.out.forEach((o,
 // ---------- Rendering ----------
 function render(){
  lockOuts();
+ document.body.classList.toggle('setup',!!S.setup);
  const n=S.names.length;
  $('board').style.setProperty('--n',n);
  $('stand').innerHTML='<div class="slead"><b>Total</b><span id="prog"></span></div>'+S.names.map((x,p)=>'<div class="tile" data-p="'+p+'" id="tile'+p+'" style="'+pc(p)+'"><span class="tn">'+esc(x)+'</span><span class="tt" id="tot'+p+'">0</span><span class="tb" id="beh'+p+'"></span><span class="pips" id="pip'+p+'"></span></div>').join('');
@@ -323,7 +405,7 @@ function render(){
  renderHistory();calc();
 }
 function who(key,val,extra){
- return '<select data-'+key+'="'+(extra===undefined?1:extra)+'"><option value="-1">Choose</option>'+S.names.map((x,p)=>'<option value="'+p+'"'+(val===p?' selected':'')+'>'+esc(x)+'</option>').join('')+'</select>';
+ return '<select data-'+key+'="'+(extra===undefined?1:extra)+'"><option value="-1">Choose</option>'+S.names.map((x,p)=>'<option value="'+p+'"'+(val===p?' selected':'')+'>'+esc(x||'Player '+(p+1))+'</option>').join('')+'</select>';
 }
 function head(i,right){return '<div class="ohead"><h2>'+ROUNDS[i][0]+'</h2>'+right+'</div>';}
 function roundNo(){return '<span>Round '+(doneOrder().length+1)+' of '+N+'</span>';}
@@ -349,11 +431,86 @@ function scoreRows(i){
 }
 function renderFlow(){
  const done=doneOrder().length;let h;
- if(S.live>=0)h=S.stage==='score'?scorePanel(S.live):playPanel(S.live);
+ if(S.setup)h=setupPanel();
+ else if(S.live>=0)h=S.stage==='score'?scorePanel(S.live):playPanel(S.live);
  else if(done===N)h=finalPanel();
  else h=pickPanel();
  $('flow').innerHTML=h;
 }
+// Before the first round: players, seating, who picks first, rules.
+function pastPlayers(){
+ const have=S.names.map(x=>x.trim().toLowerCase()),out=[];
+ H.forEach(g=>g.names.forEach(x=>{const k=x.trim().toLowerCase();if(k&&!have.includes(k)&&!out.some(o=>o.toLowerCase()===k))out.push(x);}));
+ return out.slice(0,8);
+}
+function dealLine(){const np=S.nextPick,d=dealerOf(np);return np>=0?esc(S.names[d]||'Player '+(d+1))+' shuffles and deals.':'Choose who picks first, or tap Random.';}
+function setupPanel(){
+ const n=S.names.length,past=pastPlayers();
+ const sc=(label,val)=>'<tr><td>'+label+'</td><td>'+val+'</td></tr>';
+ return '<section class="flow setup-panel"><div class="ohead"><h2>New game</h2><span>'+n+' players</span></div>'
+ +'<span class="lab">Who\u2019s playing</span><p class="hint">In seating order. Drag \u2261 to move someone.</p>'
+ +'<ol class="seats" id="seats">'+S.names.map((x,p)=>'<li class="seat" data-seat="'+p+'" style="'+pc(p)+'"><i></i>'
+  +'<input data-sn="'+p+'" value="'+esc(x)+'" placeholder="Player '+(p+1)+'" autocomplete="off" autocapitalize="words" enterkeyhint="next" aria-label="Seat '+(p+1)+' name">'
+  +'<button class="grip" data-grip="'+p+'" aria-label="Move '+esc(x||'player')+'. Use the up and down arrow keys.">\u2261</button>'
+  +'<button class="xbtn" data-sdel="'+p+'" aria-label="Remove '+esc(x||'player')+'"'+(n<=2?' disabled':'')+'>\u00d7</button></li>').join('')+'</ol>'
+ +(n<6?'<button class="btn sm" id="sadd">Add player</button>':'<p class="hint">Six players is the maximum.</p>')
+ +(past.length&&n<6?'<div class="past"><span class="hint">From past games</span><div class="pchips">'+past.map(x=>'<button class="pchip none" data-sname="'+esc(x)+'">+ '+esc(x)+'</button>').join('')+'</div></div>':'')
+ +'<span class="lab">Who picks first</span><div class="turn"><label>'+who('np',S.nextPick)+'</label><button class="btn sm" id="srand">Random</button></div><p class="hint" id="sdeal">'+dealLine()+'</p>'
+ +'<span class="lab">Rules</span><table class="stbl"><tbody>'
+ +sc('Went out, picked the rule','<b>'+fmt(R.outPick)+'</b>')+sc('Went out, didn\u2019t pick','<b>'+fmt(R.outOther)+'</b>')
+ +sc('Each misplay','+'+R.misplay)+sc('Joker left in hand','\u00d7'+R.joker)+sc('Final played last',R.finalLast?'Yes':'No')
+ +'</tbody></table><div class="srules"><button class="btn sm" id="srulesView">Read the rules</button><button class="btn sm" id="srulesEdit">Change rules</button></div>'
+ +'<button class="btn primary sbig" id="sstart">Start game</button></section>';
+}
+function setupRefresh(){
+ // Update labels that show names without rebuilding the inputs being typed in.
+ document.querySelectorAll('select[data-np] option').forEach(o=>{const p=+o.value;if(p>=0)o.textContent=S.names[p]||'Player '+(p+1);});
+ const d=$('sdeal');if(d)d.innerHTML=dealLine();
+}
+function startGame(){
+ S.names=S.names.map((x,p)=>x.trim()||'Player '+(p+1));
+ const seen={};
+ for(const x of S.names){const k=x.toLowerCase();if(seen[k]){toast('Two players are called '+x+'. Give one a different name.');render();return;}seen[k]=1;}
+ if(S.nextPick<0){toast('Choose who picks first, or tap Random');return;}
+ snap();S.setup=false;render();window.scrollTo(0,0);toast('Game started. '+S.names[S.nextPick]+' picks first.');
+}
+function setupAdd(name){
+ if(S.names.length>=6){toast('Six players is the maximum');return;}
+ S.col.push([0,1,2,3,4,5].find(c=>!S.col.includes(c)));S.names.push(name);
+ S.base.forEach(r=>r.push(''));S.jk.forEach(r=>r.push(0));S.mp.forEach(r=>r.push(0));
+ render();
+}
+function setupRemove(p){
+ if(S.names.length<=2){toast('You need at least two players');return;}
+ S.names.splice(p,1);S.col.splice(p,1);[S.base,S.jk,S.mp].forEach(g=>g.forEach(r=>r.splice(p,1)));
+ S.nextPick=S.nextPick===p?-1:S.nextPick>p?S.nextPick-1:S.nextPick;
+ render();
+}
+// Drag the \u2261 handle up or down to change seating order.
+let vdrag=null;
+document.addEventListener('pointerdown',e=>{
+ const g=e.target.closest('.grip');if(!g||e.button>0)return;
+ const rows=[...document.querySelectorAll('.seat')];
+ vdrag={p:+g.dataset.grip,id:e.pointerId,y0:e.clientY,row:rows[+g.dataset.grip],centers:rows.map(r=>{const b=r.getBoundingClientRect();return b.top+b.height/2;}),moved:false};
+ try{g.setPointerCapture(e.pointerId)}catch(err){}
+ vdrag.row.classList.add('lift');e.preventDefault();
+});
+function vTarget(y){let best=vdrag.p,bd=Infinity;vdrag.centers.forEach((c,k)=>{const d=Math.abs(y-c);if(d<bd){bd=d;best=k;}});return best;}
+document.addEventListener('pointermove',e=>{
+ if(!vdrag||e.pointerId!==vdrag.id)return;
+ const dy=e.clientY-vdrag.y0;if(Math.abs(dy)>3)vdrag.moved=true;
+ vdrag.row.style.transform='translateY('+dy+'px)';
+ const to=vTarget(e.clientY);document.querySelectorAll('.seat').forEach((r,k)=>r.classList.toggle('drop',k===to&&k!==vdrag.p));
+});
+function vEnd(e,commit){
+ if(!vdrag||(e&&e.pointerId!==vdrag.id))return;
+ const p=vdrag.p,to=commit&&vdrag.moved?vTarget(e.clientY):p;vdrag=null;
+ document.querySelectorAll('.seat').forEach(r=>{r.classList.remove('lift','drop');r.style.transform='';});
+ if(to!==p)movePlayer(p,to);
+}
+document.addEventListener('pointerup',e=>vEnd(e,true));
+document.addEventListener('pointercancel',e=>vEnd(e,false));
+
 // Step 1: whose turn it is, and which rule they pick.
 function pickPanel(){
  const np=S.nextPick,rem=[];for(let i=0;i<N;i++)if(!isDone(i))rem.push(i);
@@ -361,11 +518,11 @@ function pickPanel(){
  return '<section class="flow"><div class="ohead"><h2>Pick the next rule</h2>'+roundNo()+'</div>'
  +'<div class="turn"><label>Turn to pick '+who('np',np)+'</label><p>'+(np>=0?nm(dealerOf(np))+' shuffles and deals.':'Choose who picks first.')+'</p></div>'
  +'<div class="rchips">'+rem.map(i=>'<button class="rchip" data-pick="'+i+'"'+(i===FINAL&&lockFinal?' disabled':'')+'>'+ROUNDS[i][0]+'</button>').join('')+'</div>'
- +(lockFinal&&rem.includes(FINAL)?'<p class="hint">Final is played last.</p>':'')+'</section>';
+ +'<p class="hint">'+(lockFinal&&rem.includes(FINAL)?'Final is played last. ':'')+'<button class="linkbtn" id="rhelp">What do these rules mean?</button></p></section>';
 }
 // Step 2: the round is being played. Log misplays as they happen.
 function playPanel(i){
- return '<section class="flow">'+head(i,roundNo())+'<p class="sub">'+roleLine(i)+'</p><p class="rule">'+esc(desc(i))+(R.every.trim()?' '+esc(R.every.trim()):'')+'</p>'
+ return '<section class="flow">'+head(i,roundNo())+'<p class="sub">'+roleLine(i)+'</p>'+shapeCards(i)+'<p class="rule">'+(SHAPES[i]?'To open: ':'')+esc(desc(i))+(R.every.trim()?' '+esc(R.every.trim()):'')+'</p>'
  +'<span class="lab">Misplays</span>'+S.names.map((x,p)=>'<div class="mrow" style="'+pc(p)+'"><b>'+esc(x)+'</b>'+mpCtl(i,p)+'</div>').join('')
  +'<div class="ofoot"><button class="btn sm" id="rchange">Change rule</button><button class="btn primary" id="rover">Round over</button></div></section>';
 }
@@ -563,21 +720,48 @@ function renderSettings(){
 }
 let rulesEdit=false;
 const para=s=>esc(s).split('\n').filter(x=>x.trim()).map(x=>'<p>'+x+'</p>').join('');
+const JUMP=[['rs-basics','Basics'],['rs-rules','Rules'],['rs-score','Scoring'],['rs-house','House rules']];
 function renderRules(){
  $('rhead').innerHTML=rulesEdit?'<button class="btn" id="rcancel">Cancel</button><button class="btn primary" id="rsaveRules">Save</button>'
   :'<button class="btn" id="redit">Edit</button><button class="btn" id="rdone">Done</button>';
+ $('rjump').innerHTML=rulesEdit?'':JUMP.map(([id,l])=>'<button data-jump="'+id+'">'+l+'</button>').join('');
  if(rulesEdit){renderRulesEdit();return;}
- const jk=R.joker===2?'doubles that hand’s points':'multiplies that hand’s points by '+R.joker;
- $('rbody').innerHTML='<p>Amerikano is played over '+N+' rounds, each with its own opening rule. The lowest total after the last round wins.</p>'
- +'<h3>Taking turns</h3><p>Players take turns, in seating order, to pick which of the remaining rules to play next. The player before the picker shuffles and deals.'+(R.finalLast?' Final is always played last.':'')+'</p>'
- +'<h3>Playing a round</h3>'+para(R.general)+(R.every.trim()?'<p><b>Every round:</b> '+esc(R.every.trim())+'</p>':'')
- +'<h3>Scoring</h3><p>The round ends when someone goes out by getting rid of all their cards. If they picked the rule, they score <b>'+fmt(R.outPick)+'</b>; anyone else who goes out scores <b>'+fmt(R.outOther)+'</b>. Everyone else scores the points left in their hand.</p>'
- +'<p><b>Joker in hand:</b> ending the round holding a joker '+jk+'.</p>'
- +'<p><b>Misplay:</b> each misplayed card adds '+R.misplay+', including for whoever went out.</p>'
- +'<h3>The rules</h3><ol>'+ROUNDS.map((r,i)=>'<li'+(i===S.live?' class="now"':'')+'><b>'+r[0]+'</b><span>'+esc(desc(i))+'</span></li>').join('')+'</ol>'
- +'<h3>House rules</h3>'+(R.notes.trim()?para(R.notes):'<p class="muted">None yet. Tap Edit to add your own.</p>')
- +'<h3>Using the scoreboard</h3><p><b>Pick:</b> check whose turn it is, then tap the rule they choose. <b>Play:</b> tap Misplay for a player as soon as it happens. <b>Score:</b> tap Round over, choose who went out, type everyone else’s hand points, tick Joker where needed, then Save round.</p>'
- +'<p>To change seating order, press and hold a player’s tile at the top and drag it sideways. To correct a played round, tap it in the list.</p>';
+ const n=S.names.length,ex=k=>n>=4?nm(k):['Ana','Ben','Cem','Dee'][k];
+ const every=R.every.trim();
+ const status=i=>i===S.live?'<span class="tag now">Now</span>':isDone(i)?'<span class="tag">Played</span>':'';
+ const sc=(label,val)=>'<tr><td>'+label+'</td><td>'+val+'</td></tr>';
+ const hand=12,jkTxt=hand+' × '+R.joker+' = '+hand*R.joker,mpTxt='9 + '+R.misplay+' = '+(9+R.misplay);
+ $('rbody').innerHTML=
+ '<h3 id="rs-basics">The aim</h3><p class="lead">Get rid of your cards before anyone else. After '+N+' rounds, the lowest total wins.</p>'
+ +'<h3>Each round</h3><ol class="steps">'
+ +'<li><b>Pick.</b> It’s one player’s turn to choose which rule to play. The player before them shuffles and deals.'+(R.finalLast?' Final is always played last.':'')+'</li>'
+ +'<li><b>Open.</b> Before you can lay any cards down, you have to show that round’s combination.'+(every?' '+esc(every):'')+'</li>'
+ +'<li><b>Go out.</b> The round ends as soon as someone gets rid of all their cards.</li>'
+ +'<li><b>Count.</b> Everyone else scores the cards left in their hand.</li></ol>'
+ +'<h3>The words you’ll hear</h3><dl class="terms">'
+ +'<dt>Küt (a set)</dt><dd>The same number in different suits.'+meld([['7','h'],['7','s'],['7','c']],'Set of 3')+'</dd>'
+ +'<dt>Seri (a run)</dt><dd>Numbers in a row, all the same suit.'+meld([['4','d'],['5','d'],['6','d']],'Run of 3')+'</dd>'
+ +'<dt>Pair</dt><dd>Two of the exact same card, number and suit.'+meld([['9','c'],['9','c']],'Pair')+'</dd>'
+ +'<dt>Joker</dt><dd>Stands in for any card, including when you open. Here it’s the 5♦.'+meld([['4','d'],'jk',['6','d']],'Run of 3 with a joker as the 5 of diamonds')+'</dd></dl>'
+ +'<h3 id="rs-rules">The '+N+' rules</h3><p class="muted">The combination you need to open with. Pick them in any order'+(R.finalLast?', but Final comes last':'')+'.</p>'
+ +'<ul class="rl">'+ROUNDS.map((r,i)=>'<li'+(i===S.live?' class="now"':'')+'><div class="rlh"><b>'+r[0]+'</b>'+status(i)+'</div>'+shapeCards(i)+'<span>'+esc(desc(i))+'</span></li>').join('')+'</ul>'
+ +'<h3 id="rs-score">Scoring</h3><table class="stbl"><tbody>'
+ +sc('Went out, picked the rule','<b>'+fmt(R.outPick)+'</b>')
+ +sc('Went out, didn’t pick','<b>'+fmt(R.outOther)+'</b>')
+ +sc('Everyone else','Points left in hand')
+ +sc('Joker left in hand','Hand × '+R.joker)
+ +sc('Each misplay','+'+R.misplay+', even if you went out')
+ +'</tbody></table>'
+ +'<div class="ex"><b>Example.</b> '+ex(1)+' picked the rule, and '+ex(3)+' went out first.<table class="stbl"><tbody>'
+ +sc(ex(3)+': went out, didn’t pick','<b>'+fmt(R.outOther)+'</b>')
+ +sc(ex(0)+': 18 left in hand','<b>18</b>')
+ +sc(ex(2)+': 12 left, holding a joker',jkTxt.replace(/(\d+)$/,'<b>$1</b>'))
+ +sc(ex(1)+': 9 left, one misplay',mpTxt.replace(/(\d+)$/,'<b>$1</b>'))
+ +'</tbody></table><p class="muted">Going out would have scored '+ex(1)+' '+fmt(R.outPick)+', because they picked the rule.</p></div>'
+ +'<p>After the last round, the lowest total wins. If two players tie, they share the win.</p>'
+ +'<h3 id="rs-house">House rules</h3>'+(R.notes.trim()?para(R.notes):'<p class="muted">None yet. Tap Edit to add your own, such as card values.</p>')
+ +'<details><summary>Using the scoreboard</summary><p><b>Pick:</b> check whose turn it is, then tap the rule they choose. <b>Play:</b> tap Misplay for a player as soon as it happens. <b>Score:</b> tap Round over, choose who went out, type everyone else’s hand points, tick Joker where needed, then Save round.</p>'
+ +'<p>To change seating order, press and hold a player’s tile at the top and drag it sideways. To correct a played round, tap it in the list.</p></details>';
 }
 function renderRulesEdit(){
  const f=(id,label,v,mode)=>'<label class="fld">'+label+'<input id="'+id+'" inputmode="'+(mode||'numeric')+'" value="'+v+'"></label>';
@@ -586,8 +770,7 @@ function renderRulesEdit(){
  +f('r-op','Going out, picked the rule',R.outPick,'text')+f('r-oo','Going out, anyone else',R.outOther,'text')
  +f('r-mp','Each misplay adds',R.misplay)+f('r-jk','Joker in hand multiplies by',R.joker)
  +'<label class="fld">Final is always played last<input type="checkbox" id="r-fl"'+(R.finalLast?' checked':'')+'></label>'
- +'<h3>Playing a round</h3><textarea id="r-gen" rows="5">'+esc(R.general)+'</textarea>'
- +'<label class="dl" for="r-ev">Reminder shown every round</label><textarea id="r-ev" rows="2">'+esc(R.every)+'</textarea>'
+ +'<h3>Every round</h3><label class="dl" for="r-ev">Reminder shown while playing</label><textarea id="r-ev" rows="2">'+esc(R.every)+'</textarea>'
  +'<h3>The rules</h3><p class="muted">Leave a description empty to go back to the original.</p>'
  +ROUNDS.map((r,i)=>'<label class="dl" for="r-d'+i+'">'+r[0]+'</label><textarea id="r-d'+i+'" rows="2">'+esc(desc(i))+'</textarea>').join('')
  +'<h3>House rules</h3><textarea id="r-notes" rows="6" placeholder="Card values, how you settle disputes, anything else">'+esc(R.notes)+'</textarea>';
@@ -600,7 +783,7 @@ function saveRules(){
   nums[k]=n;
  }
  Object.assign(R,nums);
- R.finalLast=$('r-fl').checked;R.general=v('r-gen').trim();R.every=v('r-ev').trim();R.notes=v('r-notes').trim();
+ R.finalLast=$('r-fl').checked;R.every=v('r-ev').trim();R.notes=v('r-notes').trim();
  R.desc=ROUNDS.map((r,i)=>{const t=v('r-d'+i).trim();return t&&t!==r[1]?t:null;});
  store(RKEY,R);rulesEdit=false;render();renderRules();$('rd').scrollTop=0;toast('Rules saved');
 }
@@ -623,7 +806,7 @@ function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';cle
 function summary(){const {t,played}=totals();return 'Amerikano, '+new Date().toLocaleDateString('en-GB')+' ('+played+'/'+N+' rounds)\n'+S.names.map((x,p)=>[x,t[p]]).sort((a,b)=>a[1]-b[1]).map((x,k)=>(k+1)+'. '+x[0]+': '+x[1]).join('\n');}
 function newGame(){
  const o=S,n=o.names.length,np=o.live>=0&&o.picked[o.live]>=0?(o.picked[o.live]+1)%n:suggestPick();
- S=blank(o.names);S.col=o.col.slice();S.nextPick=np;
+ S=blank(o.names);S.col=o.col.slice();S.nextPick=np;S.setup=true;
  undoStack=[];render();window.scrollTo(0,0);
 }
 async function copyText(txt,done){try{await navigator.clipboard.writeText(txt);toast(done);}catch(e){prompt('Copy this:',txt);}}
@@ -631,12 +814,22 @@ async function copyText(txt,done){try{await navigator.clipboard.writeText(txt);t
 // ---------- Events ----------
 document.addEventListener('focusin',e=>{const d=e.target.dataset;if(d&&(d.r!==undefined||d.n!==undefined))pending=JSON.stringify(S);});
 document.addEventListener('input',e=>{
- const el=e.target,d=el.dataset;if(d.r===undefined||el.tagName!=='INPUT')return;
+ const el=e.target,d=el.dataset;
+ if(d.sn!==undefined){S.names[+d.sn]=el.value.slice(0,20);if(el.value.length>20)el.value=S.names[+d.sn];setupRefresh();store(KEY,S);return;}
+ if(d.r===undefined||el.tagName!=='INPUT')return;
  const v=el.value.replace(/\D/g,'').slice(0,4);if(v!==el.value)el.value=v;
  S.base[d.r][d.p]=v;calc();
 });
 document.addEventListener('keydown',e=>{
- const el=e.target;if(e.key!=='Enter'||el.tagName!=='INPUT'||el.dataset.r===undefined)return;
+ const el=e.target;
+ if(el.dataset&&el.dataset.grip!==undefined&&(e.key==='ArrowUp'||e.key==='ArrowDown')){
+  e.preventDefault();const p=+el.dataset.grip,q=p+(e.key==='ArrowUp'?-1:1);if(q<0||q>=S.names.length)return;
+  movePlayer(p,q);const g=document.querySelector('[data-grip="'+q+'"]');if(g)g.focus();return;
+ }
+ if(e.key==='Enter'&&el.dataset&&el.dataset.sn!==undefined){
+  e.preventDefault();const nx=document.querySelector('input[data-sn="'+(+el.dataset.sn+1)+'"]');if(nx)nx.focus();else el.blur();return;
+ }
+ if(e.key!=='Enter'||el.tagName!=='INPUT'||el.dataset.r===undefined)return;
  e.preventDefault();const all=[...el.closest('section,li').querySelectorAll('input[data-r]')],nx=all[all.indexOf(el)+1];
  if(nx)nx.focus();else el.blur();
 });
@@ -656,6 +849,9 @@ document.addEventListener('click',e=>{
  const b=e.target.closest('button');if(!b)return;
  const d=b.dataset;
  if(d.pick!==undefined){startRound(+d.pick);return;}
+ if(d.sdel!==undefined){setupRemove(+d.sdel);return;}
+ if(d.sname!==undefined){setupAdd(d.sname);return;}
+ if(d.jump!==undefined){const t=$(d.jump);if(t)t.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});return;}
  if(d.open!==undefined){S.open=+d.open;render();scrollToRow(S.open);return;}
  if(d.out!==undefined){snap();setOut(+d.r,+d.out);render();return;}
  if(d.k){
@@ -689,6 +885,12 @@ document.addEventListener('click',e=>{
   case 'playersBtn':renderSettings();$('pd').showModal();break;
   case 'pdone':$('pd').close();break;
   case 'rulesBtn':rulesEdit=false;renderRules();$('rd').showModal();$('rd').scrollTop=0;break;
+  case 'sadd':{setupAdd('');const i=document.querySelector('input[data-sn="'+(S.names.length-1)+'"]');if(i)i.focus();break;}
+  case 'srand':S.nextPick=Math.floor(Math.random()*S.names.length);render();toast((S.names[S.nextPick]||'Player '+(S.nextPick+1))+' picks first');break;
+  case 'sstart':startGame();break;
+  case 'srulesView':rulesEdit=false;renderRules();$('rd').showModal();$('rd').scrollTop=0;break;
+  case 'srulesEdit':rulesEdit=true;renderRules();$('rd').showModal();$('rd').scrollTop=0;break;
+  case 'rhelp':rulesEdit=false;renderRules();$('rd').showModal();$('rs-rules').scrollIntoView({block:'start'});break;
   case 'redit':rulesEdit=true;renderRules();$('rd').scrollTop=0;break;
   case 'rcancel':rulesEdit=false;renderRules();$('rd').scrollTop=0;break;
   case 'rsaveRules':saveRules();break;
