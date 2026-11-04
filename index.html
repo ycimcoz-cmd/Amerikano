@@ -27,6 +27,19 @@ button,input,select{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 .wrap{max-width:560px;margin:0 auto;padding:0 12px 48px}
 .top{display:flex;align-items:center;justify-content:space-between;padding:14px 0 4px}
+.tl{display:flex;flex-direction:column}
+.cstat{font-size:12px;color:var(--muted);min-height:15px;line-height:15px}
+.cstat.ok::before{content:"\2713  "}
+.cstat.bad{color:var(--pen);font-weight:600}
+.cloud .bnote.bad{color:var(--pen)}
+.cloud .btn{margin-top:4px}
+.bkd{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+.bkd summary{font-weight:600;cursor:pointer}
+.bkd .bnote{margin-top:8px}
+.sfld{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600;margin:10px 0}
+.sfld input{height:44px;border:1px solid var(--line);border-radius:9px;background:var(--bg);padding:0 12px;font-size:16px;font-weight:400}
+.serr{min-height:20px;color:var(--pen);font-size:14px;margin:6px 0 0}
+.sfoot{text-align:center;margin:12px 0 0}
 h1{font-size:28px;font-weight:700;margin:0;letter-spacing:-.01em}
 .btn{font-size:15px;font-weight:600;height:40px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer}
 .btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
@@ -234,7 +247,7 @@ body.setup .stand,body.setup #rounds,body.setup .actions{display:none}
 #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 14px;border-radius:10px;font-size:14px;display:none;z-index:20}
 </style></head><body>
 <div class="wrap">
-<header class="top"><h1>Amerikano</h1><div class="hb"><button class="btn" id="rulesBtn">Rules</button><button class="btn" id="playersBtn">Players</button></div></header>
+<header class="top"><div class="tl"><h1>Amerikano</h1><span class="cstat" id="cstat" role="status"></span></div><div class="hb"><button class="btn" id="rulesBtn">Rules</button><button class="btn" id="playersBtn">Players</button></div></header>
 <div id="board">
  <div class="stand grid" id="stand"></div>
  <div id="flow"></div>
@@ -249,8 +262,9 @@ body.setup .stand,body.setup #rounds,body.setup .actions{display:none}
 <section class="sec"><h2>Running totals</h2><div class="chart" id="chart" tabindex="0" aria-label="Running totals chart. Tap or use arrow keys to read each round."></div></section>
 <section class="sec"><h2>All-time leaderboard</h2><div id="lb"></div></section>
 <section class="sec"><h2>Past games</h2><div id="hist"></div></section>
-<section class="sec"><h2>Backup</h2><p class="bnote">Copy this game and your history as text, then paste it into Restore on another phone or browser.</p>
- <div class="bk"><button class="btn" id="bcopy">Copy backup</button><button class="btn" id="brestore">Restore backup</button></div></section>
+<section class="sec"><h2>Saving</h2><div id="cloud" class="cloud"></div>
+ <details class="bkd"><summary>Backup as text</summary><p class="bnote">Copy this game, your history and your rules as text, then paste it into Restore on another phone or browser.</p>
+ <div class="bk"><button class="btn" id="bcopy">Copy backup</button><button class="btn" id="brestore">Restore backup</button></div></details></section>
 </div>
 <dialog id="pd" aria-labelledby="pdt">
  <div class="dhead"><h2 id="pdt">Players</h2><button class="btn" id="pdone">Done</button></div>
@@ -260,6 +274,17 @@ body.setup .stand,body.setup #rounds,body.setup .actions{display:none}
 <dialog id="rd" aria-labelledby="rdt">
  <div class="dhead"><h2 id="rdt">Rules</h2><div class="hb" id="rhead"></div><nav class="jump" id="rjump" aria-label="Rules sections"></nav></div>
  <div class="rules" id="rbody"></div>
+</dialog>
+<dialog id="sd" aria-labelledby="sdt">
+ <form id="sform" novalidate>
+  <div class="dhead"><h2 id="sdt">Sign in</h2><div class="hb"><button type="button" class="btn" id="scancel">Cancel</button></div></div>
+  <p class="dnote">Use the account you made in Firebase. Only that account can see or change your scores.</p>
+  <label class="sfld">Email<input type="email" id="semail" autocomplete="username" autocapitalize="off" spellcheck="false" required></label>
+  <label class="sfld">Password<input type="password" id="spass" autocomplete="current-password" required></label>
+  <p class="serr" id="serr" role="alert"></p>
+  <button class="btn primary sbig" id="sgo" type="submit">Sign in</button>
+  <p class="sfoot"><button type="button" class="linkbtn" id="sforgot">Forgot password?</button></p>
+ </form>
 </dialog>
 <div id="toast" role="status"></div>
 <script>
@@ -330,7 +355,150 @@ function andList(a){return a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and 
 function grid(n,v){return ROUNDS.map(()=>Array(n).fill(v));}
 function blank(names){const n=names.length;return{names:names.slice(),base:grid(n,""),jk:grid(n,0),mp:grid(n,0),out:Array(N).fill(-1),dealt:Array(N).fill(-1),picked:Array(N).fill(-1),col:names.map((x,p)=>p%6),seq:[],outScore:-50,outOther:0,live:-1,stage:null,nextPick:-1,open:-1};}
 function load(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
-function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}if(k===KEY||k===HKEY||k===RKEY)cloudTouch();}
+// ---------- Cloud saving (Firebase) ----------
+// The settings below identify your Firebase project. They are public by design:
+// what protects your scores are the database rules, which only let your account in.
+const FIREBASE_CONFIG={
+ apiKey:"AIzaSyDfwFKyaSdnMSCKQpeQo7YePqDK3EZ5I-o",
+ authDomain:"amerikano-1b762.firebaseapp.com",
+ projectId:"amerikano-1b762",
+ storageBucket:"amerikano-1b762.firebasestorage.app",
+ messagingSenderId:"847791541839",
+ appId:"1:847791541839:web:2bc237f62a13ae1b95243a"
+};
+const SKEY='amerikano-sync',FB_VER='10.12.2';
+function fbLoad(){const b='https://www.gstatic.com/firebasejs/'+FB_VER+'/';return Promise.all([import(b+'firebase-app.js'),import(b+'firebase-auth.js'),import(b+'firebase-firestore.js')]).then(m=>Object.assign({},...m));}
+var CL={status:'off',user:null,ready:false,applying:false,busy:false,timer:null,savedAt:null,err:''};
+var SY=null;
+function syLoad(){if(SY)return SY;try{SY=JSON.parse(localStorage.getItem(SKEY))||{};}catch(e){SY={};}if(!SY.device)SY.device=Math.random().toString(36).slice(2,10);return SY;}
+function sySave(){try{localStorage.setItem(SKEY,JSON.stringify(SY))}catch(e){}}
+function hashStr(s){let h1=0xdeadbeef,h2=0x41c6ce57;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return(4294967296*(2097151&h2)+(h1>>>0)).toString(36);}
+function cloudPayload(){return{game:JSON.stringify(S),history:JSON.stringify(H),rules:JSON.stringify(R)};}
+function payHash(d){return hashStr((d.game||'')+'\u0000'+(d.history||'')+'\u0000'+(d.rules||''));}
+function localHash(){return payHash(cloudPayload());}
+function hasLocalGames(){return H.length>0||doneOrder().length>0||S.live>=0;}
+function cloudTouch(){
+ if(!CL.user||CL.applying)return;
+ if(!CL.ready){CL.pending=true;return;}
+ clearTimeout(CL.timer);CL.timer=setTimeout(cloudPush,1200);
+}
+// Save this phone's copy. Each save carries a version number, and a phone may only
+// save on top of the version it last saw; if another phone saved in between, the
+// listener below brings that copy in and asks which to keep. No silent overwrites.
+async function cloudPush(){
+ if(!CL.user||!CL.ready||CL.busy)return;
+ syLoad();const d=cloudPayload(),hh=payHash(d);
+ if(hh===SY.hash&&CL.status!=='error'){if(CL.status==='saving'||CL.status==='offline')setCloud('saved');return;}
+ if(navigator.onLine===false){setCloud('offline');return;}
+ CL.busy=true;setCloud('saving');
+ const f=CL.fb,base=SY.rev||0;
+ try{
+  await f.runTransaction(CL.db,async tx=>{
+   const s=await tx.get(CL.ref),cur=s.exists()?(s.data().rev||0):0;
+   if(cur!==base){const x=new Error('newer copy in the cloud');x.code='amerikano/conflict';throw x;}
+   tx.set(CL.ref,{game:d.game,history:d.history,rules:d.rules,rev:base+1,by:SY.device,at:f.serverTimestamp()});
+  });
+  SY.rev=Math.max(SY.rev||0,base+1);SY.hash=hh;sySave();CL.savedAt=new Date();CL.busy=false;
+  if(localHash()!==hh)cloudTouch();else setCloud('saved');
+ }catch(e){
+  CL.busy=false;const c=(e&&e.code)||'';
+  if(c==='amerikano/conflict'){setCloud('syncing');return;}
+  if(navigator.onLine===false||/unavailable|network/.test(c)){setCloud('offline');return;}
+  CL.err=cloudErr(e);setCloud('error');
+ }
+}
+function cloudApply(d){
+ let g=null,hist=null,rules=null;
+ try{g=fixState(JSON.parse(d.game));hist=JSON.parse(d.history);rules=JSON.parse(d.rules);}catch(e){}
+ if(!g||!Array.isArray(hist)){CL.err='The cloud copy couldn\u2019t be read.';setCloud('error');return false;}
+ CL.applying=true;
+ try{S=g;migrate();H=hist;R=fixRules(rules);store(KEY,S);store(HKEY,H);store(RKEY,R);undoStack=[];render();}
+ finally{CL.applying=false;}
+ return true;
+}
+function cloudSnap(snap){
+ if(snap.metadata&&snap.metadata.hasPendingWrites)return;
+ syLoad();const first=!CL.ready;CL.ready=true;
+ const settle=()=>{sySave();if(localHash()!==SY.hash)cloudTouch();else setCloud('saved');};
+ if(!snap.exists()){SY.rev=0;delete SY.hash;sySave();cloudPush();return;}
+ const d=snap.data(),rev=d.rev||0;
+ if(SY.rev!==undefined&&rev<=SY.rev){settle();return;}            // nothing newer than this phone's copy
+ if(d.by===SY.device){SY.rev=rev;SY.hash=payHash(d);settle();return;} // this phone's own save coming back
+ const lh=localHash();
+ if(payHash(d)===lh){SY.rev=rev;SY.hash=lh;settle();return;}       // already identical
+ let useCloud=true;
+ if(SY.rev===undefined){
+  if(hasLocalGames())useCloud=confirm('Your cloud save already has scores. Use the cloud copy on this phone?\n\nOK: use the cloud copy.\nCancel: keep this phone’s copy and replace the cloud copy.');
+ }else if(lh!==SY.hash){
+  useCloud=confirm('Scores were changed on another phone while this one had unsaved changes. Use the other phone’s version?\n\nOK: use the other phone’s version.\nCancel: keep this phone’s version.');
+ }
+ SY.rev=rev;
+ if(useCloud){if(cloudApply(d)){SY.hash=localHash();sySave();CL.savedAt=new Date();setCloud('saved');if(!first)toast('Updated from another phone');}}
+ else{sySave();cloudPush();}
+}
+function cloudErr(e){
+ const c=(e&&e.code)||'';
+ if(c.includes('permission-denied'))return 'The cloud refused the save. Check the database rules in Firebase.';
+ if(c.includes('unavailable'))return 'Can\u2019t reach the cloud right now. Your scores are safe on this phone.';
+ return 'Something went wrong saving to the cloud ('+(c||'unknown')+').';
+}
+function signInErr(e){
+ const c=(e&&e.code)||'';
+ if(/invalid-credential|wrong-password|user-not-found|invalid-email|invalid-login/.test(c))return 'That email and password don\u2019t match.';
+ if(c.includes('too-many-requests'))return 'Too many tries. Wait a few minutes and try again.';
+ if(c.includes('network'))return 'No connection. Try again when you\u2019re online.';
+ if(c.includes('user-disabled'))return 'This account has been turned off in Firebase.';
+ return 'Couldn\u2019t sign in ('+(c||'unknown')+').';
+}
+function setCloud(s){CL.status=s;renderCloud();}
+const CLOUD_TXT={saved:'Saved',saving:'Saving\u2026',offline:'Offline',error:'Not saved',syncing:'Connecting\u2026'};
+function renderCloud(){
+ const box=$('cloud'),chip=$('cstat');if(!box)return;
+ const s=CL.status,t=CL.savedAt?CL.savedAt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'';
+ chip.textContent=CL.user?CLOUD_TXT[s]||'':'';chip.className='cstat'+(s==='error'?' bad':s==='saved'?' ok':'');
+ let h;
+ if(s==='off')h='<p class="bnote">Saved on this phone only. Cloud saving isn\u2019t set up yet.</p>';
+ else if(s==='loading')h='<p class="bnote">Starting cloud saving\u2026</p>';
+ else if(s==='noload')h='<p class="bnote">Can\u2019t reach the cloud right now. Your scores are saved on this phone and cloud saving will start when you\u2019re back online.</p>';
+ else if(!CL.user)h='<p class="bnote">Saved on this phone only. Sign in to save to the cloud and keep your scores if you lose or change your phone.</p><button class="btn primary" id="cin">Sign in</button>';
+ else{
+  const msg={saved:'Everything is saved to the cloud'+(t?' (last save '+t+')':'')+'.',saving:'Saving to the cloud\u2026',syncing:'Connecting to your cloud save\u2026',
+   offline:'You\u2019re offline. Scores are saved on this phone and will upload when you\u2019re back online.',error:esc(CL.err)}[s]||'';
+  h='<p class="bnote'+(s==='error'?' bad':'')+'">'+msg+'</p><p class="bnote">Signed in as <b>'+esc(CL.user.email||'')+'</b>.</p>'
+   +(s==='error'?'<button class="btn" id="cretry">Try again</button> ':'')+'<button class="btn" id="cout">Sign out</button>';
+ }
+ box.innerHTML=h;
+}
+async function cloudInit(){
+ if(!FIREBASE_CONFIG){setCloud('off');return;}
+ if(CL.started)return;CL.started=true;
+ setCloud('loading');
+ try{CL.fb=await fbLoad();}
+ catch(e){CL.started=false;setCloud('noload');window.addEventListener('online',cloudInit,{once:true});return;}
+ const f=CL.fb;
+ try{
+  CL.app=f.initializeApp(FIREBASE_CONFIG);CL.auth=f.getAuth(CL.app);CL.db=f.getFirestore(CL.app);
+ }catch(e){CL.err='Cloud settings look wrong.';setCloud('error');return;}
+ f.onAuthStateChanged(CL.auth,u=>{
+  if(CL.unsub){CL.unsub();CL.unsub=null;}
+  clearTimeout(CL.timer);CL.user=u||null;CL.ready=false;CL.busy=false;
+  // Each account has its own private space: users/<account id>/tables/main
+  if(u){CL.ref=f.doc(CL.db,'users',u.uid,'tables','main');setCloud('syncing');CL.unsub=f.onSnapshot(CL.ref,cloudSnap,e=>{CL.err=cloudErr(e);setCloud('error');});}
+  else setCloud('signedout');
+ });
+}
+window.addEventListener('offline',()=>{if(CL.user)setCloud('offline');});
+window.addEventListener('online',()=>{if(CL.user&&CL.status==='offline'){setCloud('saving');cloudPush();}});
+async function cloudSignIn(e){
+ e.preventDefault();
+ const email=$('semail').value.trim(),pass=$('spass').value,err=$('serr');
+ if(!email||!pass){err.textContent='Enter your email and password.';return;}
+ $('sgo').disabled=true;err.textContent='';
+ try{await CL.fb.signInWithEmailAndPassword(CL.auth,email,pass);$('spass').value='';$('sd').close();toast('Signed in. Cloud saving is on.');}
+ catch(x){err.textContent=signInErr(x);}
+ finally{$('sgo').disabled=false;}
+}
 function num(v){const n=parseInt(String(v).replace(/[^\d-]/g,""),10);return isNaN(n)?null:n;}
 function score(i,p){const b=num(S.base[i][p]),pen=S.jk[i][p]||S.mp[i][p];if(b===null&&!pen)return null;return(b||0)*(S.jk[i][p]?R.joker:1)+R.misplay*S.mp[i][p];}
 function rowPlayed(i){for(let p=0;p<S.names.length;p++)if(score(i,p)!==null)return true;return false;}
@@ -890,6 +1058,12 @@ document.addEventListener('click',e=>{
   case 'sstart':startGame();break;
   case 'srulesView':rulesEdit=false;renderRules();$('rd').showModal();$('rd').scrollTop=0;break;
   case 'srulesEdit':rulesEdit=true;renderRules();$('rd').showModal();$('rd').scrollTop=0;break;
+  case 'cin':$('serr').textContent='';$('sd').showModal();$('semail').focus();break;
+  case 'scancel':$('sd').close();break;
+  case 'sforgot':{const em=$('semail').value.trim();if(!em){$('serr').textContent='Type your email first, then tap Forgot password.';break;}
+   CL.fb.sendPasswordResetEmail(CL.auth,em).catch(()=>{}).then(()=>{$('serr').textContent='If that email has an account, a reset link is on its way.';});break;}
+  case 'cout':if(confirm('Sign out? Scores stay on this phone but stop saving to the cloud.')){syLoad();delete SY.hash;delete SY.rev;sySave();CL.fb.signOut(CL.auth);}break;
+  case 'cretry':CL.status='saving';syLoad();delete SY.hash;sySave();cloudPush();break;
   case 'rhelp':rulesEdit=false;renderRules();$('rd').showModal();$('rs-rules').scrollIntoView({block:'start'});break;
   case 'redit':rulesEdit=true;renderRules();$('rd').scrollTop=0;break;
   case 'rcancel':rulesEdit=false;renderRules();$('rd').scrollTop=0;break;
@@ -912,5 +1086,7 @@ document.addEventListener('click',e=>{
  }
 });
 render();
+$('sform').addEventListener('submit',cloudSignIn);
+cloudInit();
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script></body></html>
