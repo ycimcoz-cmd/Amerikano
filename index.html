@@ -193,6 +193,10 @@ dialog::backdrop{background:rgba(14,16,15,.5)}
 .tile.lift{position:relative;z-index:7;box-shadow:0 12px 24px rgba(0,0,0,.25);cursor:grabbing}
 .tile.drop{outline:2px dashed var(--ink);outline-offset:2px}
 
+/* Bring back the last game */
+.prevb{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg);border-radius:10px;padding:8px 10px;margin:-2px 0 12px;font-size:14px}
+.prevb .btn{flex:none}
+
 /* Setup */
 body.setup .stand,body.setup #rounds,body.setup .actions{display:none}
 .setup-panel .lab{margin-top:16px}
@@ -605,6 +609,10 @@ function renderFlow(){
  else h=pickPanel();
  $('flow').innerHTML=h;
 }
+function prevBanner(){
+ const p=load(PKEY);if(!p||!p.game||doneOrder().length||S.live>=0)return '';
+ return '<div class="prevb"><span>'+(p.saved?'Your last game was saved to Past games.':'Your last game was cleared.')+'</span><button class="btn sm" id="prevback">Bring it back</button></div>';
+}
 // Before the first round: players, seating, who picks first, rules.
 function pastPlayers(){
  const have=S.names.map(x=>x.trim().toLowerCase()),out=[];
@@ -615,7 +623,7 @@ function dealLine(){const np=S.nextPick,d=dealerOf(np);return np>=0?esc(S.names[
 function setupPanel(){
  const n=S.names.length,past=pastPlayers();
  const sc=(label,val)=>'<tr><td>'+label+'</td><td>'+val+'</td></tr>';
- return '<section class="flow setup-panel"><div class="ohead"><h2>New game</h2><span>'+n+' players</span></div>'
+ return '<section class="flow setup-panel">'+prevBanner()+'<div class="ohead"><h2>New game</h2><span>'+n+' players</span></div>'
  +'<span class="lab">Who\u2019s playing</span><p class="hint">In seating order. Drag \u2261 to move someone.</p>'
  +'<ol class="seats" id="seats">'+S.names.map((x,p)=>'<li class="seat" data-seat="'+p+'" style="'+pc(p)+'"><i></i>'
   +'<input data-sn="'+p+'" value="'+esc(x)+'" placeholder="Player '+(p+1)+'" autocomplete="off" autocapitalize="words" enterkeyhint="next" aria-label="Seat '+(p+1)+' name">'
@@ -683,7 +691,7 @@ document.addEventListener('pointercancel',e=>vEnd(e,false));
 function pickPanel(){
  const np=S.nextPick,rem=[];for(let i=0;i<N;i++)if(!isDone(i))rem.push(i);
  const lockFinal=R.finalLast&&rem.length>1;
- return '<section class="flow"><div class="ohead"><h2>Pick the next rule</h2>'+roundNo()+'</div>'
+ return '<section class="flow">'+prevBanner()+'<div class="ohead"><h2>Pick the next rule</h2>'+roundNo()+'</div>'
  +'<div class="turn"><label>Turn to pick '+who('np',np)+'</label><p>'+(np>=0?nm(dealerOf(np))+' shuffles and deals.':'Choose who picks first.')+'</p></div>'
  +'<div class="rchips">'+rem.map(i=>'<button class="rchip" data-pick="'+i+'"'+(i===FINAL&&lockFinal?' disabled':'')+'>'+ROUNDS[i][0]+'</button>').join('')+'</div>'
  +'<p class="hint">'+(lockFinal&&rem.includes(FINAL)?'Final is played last. ':'')+'<button class="linkbtn" id="rhelp">What do these rules mean?</button></p></section>';
@@ -972,7 +980,10 @@ function renderHistory(){
 }
 function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',2000);}
 function summary(){const {t,played}=totals();return 'Amerikano, '+new Date().toLocaleDateString('en-GB')+' ('+played+'/'+N+' rounds)\n'+S.names.map((x,p)=>[x,t[p]]).sort((a,b)=>a[1]-b[1]).map((x,k)=>(k+1)+'. '+x[0]+': '+x[1]).join('\n');}
-function newGame(){
+const PKEY='amerikano-prev';
+// Keep the game being replaced, so it can be brought back.
+function newGame(savedDate){
+ if(doneOrder().length>0||S.live>=0){try{localStorage.setItem(PKEY,JSON.stringify({game:S,saved:savedDate||null}))}catch(e){}}
  const o=S,n=o.names.length,np=o.live>=0&&o.picked[o.live]>=0?(o.picked[o.live]+1)%n:suggestPick();
  S=blank(o.names);S.col=o.col.slice();S.nextPick=np;S.setup=true;
  undoStack=[];render();window.scrollTo(0,0);
@@ -1064,6 +1075,13 @@ document.addEventListener('click',e=>{
    CL.fb.sendPasswordResetEmail(CL.auth,em).catch(()=>{}).then(()=>{$('serr').textContent='If that email has an account, a reset link is on its way.';});break;}
   case 'cout':if(confirm('Sign out? Scores stay on this phone but stop saving to the cloud.')){syLoad();delete SY.hash;delete SY.rev;sySave();CL.fb.signOut(CL.auth);}break;
   case 'cretry':CL.status='saving';syLoad();delete SY.hash;sySave();cloudPush();break;
+  case 'prevback':{
+   const p=load(PKEY),g=p&&fixState(p.game);if(!g){toast('Couldn\u2019t bring the last game back');break;}
+   if(!confirm('Bring back your last game?'+(p.saved?' It will be taken out of Past games so it isn\u2019t counted twice.':'')))break;
+   if(p.saved){H=H.filter(x=>x.date!==p.saved);store(HKEY,H);}
+   S=g;migrate();S.setup=false;undoStack=[];try{localStorage.removeItem(PKEY)}catch(e){}
+   render();window.scrollTo(0,0);toast('Last game brought back');break;
+  }
   case 'rhelp':rulesEdit=false;renderRules();$('rd').showModal();$('rs-rules').scrollIntoView({block:'start'});break;
   case 'redit':rulesEdit=true;renderRules();$('rd').scrollTop=0;break;
   case 'rcancel':rulesEdit=false;renderRules();$('rd').scrollTop=0;break;
@@ -1072,7 +1090,7 @@ document.addEventListener('click',e=>{
   case 'addp':if(S.names.length>=6){toast('Six players is the maximum');break;}snap();S.col.push([0,1,2,3,4,5].find(c=>!S.col.includes(c)));S.names.push('Player '+(S.names.length+1));S.base.forEach(r=>r.push(''));S.jk.forEach(r=>r.push(0));S.mp.forEach(r=>r.push(0));render();renderSettings();break;
   case 'undo':{const s=undoStack.pop();if(!s){toast('Nothing to undo');break;}S=JSON.parse(s);render();toast('Undone');break;}
   case 'share':(async()=>{const txt=summary();try{if(navigator.share){await navigator.share({text:txt});return;}}catch(e){if(e.name==='AbortError')return;}copyText(txt,'Copied');})();break;
-  case 'finish':{const {t,played}=totals();if(!played){toast('No scores yet');break;}if(!confirm((S.live>=0?ROUNDS[S.live][0]+' is still in progress; anything entered for it so far will count. ':'')+'Save this game to history and start a new one?'))break;const min=Math.min(...t);H.unshift({date:new Date().toISOString(),names:S.names.slice(),totals:t,winners:S.names.filter((x,p)=>t[p]===min),played,outs:outCounts()});store(HKEY,H);newGame();toast('Game saved');break;}
+  case 'finish':{const {t,played}=totals();if(!played){toast('No scores yet');break;}if(!confirm((S.live>=0?ROUNDS[S.live][0]+' is still in progress; anything entered for it so far will count. ':'')+'Save this game to history and start a new one?'))break;const min=Math.min(...t);H.unshift({date:new Date().toISOString(),names:S.names.slice(),totals:t,winners:S.names.filter((x,p)=>t[p]===min),played,outs:outCounts()});store(HKEY,H);newGame(H[0].date);toast('Game saved');break;}
   case 'newg':if(confirm('Start a new game without saving? This clears all scores.'))newGame();break;
   case 'clearh':if(confirm('Delete all past games?')){H=[];store(HKEY,H);renderHistory();}break;
   case 'bcopy':copyText(JSON.stringify({app:'amerikano',v:2,game:S,history:H,rules:R}),'Backup copied. Paste it somewhere safe.');break;
