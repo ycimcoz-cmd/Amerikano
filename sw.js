@@ -3,7 +3,7 @@
 // when offline it falls back to the last copy saved on this phone.
 // Only the app's own files, its fonts and the Firebase code are cached.
 // Sign-in and cloud-save traffic is never touched.
-const CACHE = 'amerikano-v7';
+const CACHE = 'amerikano-v8';
 const CDN = ['www.gstatic.com', 'fonts.googleapis.com', 'fonts.gstatic.com'];
 
 self.addEventListener('install', e => {

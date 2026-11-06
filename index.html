@@ -581,6 +581,28 @@ body.setup .ptabs,body:not(.setup) .top h1{display:none}
 .seats:has(li:nth-child(5)) .seat input{height:38px}
 .seats:has(li:nth-child(5)) :is(.grip,.xbtn){height:38px}
 
+/* Stats */
+.stabs{grid-template-columns:repeat(3,1fr)}
+.snote{font-size:13px;color:var(--muted);margin:10px 0 6px}
+.shi{display:grid;gap:6px;margin:12px 0 4px}
+.shi>div{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:9px 12px;border-radius:10px;background:var(--paper-2);font-size:14px}
+.shi span{color:var(--kohl-2);font-weight:650;white-space:nowrap}
+.shi b{text-align:right;font-weight:650}
+.pstat{padding:12px 0;border-bottom:1px solid var(--line);font-size:15px}
+.pstat .lhead b{font-family:"Fraunces",Georgia,serif;font-size:20px;font-weight:800;font-variation-settings:"SOFT" 100,"WONK" 1}
+.pstat .lhead span{color:var(--muted);font-size:14px}
+.pstat>small{display:block;color:var(--muted);font-size:13px;margin-top:6px}
+.sgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 12px;margin:8px 0 0}
+.sgrid div{min-width:0}
+.sgrid dt{font-size:12px;color:var(--muted)}
+.sgrid dd{margin:0;font-weight:700;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stbl{font-size:14px}
+.srh,.srr{display:grid;grid-template-columns:minmax(0,1.4fr) 4.5rem minmax(0,1fr);gap:8px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line)}
+.srh{font-size:12px;color:var(--muted);padding-top:4px}
+.srr b{text-align:right;font-variant-numeric:tabular-nums}
+.srh span:nth-child(2){text-align:right}
+.srr small{color:var(--muted)}
+
 @media (prefers-reduced-motion: reduce){*,*::before,*::after,::backdrop{animation:none!important;transition:none!important}}
 </style></head><body>
 <div id="title" class="title" role="dialog" aria-modal="true" aria-labelledby="ttl">
@@ -589,7 +611,7 @@ body.setup .ptabs,body:not(.setup) .top h1{display:none}
   <h1 id="ttl" class="tword">Amerikano</h1>
   <p class="tsub">Scores, turns and rules for your card nights</p>
   <div class="tact" id="tact"></div>
-  <div class="tlinks"><button class="linkbtn" id="tHow">How to play</button><button class="linkbtn" id="tHist">History</button></div>
+  <div class="tlinks"><button class="linkbtn" id="tHow">How to play</button><button class="linkbtn" id="tHist">Stats</button></div>
   <div class="tinstall" id="tinstall" hidden></div>
  </div>
 </div>
@@ -604,9 +626,9 @@ body.setup .ptabs,body:not(.setup) .top h1{display:none}
 </div>
 </div>
 <dialog id="hd" aria-labelledby="hdt">
- <div class="dhead"><h2 id="hdt">History</h2><div class="hb"><button class="btn" id="hdone">Done</button></div></div>
- <h3 class="dsub">All-time leaderboard</h3><div id="lb"></div>
- <h3 class="dsub">Past games</h3><div id="hist"></div>
+ <div class="dhead"><h2 id="hdt">Stats</h2><div class="hb"><button class="btn" id="hdone">Done</button></div>
+  <div class="rtabs stabs" role="tablist" aria-label="Stats"><button role="tab" data-stab="players" aria-selected="true">Players</button><button role="tab" data-stab="rules" aria-selected="false">Rules</button><button role="tab" data-stab="games" aria-selected="false">Games</button></div></div>
+ <div id="stv"></div>
 </dialog>
 <dialog id="svd" aria-labelledby="svdt">
  <div class="dhead"><h2 id="svdt">Saving</h2><div class="hb"><button class="btn" id="svdone">Done</button></div></div>
@@ -648,7 +670,7 @@ body.setup .ptabs,body:not(.setup) .top h1{display:none}
    <button id="rulesBtn">Rules</button>
    <button id="mAwake" role="switch" aria-checked="true" aria-label="Keep the screen on during games">Keep screen on</button></div>
   <div class="mgroup"><span class="mlab">Your data</span>
-   <button id="mHistory">Leaderboard and past games</button>
+   <button id="mHistory">Stats and past games</button>
    <button id="mSaving">Cloud saving and backup</button></div>
  </nav>
 </dialog>
@@ -1528,20 +1550,80 @@ function saveRules(){
  R.finalLast=$('r-fl').checked;R.every=v('r-ev').trim();R.notes=v('r-notes').trim();
  store(RKEY,R);rulesEdit=false;render();renderRules();$('rd').scrollTop=0;toast('Rules saved');
 }
-function renderHistory(){
- if(!H.length){$('lb').innerHTML='<p class="empty">Finish a game to start the leaderboard.</p>';$('hist').innerHTML='<p class="empty">Saved games will appear here.</p>';return;}
- const lb={};
- H.forEach(g=>{
+// Each finished game keeps its rounds: [rule, picked, went out, scores, misplays, jokers].
+function roundDetail(){
+ const n=S.names.length,o=doneOrder();
+ if(S.live>=0&&!o.includes(S.live)&&S.names.some((x,p)=>score(S.live,p)!==null))o.push(S.live);
+ return o.map(i=>[i,S.picked[i],S.out[i],S.names.map((x,p)=>score(i,p)||0),S.mp[i].slice(),S.jk[i].slice()]);
+}
+let statTab='players';
+// Everything the stats need, worked out from saved games. Players are matched by name.
+function statsModel(){
+ const P={},rules=ROUNDS.map(()=>({sum:0,n:0,outs:{}}));let detailGames=0;
+ const pl=x=>P[x]=P[x]||{name:x,g:0,w:0,sum:0,rounds:0,best:Infinity,worst:-Infinity,outs:0,outsKnown:false,mp:0,jk:0,dg:0,rule:ROUNDS.map(()=>({s:0,n:0})),big:null,streak:0,streakDone:false};
+ H.forEach(g=>{ // newest first, so the first games seen make up the current streak
   g.names.forEach((x,p)=>{
-   const s=lb[x]=lb[x]||{w:0,g:0,sum:0,rounds:0,best:Infinity,worst:-Infinity,outs:0,known:false};
-   const v=g.totals[p];s.g++;s.sum+=v;s.rounds+=g.played||N;s.best=Math.min(s.best,v);s.worst=Math.max(s.worst,v);
-   if(g.outs){s.outs+=g.outs[p]||0;s.known=true;}
+   const s=pl(x),v=g.totals[p],won=g.winners.includes(x);
+   s.g++;s.sum+=v;s.rounds+=g.played||N;s.best=Math.min(s.best,v);s.worst=Math.max(s.worst,v);if(won)s.w++;
+   if(!s.streakDone){if(won)s.streak++;else s.streakDone=true;}
+   if(g.outs){s.outs+=g.outs[p]||0;s.outsKnown=true;}
   });
-  g.winners.forEach(x=>lb[x].w++);
+  if(!Array.isArray(g.rd))return;
+  detailGames++;
+  g.names.forEach(x=>pl(x).dg++);
+  g.rd.forEach(r=>{
+   const [i,,out,sc,mp,jk]=r;if(!(i>=0&&i<N)||!Array.isArray(sc))return;
+   if(out>=0&&g.names[out]!=null){const o=rules[i].outs;o[g.names[out]]=(o[g.names[out]]||0)+1;}
+   g.names.forEach((x,p)=>{
+    const s=P[x],v=+sc[p]||0;
+    s.mp+=(mp&&+mp[p])||0;s.jk+=(jk&&jk[p])?1:0;
+    s.rule[i].s+=v;s.rule[i].n++;rules[i].sum+=v;rules[i].n++;
+    if(!s.big||v>s.big.v)s.big={v,i};
+   });
+  });
  });
- $('lb').innerHTML=Object.entries(lb).sort((a,b)=>b[1].w-a[1].w||a[1].g-b[1].g).map(([x,v])=>'<div class="lrow"><div class="lhead"><b>'+esc(x)+'</b><span>'+v.w+' win'+(v.w===1?'':'s')+' from '+v.g+' game'+(v.g===1?'':'s')+'</span></div>'
-  +'<small>Average '+fmt(Math.round(v.sum/v.rounds))+' a round. Best game '+fmt(v.best)+', worst '+fmt(v.worst)+'.'+(v.known?' Went out '+v.outs+' time'+(v.outs===1?'':'s')+'.':'')+'</small></div>').join('');
- $('hist').innerHTML=H.map((g,k)=>'<div class="hrow"><div>'+new Date(g.date).toLocaleDateString('en-GB')+', won by <b>'+g.winners.map(esc).join(' and ')+'</b><small>'+g.names.map((x,p)=>esc(x)+' '+fmt(g.totals[p])).join(', ')+'</small></div><button class="btn sm" data-delg="'+k+'">Delete</button></div>').join('')+'<button class="btn sm clear" id="clearh">Clear history</button>';
+ return {P:Object.values(P),rules,detailGames};
+}
+const rn=i=>ROUNDS[i][0].replace(/\s+/g,' ');
+function ruleExtremes(s){
+ const r=s.rule.map((x,i)=>({i,a:x.n?x.s/x.n:null,n:x.n})).filter(x=>x.n>0);
+ if(r.length<2)return null;
+ r.sort((a,b)=>a.a-b.a);return {best:r[0],worst:r[r.length-1]};
+}
+function renderHistory(){
+ document.querySelectorAll('[data-stab]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.stab===statTab)));
+ const v=$('stv');
+ if(!H.length){v.innerHTML='<p class="empty">Finish and save a game to start your stats.</p>';return;}
+ const M=statsModel(),later='<p class="snote">Rule, misplay and joker stats count games saved from this update on.</p>';
+ if(statTab==='games'){
+  v.innerHTML=H.map((g,k)=>'<div class="hrow"><div>'+new Date(g.date).toLocaleDateString('en-GB')+', won by <b>'+g.winners.map(esc).join(' and ')+'</b><small>'+g.names.map((x,p)=>esc(x)+' '+fmt(g.totals[p])).join(', ')+'</small></div><button class="btn sm" data-delg="'+k+'">Delete</button></div>').join('')+'<button class="btn sm clear" id="clearh">Clear history</button>';
+  return;
+ }
+ if(statTab==='rules'){
+  if(!M.detailGames){v.innerHTML='<p class="empty">Rule stats start with the next game you save.</p>';return;}
+  const rows=M.rules.map((r,i)=>({i,a:r.n?r.sum/r.n:null,top:Object.entries(r.outs).sort((a,b)=>b[1]-a[1])[0]})).filter(r=>r.a!==null);
+  const hard=rows.slice().sort((a,b)=>b.a-a.a)[0];
+  v.innerHTML='<p class="snote">Average score per player, going out included, and who goes out most.'+(hard?' Toughest so far: <b>'+rn(hard.i)+'</b>.':'')+'</p>'
+   +'<div class="stbl"><div class="srh"><span>Rule</span><span>Average</span><span>Out most</span></div>'
+   +rows.map(r=>'<div class="srr"><span>'+rn(r.i)+'</span><b>'+fmt(Math.round(r.a))+'</b><span>'+(r.top?esc(r.top[0])+' <small>×'+r.top[1]+'</small>':'–')+'</span></div>').join('')+'</div>'
+   +(M.detailGames<H.length?later:'');
+  return;
+ }
+ // Players
+ const P=M.P.sort((a,b)=>b.w-a.w||b.w/b.g-a.w/a.g||a.sum/a.rounds-b.sum/b.rounds);
+ const hi=[];
+ const mpTop=P.filter(s=>s.dg).sort((a,b)=>b.mp-a.mp)[0];if(mpTop&&mpTop.mp)hi.push(['Butterfingers',esc(mpTop.name)+', '+mpTop.mp+' misplay'+(mpTop.mp===1?'':'s')]);
+ const big=P.filter(s=>s.big).sort((a,b)=>b.big.v-a.big.v)[0];if(big&&big.big.v>0)hi.push(['Biggest hand',esc(big.name)+', '+fmt(big.big.v)+' on '+rn(big.big.i)]);
+ const hot=P.slice().sort((a,b)=>b.streak-a.streak)[0];if(hot&&hot.streak>=2)hi.push(['On a roll',esc(hot.name)+', '+hot.streak+' wins in a row']);
+ v.innerHTML=(hi.length?'<div class="shi">'+hi.map(([k,x])=>'<div><span>'+k+'</span><b>'+x+'</b></div>').join('')+'</div>':'')
+  +P.map(s=>{
+   const ex=ruleExtremes(s),cell=(k,x)=>'<div><dt>'+k+'</dt><dd>'+x+'</dd></div>';
+   return '<div class="pstat"><div class="lhead"><b>'+esc(s.name)+'</b><span>'+s.w+' win'+(s.w===1?'':'s')+' from '+s.g+' game'+(s.g===1?'':'s')+'</span></div><dl class="sgrid">'
+    +cell('Win rate',Math.round(100*s.w/s.g)+'%')+cell('Average a round',fmt(Math.round(s.sum/s.rounds)))
+    +cell('Went out',s.outsKnown?s.outs:'–')+cell('Misplays',s.dg?s.mp:'–')
+    +cell('Best rule',ex?rn(ex.best.i):'–')+cell('Toughest rule',ex?rn(ex.worst.i):'–')
+    +'</dl><small>Best game '+fmt(s.best)+', worst '+fmt(s.worst)+'.'+(s.dg&&s.jk?' Caught with a joker '+s.jk+' time'+(s.jk===1?'':'s')+'.':'')+'</small></div>';
+  }).join('')+(M.detailGames<H.length?later:'');
 }
 // Asks before something can't easily be undone. Uses the app's own sheet, not the phone's pop-up,
 // which iPhones don't always show. yes/no are run when a button is tapped.
@@ -1616,6 +1698,7 @@ document.addEventListener('click',e=>{
  if(d.elvl!==undefined){const L=LEVELS[d.elvl];$('r-op').value=L.outPick;$('r-oo').value=L.outOther;$('r-mp').value=L.misplay;$('r-jk').value=L.joker;$('r-fl').checked=L.finalLast;$('elvl').innerHTML=levelPicker('elvl',d.elvl);return;}
  if(d.sname!==undefined){setupAdd(d.sname);return;}
  if(d.rtab!==undefined){ruleTab=d.rtab;renderRules();$('rd').scrollTop=0;return;}
+ if(d.stab!==undefined){statTab=d.stab;renderHistory();$('hd').scrollTop=0;return;}
  if(d.page!==undefined){setPage(+d.page,true);return;}
  if(d.open!==undefined){S.open=+d.open;render();scrollToRow(S.open);return;}
  if(d.out!==undefined){snap();setOut(+d.r,+d.out);render();return;}
@@ -1703,7 +1786,7 @@ document.addEventListener('click',e=>{
   case 'addp':if(S.names.length>=6){toast('Six players is the maximum');break;}snap();S.col.push([0,1,2,3,4,5].find(c=>!S.col.includes(c)));S.names.push('Player '+(S.names.length+1));S.base.forEach(r=>r.push(''));S.jk.forEach(r=>r.push(0));S.mp.forEach(r=>r.push(0));render();renderSettings();break;
   case 'undo':{const s=undoStack.pop();if(!s){toast('Nothing to undo');break;}S=JSON.parse(s);render();toast('Undone');break;}
   case 'share':(async()=>{const txt=summary();try{if(navigator.share){await navigator.share({text:txt});return;}}catch(e){if(e.name==='AbortError')return;}copyText(txt,'Copied');})();break;
-  case 'finish':{const {t,played}=totals();if(!played){toast('No scores yet');break;}ask((S.live>=0?ROUNDS[S.live][0]+' is still in progress; anything entered for it so far will count. ':'')+'Save this game to history and start a new one?',()=>{const min=Math.min(...t);H.unshift({date:new Date().toISOString(),names:S.names.slice(),totals:t,winners:S.names.filter((x,p)=>t[p]===min),played,outs:outCounts()});store(HKEY,H);newGame(H[0].date);toast('Game saved');},null,'Save game');break;}
+  case 'finish':{const {t,played}=totals();if(!played){toast('No scores yet');break;}ask((S.live>=0?ROUNDS[S.live][0]+' is still in progress; anything entered for it so far will count. ':'')+'Save this game to history and start a new one?',()=>{const min=Math.min(...t);H.unshift({date:new Date().toISOString(),names:S.names.slice(),totals:t,winners:S.names.filter((x,p)=>t[p]===min),played,outs:outCounts(),rd:roundDetail()});store(HKEY,H);newGame(H[0].date);toast('Game saved');},null,'Save game');break;}
   case 'newg':ask('Start a new game without saving this one? You can bring it back from the setup screen.',()=>newGame(),null,'New game');break;
   case 'clearh':ask('Delete all past games? This can\u2019t be undone.',()=>{H=[];store(HKEY,H);renderHistory();},null,'Delete all',null,true);break;
   case 'bcopy':copyText(JSON.stringify({app:'amerikano',v:2,game:S,history:H,rules:R}),'Backup copied. Paste it somewhere safe.');break;
