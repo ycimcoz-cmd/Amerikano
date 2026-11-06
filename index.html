@@ -1,7 +1,16 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Amerikano</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Amerikano">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#ECEFEA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141715" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
@@ -25,8 +34,10 @@ html{-webkit-text-size-adjust:100%}
 body{margin:0;font-family:"Barlow Semi Condensed",system-ui,sans-serif;font-size:16px;line-height:1.35;color:var(--ink);background:var(--bg);font-variant-numeric:tabular-nums}
 button,input,select{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--focus);outline-offset:2px}
-.wrap{max-width:560px;margin:0 auto;padding:0 12px 48px}
-.top{display:flex;align-items:center;justify-content:space-between;padding:14px 0 4px}
+.wrap{max-width:560px;margin:0 auto;padding:0 max(12px,env(safe-area-inset-right)) calc(48px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+.top{display:flex;align-items:center;justify-content:space-between;padding:calc(14px + env(safe-area-inset-top)) 0 4px}
+.hr{display:flex;align-items:center;gap:8px}
+.hr .btn[hidden]{display:none}
 .tl{display:flex;flex-direction:column}
 .cstat{font-size:12px;color:var(--muted);min-height:15px;line-height:15px}
 .cstat.ok::before{content:"\2713  "}
@@ -47,7 +58,7 @@ h1{font-size:28px;font-weight:700;margin:0;letter-spacing:-.01em}
 .grid{display:grid;grid-template-columns:4.75rem repeat(var(--n),minmax(0,1fr));gap:6px;align-items:center}
 
 /* Standings: okey tiles */
-.stand{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0 12px;border-bottom:1px solid var(--line)}
+.stand{position:sticky;top:env(safe-area-inset-top);z-index:5;background:var(--bg);padding:8px 0 12px;border-bottom:1px solid var(--line)}
 .slead{font-size:13px;color:var(--muted);line-height:1.25}
 .slead b{display:block;color:var(--ink);font-size:15px;font-weight:600}
 .tile{min-width:0;display:flex;flex-direction:column;align-items:center;padding:6px 3px 7px;background:var(--tile);border:1px solid var(--tile-edge);border-radius:9px;box-shadow:0 3px 0 var(--tile-depth)}
@@ -111,10 +122,20 @@ dialog{border:0;border-radius:16px;padding:18px;width:min(92vw,420px);max-height
 .step b{min-width:14px;text-align:center;font-size:16px}
 .rules{font-size:15px}
 .dhead{flex-wrap:wrap}
-.jump{display:flex;flex-basis:100%;gap:6px;margin-top:10px;overflow-x:auto}
-.jump:empty{display:none}
-.jump button{flex:1 0 auto;height:32px;padding:0 9px;border-radius:16px;font-size:13px!important;border:1px solid var(--line);background:var(--bg);font-size:14px;font-weight:600;cursor:pointer}
-.rules h3{scroll-margin-top:120px}
+.rtabs{display:grid;grid-template-columns:repeat(4,auto);flex-basis:100%;margin-top:10px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.rtabs:empty{display:none}
+#rd{height:min(86vh,760px)}
+.rtabs button{height:36px;padding:0 4px;border:0;border-left:1px solid var(--line);background:var(--bg);font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
+.rtabs button:first-child{border-left:0}
+.rtabs button[aria-selected=true]{background:var(--ink);color:var(--bg)}
+.nowcard{background:var(--bg);border-radius:12px;padding:10px 12px;margin:8px 0 4px}
+.nowcard .lab{margin:0 0 2px;font-size:12px;color:var(--muted)}
+.nowcard>b{font-size:19px}
+.nowcard p{margin:4px 0 0;font-size:14px}
+.tworow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:6px 0}
+.tworow .meld{display:flex;margin:6px 0 4px}
+.tworow small{display:block;color:var(--muted);font-size:13px}
+.morebtns{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
 .rules .lead{font-size:17px;margin-top:4px}
 .steps{padding-left:22px;margin:6px 0}
 .steps li{margin:8px 0}
@@ -197,8 +218,62 @@ dialog::backdrop{background:rgba(14,16,15,.5)}
 .prevb{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg);border-radius:10px;padding:8px 10px;margin:-2px 0 12px;font-size:14px}
 .prevb .btn{flex:none}
 
+/* Menu */
+.burger{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+#menu{margin:58px max(12px,calc((100vw - 560px)/2 + 12px)) auto auto;width:min(280px,calc(100vw - 24px));padding:6px 0;border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.25)}
+#menu::backdrop{background:rgba(14,16,15,.25)}
+.mgroup{padding:6px 0;border-top:1px solid var(--line)}
+.mgroup:first-child{border-top:0}
+.mlab{display:block;font-size:12px;color:var(--muted);padding:4px 16px}
+.mlist button{display:block;width:100%;text-align:left;background:none;border:0;padding:0 16px;height:46px;font-size:17px;font-weight:600;color:var(--ink);cursor:pointer}
+.mlist button:hover,.mlist button:focus-visible{background:var(--bg)}
+body.setup #menu .ingame{display:none}
+
+/* Pick: whose turn */
+.turn .turnline{margin:0;font-size:16px;color:var(--ink)}
+.tg{justify-content:flex-end}
+.hasmp .prow .tg{width:136px}
+.hasmp.nojk .prow .tg{width:76px}
+.turn .tsel{display:none}
+.turn.editing .tsel{display:inline}
+.rchip small{display:block;font-size:11px;font-weight:600;color:var(--muted)}
+.sub.muted{color:var(--muted);font-size:14px}
+.ofoot .linkbtn{font-size:14px;color:var(--muted)}
+/* Chart, folded under the game */
+.chartd{margin-top:18px;border-top:1px solid var(--line)}
+.chartd>summary{padding:12px 0;font-weight:700;font-size:17px;cursor:pointer}
+.chartd[hidden]{display:none}
+/* History and saving screens */
+.dsub{font-size:16px;margin:16px 0 4px}
+#hd,#svd{width:min(92vw,480px)}
+.mlist button[hidden]{display:none}
+
+/* Levels and rounds */
+.lvl{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:4px}
+.lvl button{height:42px;border:0;border-left:1px solid var(--line);background:var(--bg);font-size:16px;font-weight:600;color:var(--muted);cursor:pointer}
+.lvl button:first-child{border-left:0}
+.lvl button[aria-checked=true]{background:var(--ink);color:var(--bg)}
+.lvlhint{margin-top:6px!important}
+.rsel{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 0}
+.rsc{min-height:40px;padding:4px 10px;border-radius:9px;border:1px dashed var(--line);background:transparent;color:var(--muted);font-size:14px;font-weight:600;text-align:left;cursor:pointer;text-decoration:line-through}
+.rsc.on{border:1px solid var(--ink);background:var(--bg);color:var(--ink);text-decoration:none}
+.rsc:disabled{opacity:.55;cursor:default}
+.skiprow{display:flex;gap:8px;margin-top:10px}
+
 /* Setup */
-body.setup .stand,body.setup #rounds,body.setup .actions{display:none}
+body.setup .stand,body.setup #rounds,body.setup .chartd{display:none}
+.setup-panel .ohead{align-items:center}
+.fp{margin-top:2px}
+.fp .pchip[aria-checked=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.fold{border-top:1px solid var(--line);margin-top:12px}
+.fold>summary{display:flex;justify-content:space-between;align-items:center;gap:10px;list-style:none;cursor:pointer;padding:12px 0;font-weight:600;font-size:16px}
+.fold>summary::-webkit-details-marker{display:none}
+.fold>summary .sv{font-weight:400;font-size:14px;color:var(--muted);text-align:right}
+.fold>summary .sv::after{content:" \203A";display:inline-block;margin-left:4px;transition:transform .15s}
+.fold[open]>summary .sv::after{transform:rotate(90deg)}
+.fold>.lab:first-of-type{margin-top:0}
+.fold .linkbtn{font-size:14px;margin:4px 0 2px}
+.setup-panel .sbig{margin-top:16px}
 .setup-panel .lab{margin-top:16px}
 .setup-panel .hint{margin:2px 0 6px}
 .seats{list-style:none;margin:0 0 8px;padding:0}
@@ -248,35 +323,110 @@ body.setup .stand,body.setup #rounds,body.setup .actions{display:none}
 .bnote{font-size:14px;color:var(--muted);margin:0 0 8px}
 .bk{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 
-#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 14px;border-radius:10px;font-size:14px;display:none;z-index:20}
+#toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 14px;border-radius:10px;font-size:14px;display:none;z-index:40}
+
+/* ---------- Motion ---------- */
+:root{--ease:cubic-bezier(.2,.8,.2,1)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}}
+@keyframes fade{from{opacity:0}}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.98)}}
+@keyframes menuin{from{opacity:0;transform:translateY(-6px) scale(.97)}}
+@keyframes bump{40%{transform:scale(1.45)}}
+@keyframes floatup{0%{opacity:0;transform:translate(-50%,6px)}15%{opacity:1;transform:translate(-50%,-4px)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-26px)}}
+@keyframes deal{from{opacity:0;transform:translateY(60px) rotate(0deg)}}
+@keyframes win{0%{transform:scale(.96)}60%{transform:scale(1.03)}}
+@keyframes out{to{opacity:0}}
+.flow.enter,.final.enter{animation:pop .26s var(--ease) both}
+#rounds li.enter{animation:rise .32s var(--ease) both}
+.step b.bump{display:inline-block;animation:bump .28s var(--ease)}
+dialog[open]{animation:pop .22s var(--ease)}
+dialog[open]::backdrop{animation:fade .22s ease-out}
+#menu[open]{animation:menuin .18s var(--ease);transform-origin:top right}
+.final.enter li{animation:rise .42s var(--ease) both;animation-delay:var(--d)}
+.final.enter li.win{animation:rise .42s var(--ease) both,win .5s var(--ease) both;animation-delay:var(--d),calc(var(--d) + .3s)}
+.tile{position:relative}
+.delta{position:absolute;left:50%;top:-4px;font-size:15px;font-weight:700;color:var(--pc);background:var(--surface);border-radius:8px;padding:0 5px;pointer-events:none;white-space:nowrap;animation:floatup 1.3s var(--ease) forwards}
+
+/* ---------- Install tip, screen-on switch ---------- */
+.tinstall{margin-top:22px;padding:12px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line);font-size:14px;color:var(--muted);text-align:center}
+.tinstall p{margin:0 0 6px}
+.tinstall b{color:var(--ink)}
+.tinstall .btn{width:100%;margin-bottom:6px}
+#mAwake{display:flex;align-items:center;justify-content:space-between;gap:12px}
+#mAwake::after{content:"";flex:none;width:40px;height:24px;border-radius:12px;background:radial-gradient(circle at 12px 50%,#fff 8px,transparent 9px),var(--line)}
+#mAwake[aria-checked=true]::after{background:radial-gradient(circle at 28px 50%,#fff 8px,transparent 9px),var(--ink)}
+
+/* ---------- Confirm sheet ---------- */
+#askd{width:min(88vw,380px);padding:20px}
+.askm{margin:0 0 18px;font-size:17px;line-height:1.4;white-space:pre-line}
+.askb{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.askb .btn{height:46px;font-size:16px}
+.btn.danger{background:var(--pen);border-color:var(--pen);color:#fff}
+#askd{z-index:50}
+
+/* ---------- Title screen ---------- */
+.title{position:fixed;inset:0;z-index:30;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:calc(24px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));overflow:auto}
+.title[hidden]{display:none}
+.title.out{animation:out .22s ease-in forwards}
+body.titled{overflow:hidden}
+.tin{width:100%;max-width:360px;text-align:center}
+.fan{position:relative;height:150px;width:260px;margin:0 auto 40px}
+.fan .card{position:absolute;left:50%;bottom:0;width:70px;height:100px;margin-left:-35px;border-radius:10px;font-size:22px;line-height:1;transform-origin:50% 210%;transform:rotate(var(--a));box-shadow:0 4px 0 var(--tile-depth),0 14px 28px rgba(0,0,0,.10);justify-content:flex-start;align-items:flex-start;padding:8px 0 0 9px}
+.fan .card i{font-size:20px;margin-top:2px}
+.fan .card.jk i{font-size:30px;margin:0}
+.title.play .fan .card{animation:deal .7s var(--ease) both;animation-delay:calc(var(--k) * 80ms)}
+.tword{font-size:58px;font-weight:700;letter-spacing:-.02em;line-height:1;margin:0}
+.tsub{color:var(--muted);margin:10px 0 28px;font-size:16px}
+.tact{display:grid;gap:10px}
+.tbig{min-height:60px;height:auto;font-size:20px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 16px}
+.tbig small{font-size:14px;font-weight:400;opacity:.8;margin-top:2px}
+.tbig2{height:52px;font-size:17px;border-radius:14px}
+.tlinks{display:flex;justify-content:center;gap:24px;margin-top:20px}
+.tlinks .linkbtn{font-size:15px}
+.title.play .tword{animation:rise .5s var(--ease) both;animation-delay:.3s}
+.title.play .tsub{animation:rise .5s var(--ease) both;animation-delay:.38s}
+.title.play .tact{animation:rise .5s var(--ease) both;animation-delay:.46s}
+.title.play .tlinks{animation:fade .5s ease-out both;animation-delay:.6s}
+
+@media (prefers-reduced-motion: reduce){*,*::before,*::after,::backdrop{animation:none!important;transition:none!important}}
 </style></head><body>
+<div id="title" class="title" role="dialog" aria-modal="true" aria-labelledby="ttl">
+ <div class="tin">
+  <div class="fan" id="fan" aria-hidden="true"></div>
+  <h1 id="ttl" class="tword">Amerikano</h1>
+  <p class="tsub">Scores, turns and rules for your card nights</p>
+  <div class="tact" id="tact"></div>
+  <div class="tlinks"><button class="linkbtn" id="tHow">How to play</button><button class="linkbtn" id="tHist">History</button></div>
+  <div class="tinstall" id="tinstall" hidden></div>
+ </div>
+</div>
 <div class="wrap">
-<header class="top"><div class="tl"><h1>Amerikano</h1><span class="cstat" id="cstat" role="status"></span></div><div class="hb"><button class="btn" id="rulesBtn">Rules</button><button class="btn" id="playersBtn">Players</button></div></header>
+<header class="top"><div class="tl"><h1>Amerikano</h1><span class="cstat" id="cstat" role="status"></span></div><div class="hr"><button class="btn sm" id="undo" hidden>Undo</button><button class="burger" id="menuBtn" aria-label="Menu" aria-haspopup="dialog"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div></header>
 <div id="board">
  <div class="stand grid" id="stand"></div>
  <div id="flow"></div>
  <ol class="rounds" id="rounds"></ol>
 </div>
-<div class="actions">
- <button class="btn" id="undo">Undo</button>
- <button class="btn" id="share">Share results</button>
- <button class="btn primary" id="finish">Save game</button>
- <button class="btn" id="newg">New game</button>
+<details class="chartd" id="chartd" data-ui="chart" hidden><summary>Running totals</summary><div class="chart" id="chart" tabindex="0" aria-label="Running totals chart. Tap or use arrow keys to read each round."></div></details>
 </div>
-<section class="sec"><h2>Running totals</h2><div class="chart" id="chart" tabindex="0" aria-label="Running totals chart. Tap or use arrow keys to read each round."></div></section>
-<section class="sec"><h2>All-time leaderboard</h2><div id="lb"></div></section>
-<section class="sec"><h2>Past games</h2><div id="hist"></div></section>
-<section class="sec"><h2>Saving</h2><div id="cloud" class="cloud"></div>
+<dialog id="hd" aria-labelledby="hdt">
+ <div class="dhead"><h2 id="hdt">History</h2><div class="hb"><button class="btn" id="hdone">Done</button></div></div>
+ <h3 class="dsub">All-time leaderboard</h3><div id="lb"></div>
+ <h3 class="dsub">Past games</h3><div id="hist"></div>
+</dialog>
+<dialog id="svd" aria-labelledby="svdt">
+ <div class="dhead"><h2 id="svdt">Saving</h2><div class="hb"><button class="btn" id="svdone">Done</button></div></div>
+ <div id="cloud" class="cloud"></div>
  <details class="bkd"><summary>Backup as text</summary><p class="bnote">Copy this game, your history and your rules as text, then paste it into Restore on another phone or browser.</p>
- <div class="bk"><button class="btn" id="bcopy">Copy backup</button><button class="btn" id="brestore">Restore backup</button></div></details></section>
-</div>
+ <div class="bk"><button class="btn" id="bcopy">Copy backup</button><button class="btn" id="brestore">Restore backup</button></div></details>
+</dialog>
 <dialog id="pd" aria-labelledby="pdt">
  <div class="dhead"><h2 id="pdt">Players</h2><button class="btn" id="pdone">Done</button></div>
  <p class="dnote">Keep players in seating order: turns to pick the rule go round in this order, and the player before the picker deals. You can also press and hold a tile on the main screen and drag it.</p>
  <div id="pbody"></div>
 </dialog>
 <dialog id="rd" aria-labelledby="rdt">
- <div class="dhead"><h2 id="rdt">Rules</h2><div class="hb" id="rhead"></div><nav class="jump" id="rjump" aria-label="Rules sections"></nav></div>
+ <div class="dhead"><h2 id="rdt">Rules</h2><div class="hb" id="rhead"></div><nav class="rtabs" id="rjump" role="tablist" aria-label="Rules sections"></nav></div>
  <div class="rules" id="rbody"></div>
 </dialog>
 <dialog id="sd" aria-labelledby="sdt">
@@ -289,6 +439,32 @@ body.setup .stand,body.setup #rounds,body.setup .actions{display:none}
   <button class="btn primary sbig" id="sgo" type="submit">Sign in</button>
   <p class="sfoot"><button type="button" class="linkbtn" id="sforgot">Forgot password?</button></p>
  </form>
+</dialog>
+<dialog id="menu" aria-label="Menu">
+ <nav class="mlist">
+  <div class="mgroup"><button id="mHome">Home screen</button></div>
+  <div class="mgroup ingame"><span class="mlab">This game</span>
+   <button id="share">Share results</button>
+   <button id="mRounds">Change rounds</button>
+   <button id="mSkip">Skip to Final</button>
+   <button id="finish">Save game to history</button>
+   <button id="newg">New game</button></div>
+  <div class="mgroup"><span class="mlab">Edit</span>
+   <button id="playersBtn">Players and seating</button>
+   <button id="rulesBtn">Rules</button>
+   <button id="mAwake" role="switch" aria-checked="true" aria-label="Keep the screen on during games">Keep screen on</button></div>
+  <div class="mgroup"><span class="mlab">Your data</span>
+   <button id="mHistory">Leaderboard and past games</button>
+   <button id="mSaving">Cloud saving and backup</button></div>
+ </nav>
+</dialog>
+<dialog id="rsd" aria-labelledby="rsdt">
+ <div class="dhead"><h2 id="rsdt">Rounds</h2><div class="hb"><button class="btn" id="rsdone">Done</button></div></div>
+ <div id="rsbody"></div>
+</dialog>
+<dialog id="askd" aria-labelledby="askm">
+ <p id="askm" class="askm"></p>
+ <div class="askb"><button class="btn" id="askNo">Cancel</button><button class="btn primary" id="askYes">OK</button></div>
 </dialog>
 <div id="toast" role="status"></div>
 <script>
@@ -329,17 +505,42 @@ const OLD_GENERAL='Before you can lay cards down, you have to open with that rou
 const DEF_EVERY='Nobody can lay down cards on their first turn.';
 // House rules, kept across games. Scoring settings here drive the maths.
 function fixRules(r,g){
- const d={outPick:g&&typeof g.outScore==='number'?g.outScore:-50,outOther:g&&typeof g.outOther==='number'?g.outOther:0,misplay:50,joker:2,finalLast:true,every:DEF_EVERY,desc:Array(N).fill(null),notes:''};
+ const d={outPick:g&&typeof g.outScore==='number'?g.outScore:-50,outOther:g&&typeof g.outOther==='number'?g.outOther:0,misplay:50,joker:2,finalLast:true,every:DEF_EVERY,notes:''};
  if(!r||typeof r!=='object')return d;
  ['outPick','outOther','misplay','joker'].forEach(k=>{if(typeof r[k]==='number')d[k]=r[k];});
  if(typeof r.finalLast==='boolean')d.finalLast=r.finalLast;
  ['every','notes'].forEach(k=>{if(typeof r[k]==='string')d[k]=r[k];});
  // Older versions had an editable "Playing a round" text; if it was changed, keep it in House rules.
  if(typeof r.general==='string'&&r.general.trim()&&r.general!==OLD_GENERAL)d.notes=(d.notes.trim()?d.notes+'\n':'')+r.general.trim();
- if(Array.isArray(r.desc))d.desc=ROUNDS.map((x,i)=>typeof r.desc[i]==='string'&&r.desc[i].trim()?r.desc[i]:null);
+ // Round descriptions are no longer editable; keep any that were changed in House rules.
+ if(Array.isArray(r.desc))r.desc.forEach((t,i)=>{if(typeof t==='string'&&t.trim()&&ROUNDS[i]&&t.trim()!==ROUNDS[i][1])d.notes=(d.notes.trim()?d.notes+'\n':'')+ROUNDS[i][0]+': '+t.trim();});
  return d;
 }
-const desc=i=>R.desc[i]||ROUNDS[i][1];
+const desc=i=>ROUNDS[i][1];
+const LEVELS={
+ easy:{name:'Easy',outPick:-50,outOther:-50,misplay:25,joker:1,finalLast:true,blurb:'Anyone who goes out gets the bonus. Misplays cost 25 and there\u2019s no joker penalty. Good for learning.'},
+ medium:{name:'Medium',outPick:-50,outOther:0,misplay:50,joker:2,finalLast:true,blurb:'Only the player who picked the rule gets the bonus for going out. Misplays cost 50 and a joker left in hand doubles it.'},
+ hard:{name:'Hard',outPick:-50,outOther:0,misplay:100,joker:3,finalLast:true,blurb:'Like Medium, but mistakes hurt: misplays cost 100 and a joker left in hand triples it.'}
+};
+const LEVEL_KEYS=['outPick','outOther','misplay','joker','finalLast'];
+function levelOf(r){r=r||R;for(const k in LEVELS)if(LEVEL_KEYS.every(f=>r[f]===LEVELS[k][f]))return k;return 'custom';}
+function jokerTxt(){return R.joker===1?'No extra penalty':R.joker===2?'Doubles the hand':R.joker===3?'Triples the hand':'Hand \u00d7 '+R.joker;}
+function levelPicker(attr,cur){
+ return '<div class="lvl" role="radiogroup" aria-label="Rules level">'+Object.keys(LEVELS).map(k=>'<button role="radio" aria-checked="'+(cur===k)+'" data-'+attr+'="'+k+'">'+LEVELS[k].name+'</button>').join('')+'</div>'
+  +'<p class="hint lvlhint">'+(cur==='custom'?'Your own custom rules. Pick a level to reset them.':LEVELS[cur].blurb)+'</p>';
+}
+// ---------- Rounds in play ----------
+const inPlay=i=>!S.skip[i];
+function totalRounds(){return S.skip.filter(x=>!x).length;}
+function roundChips(){
+ return '<div class="rsel">'+ROUNDS.map((r,i)=>{
+  const now=i===S.live,played=isDone(i),fin=i===FINAL,on=!S.skip[i];
+  const note=now?' (now)':played?' (played)':'';
+  return '<button class="rsc'+(on?' on':'')+'" data-rsel="'+i+'" aria-pressed="'+on+'"'+(now||played||fin?' disabled':'')+'>'+r[0]+note+'</button>';
+ }).join('')+'</div>';
+}
+function roundsHint(){const t=totalRounds();return t+' of '+N+' rounds. Tap one to leave it out or bring it back. Final is always played.';}
+function remainingBeforeFinal(){const r=[];for(let i=0;i<N;i++)if(i!==FINAL&&inPlay(i)&&!isDone(i)&&i!==S.live)r.push(i);return r;}
 const SUIT={h:['\u2665','hearts',1],d:['\u2666','diamonds',1],s:['\u2660','spades',0],c:['\u2663','clubs',0]};
 const RANKW={A:'ace',K:'king',Q:'queen',J:'jack'};
 function card(c){if(c==='jk')return '<span class="card jk"><i>\u2605</i></span>';const s=SUIT[c[1]];return '<span class="card'+(s[2]?' r':'')+'">'+c[0]+'<i>'+s[0]+'</i></span>';}
@@ -357,7 +558,7 @@ const ORD=['1st','2nd','3rd','4th','5th','6th'];
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function andList(a){return a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a[a.length-1];}
 function grid(n,v){return ROUNDS.map(()=>Array(n).fill(v));}
-function blank(names){const n=names.length;return{names:names.slice(),base:grid(n,""),jk:grid(n,0),mp:grid(n,0),out:Array(N).fill(-1),dealt:Array(N).fill(-1),picked:Array(N).fill(-1),col:names.map((x,p)=>p%6),seq:[],outScore:-50,outOther:0,live:-1,stage:null,nextPick:-1,open:-1};}
+function blank(names){const n=names.length;return{names:names.slice(),base:grid(n,""),jk:grid(n,0),mp:grid(n,0),out:Array(N).fill(-1),dealt:Array(N).fill(-1),picked:Array(N).fill(-1),skip:Array(N).fill(false),col:names.map((x,p)=>p%6),seq:[],outScore:-50,outOther:0,live:-1,stage:null,nextPick:-1,open:-1};}
 function load(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}if(k===KEY||k===HKEY||k===RKEY)cloudTouch();}
 // ---------- Cloud saving (Firebase) ----------
@@ -391,7 +592,7 @@ function cloudTouch(){
 // save on top of the version it last saw; if another phone saved in between, the
 // listener below brings that copy in and asks which to keep. No silent overwrites.
 async function cloudPush(){
- if(!CL.user||!CL.ready||CL.busy)return;
+ if(!CL.user||!CL.ready||CL.busy||CL.asking)return;
  syLoad();const d=cloudPayload(),hh=payHash(d);
  if(hh===SY.hash&&CL.status!=='error'){if(CL.status==='saving'||CL.status==='offline')setCloud('saved');return;}
  if(navigator.onLine===false){setCloud('offline');return;}
@@ -423,6 +624,7 @@ function cloudApply(d){
 }
 function cloudSnap(snap){
  if(snap.metadata&&snap.metadata.hasPendingWrites)return;
+ if(CL.asking){CL.queued=snap;return;}
  syLoad();const first=!CL.ready;CL.ready=true;
  const settle=()=>{sySave();if(localHash()!==SY.hash)cloudTouch();else setCloud('saved');};
  if(!snap.exists()){SY.rev=0;delete SY.hash;sySave();cloudPush();return;}
@@ -431,15 +633,17 @@ function cloudSnap(snap){
  if(d.by===SY.device){SY.rev=rev;SY.hash=payHash(d);settle();return;} // this phone's own save coming back
  const lh=localHash();
  if(payHash(d)===lh){SY.rev=rev;SY.hash=lh;settle();return;}       // already identical
- let useCloud=true;
- if(SY.rev===undefined){
-  if(hasLocalGames())useCloud=confirm('Your cloud save already has scores. Use the cloud copy on this phone?\n\nOK: use the cloud copy.\nCancel: keep this phone’s copy and replace the cloud copy.');
- }else if(lh!==SY.hash){
-  useCloud=confirm('Scores were changed on another phone while this one had unsaved changes. Use the other phone’s version?\n\nOK: use the other phone’s version.\nCancel: keep this phone’s version.');
- }
- SY.rev=rev;
- if(useCloud){if(cloudApply(d)){SY.hash=localHash();sySave();CL.savedAt=new Date();setCloud('saved');if(!first)toast('Updated from another phone');}}
- else{sySave();cloudPush();}
+ const decide=useCloud=>{
+  CL.asking=false;SY.rev=rev;
+  if(useCloud){if(cloudApply(d)){SY.hash=localHash();sySave();CL.savedAt=new Date();setCloud('saved');if(!first)toast('Updated from another phone');}}
+  else{sySave();cloudPush();}
+  if(CL.queued){const q=CL.queued;CL.queued=null;cloudSnap(q);}
+ };
+ let q=null;
+ if(SY.rev===undefined){if(hasLocalGames())q=['Your cloud save already has scores. Use the cloud copy on this phone, or keep this phone\u2019s copy and replace the cloud copy?','Use cloud copy','Keep this phone\u2019s'];}
+ else if(lh!==SY.hash)q=['Scores were changed on another phone while this one had unsaved changes. Which version do you want to keep?','Other phone\u2019s','This phone\u2019s'];
+ if(!q){decide(true);return;}
+ CL.asking=true;ask(q[0],()=>decide(true),()=>decide(false),q[1],q[2]);
 }
 function cloudErr(e){
  const c=(e&&e.code)||'';
@@ -532,7 +736,11 @@ function fixState(s){
  if(typeof s.outScore!=='number')s.outScore=-50;
  if(typeof s.outOther!=='number')s.outOther=0;
  if(!Array.isArray(s.picked))s.picked=Array(N).fill(-1);
+ if(!Array.isArray(s.skip)||s.skip.length!==N)s.skip=Array(N).fill(false);
+ s.skip[N-1]=false;
  if(!Array.isArray(s.col)||s.col.length!==n)s.col=s.names.map((x,p)=>p%6);
+ const hd={};if(s.hold&&typeof s.hold==='object')for(const k in s.hold){const x=s.hold[k];if(+k>=0&&+k<N&&x&&typeof x.p==='number'&&x.p>=0&&x.p<n&&typeof x.base==='string')hd[+k]={p:x.p,base:x.base,jk:typeof x.jk==='number'?x.jk:0};}
+ s.hold=hd;
  if(!Array.isArray(s.seq)){s.seq=[];for(let i=0;i<N;i++)if(s.base[i].some(v=>num(v)!==null)||s.jk[i].some(Boolean)||s.mp[i].some(Boolean))s.seq.push(i);}
  return s;
 }
@@ -559,11 +767,83 @@ if(!S){S=blank(["Hebe","Clara","Sam","Yusuf"]);S.setup=true;}
 migrate();
 let H=load(HKEY)||[],undoStack=[],pending=null,chartModel=null;
 function snap(){undoStack.push(JSON.stringify(S));if(undoStack.length>50)undoStack.shift();}
+// ---------- Motion ----------
+const RM=()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return true}};
+let flowKey=null,doneCount=null;
+function flowKeyNow(){const d=doneOrder().length;return S.setup?'setup':S.live>=0?S.stage+':'+S.live:d>=totalRounds()?'final':'pick'+(S.carry?':c':'');}
+// Each player's points for the round float up from their tile.
+function floatDeltas(i){
+ if(RM())return;
+ S.names.forEach((x,p)=>{const s=score(i,p),t=$('tile'+p);if(s===null||!t)return;
+  const el=document.createElement('span');el.className='delta';el.textContent=(s>0?'+':'')+fmt(s);el.setAttribute('aria-hidden','true');
+  t.appendChild(el);setTimeout(()=>el.remove(),1400);});
+}
+// ---------- Title screen ----------
+const FAN=[['7','h'],['7','s'],'jk',['4','d'],['5','d']];
+function gameInProgress(){return !S.setup&&(doneOrder().length>0||S.live>=0);}
+function renderTitle(){
+ $('fan').innerHTML=FAN.map((c,k)=>card(c).replace('<span class="card','<span style="--k:'+k+';--a:'+((k-2)*15)+'deg" class="card')).join('');
+ let h;
+ if(gameInProgress()){
+  const {t,played}=totals(),min=Math.min(...t),lead=S.names.filter((x,p)=>t[p]===min),fin=S.live<0&&played>=totalRounds();
+  const sum=fin?'Finished. '+andList(lead)+(lead.length>1?' tied':' won'):'Round '+(played+1)+' of '+totalRounds()+' \u00b7 '+andList(lead)+(lead.length>1?' lead':' leads');
+  h='<button class="btn primary tbig" id="tCont">Continue game<small>'+esc(sum)+'</small></button><button class="btn tbig2" id="tNew">New game</button>';
+ }else h='<button class="btn primary tbig" id="tNew">'+(S.setup&&H.length===0?'Start a game':'New game')+'</button>';
+ $('tact').innerHTML=h;
+}
+// ---------- Install as an app ----------
+const IKEY='amerikano-install-tip';
+let installEvt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;renderInstall();});
+function isInstalled(){try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}}
+function isIOS(){const u=navigator.userAgent||'';return /iPhone|iPad|iPod/.test(u)||(/Macintosh/.test(u)&&navigator.maxTouchPoints>1);}
+function renderInstall(){
+ const box=$('tinstall');if(!box)return;
+ let off=false;try{off=localStorage.getItem(IKEY)==='off'}catch(e){}
+ if(isInstalled()||off||(!installEvt&&!isIOS())){box.hidden=true;return;}
+ box.hidden=false;
+ box.innerHTML=installEvt?'<button class="btn" id="tInstall">Install the app</button><button class="linkbtn" id="tInstallNo">Not now</button>'
+  :'<p>Add it to your Home Screen for a full-screen app: tap <b>Share</b>, then <b>Add to Home Screen</b>.</p><button class="linkbtn" id="tInstallNo">Got it</button>';
+}
+// Installed apps are much less likely to have their saved data cleared; ask the browser to keep it.
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});}catch(e){}
+
+function showTitle(){
+ renderTitle();renderInstall();const t=$('title');t.hidden=false;setTimeout(syncAwake,0);t.classList.remove('out','play');document.body.classList.add('titled');
+ if(!RM()){void t.offsetWidth;t.classList.add('play');}
+}
+function hideTitle(){
+ const t=$('title');document.body.classList.remove('titled');
+ if(RM()){t.hidden=true;syncAwake();return;}
+ t.classList.add('out');setTimeout(()=>{t.hidden=true;t.classList.remove('out');syncAwake();},220);
+}
+// Which optional sections are open on screen. Not saved.
+const UI={players:null,options:false,turn:false,chart:false};
+document.addEventListener('toggle',e=>{const k=e.target&&e.target.dataset&&e.target.dataset.ui;if(k)UI[k]=e.target.open;},true);
+const openAttr=k=>UI[k]?' open':'';
 
 function totals(){const n=S.names.length,t=Array(n).fill(0);for(let i=0;i<N;i++)for(let p=0;p<n;p++){const s=score(i,p);if(s!==null)t[p]+=s;}return{t,played:doneOrder().length};}
 function outCounts(){const n=S.names.length,w=Array(n).fill(0);S.out.forEach((o,i)=>{if(o>=0&&o<n&&isDone(i))w[o]++;});return w;}
 
 // ---------- Rendering ----------
+// ---------- Keep the screen on ----------
+const WKEY='amerikano-awake';
+let wl=null,wlBusy=false;
+function awakeOn(){try{return localStorage.getItem(WKEY)!=='off'}catch(e){return true}}
+function gameOnScreen(){return !S.setup&&$('title').hidden&&!(S.live<0&&doneOrder().length>=totalRounds());}
+async function syncAwake(){
+ if(!('wakeLock' in navigator)||wlBusy)return;
+ const want=awakeOn()&&gameOnScreen()&&document.visibilityState==='visible';
+ wlBusy=true;
+ try{
+  if(want&&!wl){wl=await navigator.wakeLock.request('screen');wl.addEventListener('release',()=>{wl=null;});}
+  else if(!want&&wl){const l=wl;wl=null;await l.release();}
+ }catch(e){wl=null;}
+ finally{wlBusy=false;}
+}
+// The phone drops the lock when you switch apps; take it again on return.
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')syncAwake();});
+function renderAwake(){const b=$('mAwake');if(!b)return;b.hidden=!('wakeLock' in navigator);b.setAttribute('aria-checked',String(awakeOn()));}
 function render(){
  lockOuts();
  document.body.classList.toggle('setup',!!S.setup);
@@ -574,14 +854,17 @@ function render(){
  const d=doneOrder();
  $('rounds').innerHTML=d.length?'<li class="lhd">Played rounds<span>Tap one to correct it</span></li>'+d.map(i=>i===S.open?editRow(i):
   '<li id="row'+i+'" class="done"><button class="rb grid" data-open="'+i+'"><span class="rname">'+ROUNDS[i][0]+'</span>'+S.names.map((x,p)=>'<span class="rc" id="c'+i+'_'+p+'" style="'+pc(p)+'"></span>').join('')+'</button></li>').join(''):'';
- renderHistory();calc();
+ renderHistory();calc();renderAwake();syncAwake();
+ const dn=d.length;
+ if(doneCount!==null&&dn>doneCount&&!RM()){const r=$('row'+d[dn-1]);if(r)r.classList.add('enter');}
+ doneCount=dn;
 }
 function who(key,val,extra){
  return '<select data-'+key+'="'+(extra===undefined?1:extra)+'"><option value="-1">Choose</option>'+S.names.map((x,p)=>'<option value="'+p+'"'+(val===p?' selected':'')+'>'+esc(x||'Player '+(p+1))+'</option>').join('')+'</select>';
 }
 function head(i,right){return '<div class="ohead"><h2>'+ROUNDS[i][0]+'</h2>'+right+'</div>';}
-function roundNo(){return '<span>Round '+(doneOrder().length+1)+' of '+N+'</span>';}
-function roleLine(i){const p=S.picked[i];return p>=0?nm(p)+' picked the rule. '+nm(dealerOf(p))+' shuffled and dealt.':'Nobody is set as picking the rule.';}
+function roundNo(){return '<span>Round '+(doneOrder().length+1)+' of '+totalRounds()+'</span>';}
+function roleLine(i){const p=S.picked[i];return p>=0?nm(p)+' picked \u00b7 '+nm(dealerOf(p))+' dealt':'Nobody is set as picking the rule.';}
 function outNote(i){const p=S.picked[i];return p>=0?'Going out scores '+fmt(R.outPick)+' for '+nm(p)+', '+fmt(R.outOther)+' for anyone else.':'Set who picked the rule so going out scores correctly.';}
 function mpCtl(i,p){
  const m=S.mp[i][p],a=' data-r="'+i+'" data-p="'+p+'"';
@@ -592,22 +875,26 @@ function outChips(i){
  return '<div class="wout"><span class="lab">Who went out?</span><div class="pchips">'+S.names.map((x,p)=>'<button class="pchip" style="'+pc(p)+'" data-out="'+p+'" data-r="'+i+'" aria-pressed="'+(S.out[i]===p)+'">'+esc(x)+'</button>').join('')
  +'<button class="pchip none" data-out="-1" data-r="'+i+'">Nobody</button></div></div>';
 }
-function scoreRows(i){
+function scoreRows(i,full){
  return S.names.map((x,p)=>{
   const out=S.out[i]===p;
   return '<div class="prow'+(out?' out':'')+'" style="'+pc(p)+'"><div class="pn"><b>'+esc(x)+'</b><small id="f'+i+'_'+p+'"></small></div>'
   +(out?'<input readonly tabindex="-1" aria-label="'+esc(x)+' went out, '+fmt(S.base[i][p])+'" value="'+fmt(S.base[i][p])+'">'
        :'<input inputmode="numeric" enterkeyhint="next" autocomplete="off" aria-label="'+esc(x)+' hand points" data-r="'+i+'" data-p="'+p+'" value="'+esc(S.base[i][p])+'">')
-  +'<div class="tg"><button class="pen" data-k="j" data-r="'+i+'" data-p="'+p+'" aria-pressed="'+!!S.jk[i][p]+'"'+(out?' disabled':'')+'>Joker</button>'+mpCtl(i,p)+'</div></div>';
+  +'<div class="tg">'+(R.joker!==1?'<button class="pen" data-k="j" data-r="'+i+'" data-p="'+p+'" aria-pressed="'+!!S.jk[i][p]+'"'+(out?' disabled':'')+'>Joker</button>':'')+(full||S.mp[i][p]?mpCtl(i,p):'')+'</div></div>';
  }).join('');
 }
 function renderFlow(){
  const done=doneOrder().length;let h;
  if(S.setup)h=setupPanel();
  else if(S.live>=0)h=S.stage==='score'?scorePanel(S.live):playPanel(S.live);
- else if(done===N)h=finalPanel();
+ else if(done>=totalRounds())h=finalPanel();
  else h=pickPanel();
  $('flow').innerHTML=h;
+ const k=flowKeyNow();
+ if(flowKey!==null&&k!==flowKey&&!RM()&&$('flow').firstElementChild)$('flow').firstElementChild.classList.add('enter');
+ flowKey=k;
+ if(k==='final')$('flow').dataset.fh=h;
 }
 function prevBanner(){
  const p=load(PKEY);if(!p||!p.game||doneOrder().length||S.live>=0)return '';
@@ -620,27 +907,50 @@ function pastPlayers(){
  return out.slice(0,8);
 }
 function dealLine(){const np=S.nextPick,d=dealerOf(np);return np>=0?esc(S.names[d]||'Player '+(d+1))+' shuffles and deals.':'Choose who picks first, or tap Random.';}
+function optionsSummary(){
+ const t=totalRounds(),lv=levelOf();
+ return (t===N?'All '+N+' rounds':t+' of '+N+' rounds')+' · '+(lv==='custom'?'Custom rules':LEVELS[lv].name+' rules');
+}
 function setupPanel(){
  const n=S.names.length,past=pastPlayers();
- const sc=(label,val)=>'<tr><td>'+label+'</td><td>'+val+'</td></tr>';
- return '<section class="flow setup-panel">'+prevBanner()+'<div class="ohead"><h2>New game</h2><span>'+n+' players</span></div>'
- +'<span class="lab">Who\u2019s playing</span><p class="hint">In seating order. Drag \u2261 to move someone.</p>'
- +'<ol class="seats" id="seats">'+S.names.map((x,p)=>'<li class="seat" data-seat="'+p+'" style="'+pc(p)+'"><i></i>'
-  +'<input data-sn="'+p+'" value="'+esc(x)+'" placeholder="Player '+(p+1)+'" autocomplete="off" autocapitalize="words" enterkeyhint="next" aria-label="Seat '+(p+1)+' name">'
-  +'<button class="grip" data-grip="'+p+'" aria-label="Move '+esc(x||'player')+'. Use the up and down arrow keys.">\u2261</button>'
-  +'<button class="xbtn" data-sdel="'+p+'" aria-label="Remove '+esc(x||'player')+'"'+(n<=2?' disabled':'')+'>\u00d7</button></li>').join('')+'</ol>'
- +(n<6?'<button class="btn sm" id="sadd">Add player</button>':'<p class="hint">Six players is the maximum.</p>')
- +(past.length&&n<6?'<div class="past"><span class="hint">From past games</span><div class="pchips">'+past.map(x=>'<button class="pchip none" data-sname="'+esc(x)+'">+ '+esc(x)+'</button>').join('')+'</div></div>':'')
- +'<span class="lab">Who picks first</span><div class="turn"><label>'+who('np',S.nextPick)+'</label><button class="btn sm" id="srand">Random</button></div><p class="hint" id="sdeal">'+dealLine()+'</p>'
- +'<span class="lab">Rules</span><table class="stbl"><tbody>'
- +sc('Went out, picked the rule','<b>'+fmt(R.outPick)+'</b>')+sc('Went out, didn\u2019t pick','<b>'+fmt(R.outOther)+'</b>')
- +sc('Each misplay','+'+R.misplay)+sc('Joker left in hand','\u00d7'+R.joker)+sc('Final played last',R.finalLast?'Yes':'No')
- +'</tbody></table><div class="srules"><button class="btn sm" id="srulesView">Read the rules</button><button class="btn sm" id="srulesEdit">Change rules</button></div>'
+ if(UI.players===null)UI.players=!H.length;           // first ever game: names probably need setting
+ return '<section class="flow setup-panel">'+prevBanner()
+ +'<div class="ohead"><h2>New game</h2><button class="linkbtn" id="srulesView">How to play</button></div>'
+ +'<span class="lab">Who picks first?</span><div class="pchips fp" role="radiogroup" aria-label="Who picks first">'
+  +S.names.map((x,p)=>'<button class="pchip" role="radio" style="'+pc(p)+'" data-fp="'+p+'" aria-checked="'+(S.nextPick===p)+'">'+esc(x||'Player '+(p+1))+'</button>').join('')
+  +'<button class="pchip none" id="srand">Random</button></div>'
+ +'<p class="hint" id="sdeal">'+dealLine()+'</p>'
+ +'<details class="fold" data-ui="players"'+openAttr('players')+'><summary><span>Players</span><span class="sv">'+n+' players</span></summary>'
+  +'<p class="hint">In seating order. Drag ≡ to move someone.</p>'
+  +'<ol class="seats" id="seats">'+S.names.map((x,p)=>'<li class="seat" data-seat="'+p+'" style="'+pc(p)+'"><i></i>'
+   +'<input data-sn="'+p+'" value="'+esc(x)+'" placeholder="Player '+(p+1)+'" autocomplete="off" autocapitalize="words" enterkeyhint="next" aria-label="Seat '+(p+1)+' name">'
+   +'<button class="grip" data-grip="'+p+'" aria-label="Move '+esc(x||'player')+'. Use the up and down arrow keys.">≡</button>'
+   +'<button class="xbtn" data-sdel="'+p+'" aria-label="Remove '+esc(x||'player')+'"'+(n<=2?' disabled':'')+'>×</button></li>').join('')+'</ol>'
+  +(n<6?'<button class="btn sm" id="sadd">Add player</button>':'<p class="hint">Six players is the maximum.</p>')
+  +(past.length&&n<6?'<div class="past"><span class="hint">From past games</span><div class="pchips">'+past.map(x=>'<button class="pchip none" data-sname="'+esc(x)+'">+ '+esc(x)+'</button>').join('')+'</div></div>':'')
+ +'</details>'
+ +'<details class="fold" data-ui="options"'+openAttr('options')+'><summary><span>Game options</span><span class="sv">'+optionsSummary()+'</span></summary>'
+  +'<span class="lab">Rules</span>'+levelPicker('lvl',levelOf())+'<button class="linkbtn" id="srulesEdit">Change the numbers</button>'
+  +'<span class="lab">Rounds</span><p class="hint">'+roundsHint()+'</p>'+roundChips()
+  +(totalRounds()<N?'<button class="linkbtn" id="rall">Play all rounds</button>':'')
+ +'</details>'
  +'<button class="btn primary sbig" id="sstart">Start game</button></section>';
+}
+function renderRoundsDialog(){
+ const can=!S.setup&&!isDone(FINAL)&&remainingBeforeFinal().length>0;
+ $('rsbody').innerHTML='<p class="dnote">'+roundsHint()+'</p>'+roundChips()
+  +(can?'<button class="btn sm" id="skipfinal" style="margin-top:12px">Skip to Final</button>':'');
+}
+function skipToFinal(){
+ const r=remainingBeforeFinal();if(!r.length)return;
+ ask('Skip the '+r.length+' rule'+(r.length>1?'s':'')+' not played yet and go straight to Final?',()=>{
+  snap();r.forEach(i=>S.skip[i]=true);render();if($('rsd').open)renderRoundsDialog();toast('Final is next');
+ },null,'Skip to Final');
 }
 function setupRefresh(){
  // Update labels that show names without rebuilding the inputs being typed in.
  document.querySelectorAll('select[data-np] option').forEach(o=>{const p=+o.value;if(p>=0)o.textContent=S.names[p]||'Player '+(p+1);});
+ document.querySelectorAll('[data-fp]').forEach(b=>{const p=+b.dataset.fp;b.textContent=S.names[p]||'Player '+(p+1);});
  const d=$('sdeal');if(d)d.innerHTML=dealLine();
 }
 function startGame(){
@@ -689,22 +999,25 @@ document.addEventListener('pointercancel',e=>vEnd(e,false));
 
 // Step 1: whose turn it is, and which rule they pick.
 function pickPanel(){
- const np=S.nextPick,rem=[];for(let i=0;i<N;i++)if(!isDone(i))rem.push(i);
- const lockFinal=R.finalLast&&rem.length>1;
- return '<section class="flow">'+prevBanner()+'<div class="ohead"><h2>Pick the next rule</h2>'+roundNo()+'</div>'
- +'<div class="turn"><label>Turn to pick '+who('np',np)+'</label><p>'+(np>=0?nm(dealerOf(np))+' shuffles and deals.':'Choose who picks first.')+'</p></div>'
- +'<div class="rchips">'+rem.map(i=>'<button class="rchip" data-pick="'+i+'"'+(i===FINAL&&lockFinal?' disabled':'')+'>'+ROUNDS[i][0]+'</button>').join('')+'</div>'
- +'<p class="hint">'+(lockFinal&&rem.includes(FINAL)?'Final is played last. ':'')+'<button class="linkbtn" id="rhelp">What do these rules mean?</button></p></section>';
+ const np=S.nextPick,rem=[];for(let i=0;i<N;i++)if(!isDone(i)&&inPlay(i))rem.push(i);
+ const lockFinal=R.finalLast&&rem.length>1,editing=UI.turn||np<0;
+ const c=S.carry,cb=c&&ROUNDS[c.from]?'<div class="prevb"><span>Tap the right rule.'+(c.mp.some(Boolean)||c.base.some(v=>v!=='')?' What\u2019s been logged moves across.':'')+'</span><button class="btn sm" id="carryback">Back to '+ROUNDS[c.from][0]+'</button></div>':'';
+ return '<section class="flow">'+(cb||prevBanner())+'<div class="ohead"><h2>'+(c?'Choose the right rule':'Pick the next rule')+'</h2>'+roundNo()+'</div>'
+ +'<div class="turn'+(editing?' editing':'')+'"><p class="turnline">'+(np>=0?'<b>'+nm(np)+'</b> picks · '+nm(dealerOf(np))+' deals':'Who picks this rule?')+'</p>'
+  +(editing?'':'<button class="linkbtn" id="tchange">Change</button>')+'<span class="tsel">'+who('np',np)+'</span></div>'
+ +'<div class="rchips">'+rem.map(i=>'<button class="rchip" data-pick="'+i+'"'+(i===FINAL&&lockFinal?' disabled aria-label="Final, played last"':'')+'>'+ROUNDS[i][0]+(i===FINAL&&lockFinal?'<small>last</small>':'')+'</button>').join('')+'</div>'
+ +'<p class="hint"><button class="linkbtn" id="rhelp">What do these rules mean?</button></p></section>';
 }
 // Step 2: the round is being played. Log misplays as they happen.
 function playPanel(i){
- return '<section class="flow">'+head(i,roundNo())+'<p class="sub">'+roleLine(i)+'</p>'+shapeCards(i)+'<p class="rule">'+(SHAPES[i]?'To open: ':'')+esc(desc(i))+(R.every.trim()?' '+esc(R.every.trim()):'')+'</p>'
+ return '<section class="flow">'+head(i,roundNo())+'<p class="sub muted">'+roleLine(i)+'</p>'+shapeCards(i)+'<p class="rule">'+(SHAPES[i]?'To open: ':'')+esc(desc(i))+'</p>'
  +'<span class="lab">Misplays</span>'+S.names.map((x,p)=>'<div class="mrow" style="'+pc(p)+'"><b>'+esc(x)+'</b>'+mpCtl(i,p)+'</div>').join('')
- +'<div class="ofoot"><button class="btn sm" id="rchange">Change rule</button><button class="btn primary" id="rover">Round over</button></div></section>';
+ +'<div class="ofoot"><button class="linkbtn" id="rchange">Wrong rule?</button><button class="btn primary" id="rover">Round over</button></div></section>';
 }
 // Step 3: who went out, then everyone else's hand points.
 function scorePanel(i){
- return '<section class="flow">'+head(i,roundNo())+'<p class="sub">'+outNote(i)+'</p>'+outChips(i)+scoreRows(i)
+ const cls=(S.mp[i].some(Boolean)?' hasmp':'')+(R.joker===1?' nojk':'');
+ return '<section class="flow'+cls+'">'+head(i,roundNo())+outChips(i)+scoreRows(i,false)
  +'<div class="ofoot"><button class="btn sm" id="rback">Back</button><button class="btn primary" id="rsave">Save round</button></div></section>';
 }
 // Correcting a round that's already been played.
@@ -712,17 +1025,17 @@ function editRow(i){
  const p=S.picked[i];
  return '<li class="open" id="row'+i+'">'+head(i,'<button class="btn sm" id="edone">Done</button>')
  +'<div class="turn"><label>Picked the rule '+who('pk',p,i)+'</label><p>'+(p>=0?nm(dealerOf(p))+' shuffled and dealt.':'')+'</p></div>'
- +'<p class="sub">'+outNote(i)+'</p>'+outChips(i)+scoreRows(i)+'</li>';
+ +'<p class="sub">'+outNote(i)+'</p>'+outChips(i)+scoreRows(i,true)+'</li>';
 }
-function finalPanel(){
- const {t}=totals(),order=S.names.map((x,p)=>p).sort((a,b)=>t[a]-t[b]);
- return '<div class="final"><h2>Final standings</h2><ol>'+order.map(p=>{const place=t.filter(v=>v<t[p]).length;return '<li style="'+pc(p)+'"><span class="place">'+ORD[place]+'</span><b>'+nm(p)+'</b><span class="ft">'+fmt(t[p])+'</span></li>';}).join('')
+function finalPanel(){/* standings revealed from last place up; the chart opens below */
+ const {t}=totals(),order=S.names.map((x,p)=>p).sort((a,b)=>t[a]-t[b]),n=order.length;
+ return '<div class="final"><h2>Final standings</h2><ol>'+order.map((p,k)=>{const place=t.filter(v=>v<t[p]).length;return '<li class="'+(place===0?'win':'')+'" style="'+pc(p)+';--d:'+((n-1-k)*170+150)+'ms"><span class="place">'+ORD[place]+'</span><b>'+nm(p)+'</b><span class="ft">'+fmt(t[p])+'</span></li>';}).join('')
  +'</ol><div class="factions"><button class="btn" data-act="share">Share results</button><button class="btn primary" data-act="finish">Save game</button></div></div>';
 }
 function calc(){
  const n=S.names.length,{t,played}=totals(),d=doneOrder();
  const min=Math.min(...t),wins=outCounts(),any=t.some((v,p)=>v!==0)||played>0;
- $('prog').textContent=played+' of '+N+' played';
+ $('prog').textContent=played+' of '+totalRounds()+' played';
  t.forEach((v,p)=>{
   $('tot'+p).textContent=fmt(v);
   const lead=any&&v===min;
@@ -739,7 +1052,11 @@ function calc(){
   el.className=out&&!m?'ok':'';
   el.textContent=!parts.length?'':out&&!m?parts[0]:num(S.base[i][p])===null?parts.join(', ')+', add hand points':parts.join(', ')+', counts as '+fmt(s);
  }});
- if(S.live<0&&played===N)$('flow').innerHTML=finalPanel();
+ const fin=S.live<0&&!S.setup&&played>=totalRounds();
+ if(fin){const fh=finalPanel();if($('flow').dataset.fh!==fh){$('flow').innerHTML=fh;$('flow').dataset.fh=fh;}}
+ $('undo').hidden=!!S.setup||!undoStack.length;
+ const cd=$('chartd');cd.hidden=!!S.setup||d.length<2;if(fin&&!UI.chart){UI.chart=true;}cd.open=!!UI.chart;
+ const ms=$('mSkip');if(ms)ms.hidden=!!S.setup||isDone(FINAL)||!remainingBeforeFinal().length;
  drawChart(d);
  store(KEY,S);
 }
@@ -748,13 +1065,19 @@ function calc(){
 function startRound(i){
  if(S.nextPick<0){toast('Choose who picks first');return;}
  snap();S.live=i;S.stage='play';S.picked[i]=S.nextPick;S.dealt[i]=dealerOf(S.nextPick);
+ // Coming from "Wrong rule?": bring along anything already logged.
+ const c=S.carry;delete S.carry;
+ if(c&&c.mp.length===S.names.length){S.base[i]=c.base.slice();S.jk[i]=c.jk.slice();S.mp[i]=c.mp.slice();S.out[i]=c.out<S.names.length?c.out:-1;if(c.hold&&c.hold.p===S.out[i])(S.hold||(S.hold={}))[i]=c.hold;}
  S.seq=S.seq.filter(x=>x!==i&&isDone(x));S.seq.push(i);S.nextPick=-1;S.open=-1;
  render();scrollFlow();
 }
+// Wrong rule: go back to Pick, keeping anything logged so it moves to the right rule.
 function changeRule(){
- const i=S.live;
- if(S.mp[i].some(Boolean)&&!confirm('Change the rule? Misplays logged for this round will be cleared.'))return;
- snap();S.nextPick=S.picked[i];S.picked[i]=-1;S.dealt[i]=-1;
+ const i=S.live;snap();
+ const logged=S.mp[i].some(Boolean)||S.jk[i].some(Boolean)||S.base[i].some(v=>v!=='')||S.out[i]>=0;
+ S.carry=logged?{from:i,base:S.base[i].slice(),jk:S.jk[i].slice(),mp:S.mp[i].slice(),out:S.out[i],hold:S.hold&&S.hold[i]}:{from:i,base:[],jk:[],mp:[],out:-1};
+ if(S.hold)delete S.hold[i];
+ S.nextPick=S.picked[i];S.picked[i]=-1;S.dealt[i]=-1;
  S.base[i]=S.base[i].map(()=>"");S.jk[i]=S.jk[i].map(()=>0);S.mp[i]=S.mp[i].map(()=>0);S.out[i]=-1;
  S.seq=S.seq.filter(x=>x!==i);S.live=-1;S.stage=null;render();scrollFlow();
 }
@@ -762,16 +1085,26 @@ function saveRound(){
  const i=S.live,miss=S.names.filter((x,p)=>p!==S.out[i]&&num(S.base[i][p])===null),msg=[];
  if(!rowPlayed(i))msg.push('No scores entered, so this rule will go back to the pick list.');
  else{if(miss.length)msg.push(andList(miss)+(miss.length>1?' have':' has')+' no score.');if(S.out[i]<0)msg.push('Nobody is marked as going out.');}
- if(msg.length&&!confirm(msg.join(' ')+' Save anyway?'))return;
- snap();const p=S.picked[i];S.live=-1;S.stage=null;
- if(!rowPlayed(i)){S.seq=S.seq.filter(x=>x!==i);S.picked[i]=-1;S.dealt[i]=-1;}
- S.nextPick=p>=0?(p+1)%S.names.length:suggestPick();
- render();scrollFlow();
+ if(msg.length){ask(msg.join(' ')+' Save anyway?',()=>commitRound(i),null,'Save anyway','Go back');return;}
+ commitRound(i);
 }
+function commitRound(i){
+ snap();const p=S.picked[i];S.live=-1;S.stage=null;
+ const played=rowPlayed(i);
+ if(!played){S.seq=S.seq.filter(x=>x!==i);S.picked[i]=-1;S.dealt[i]=-1;}
+ S.nextPick=p>=0?(p+1)%S.names.length:suggestPick();
+ render();scrollFlow();if(played)floatDeltas(i);
+}
+// Whoever goes out has their hand points set for them. What they had before is kept aside,
+// so choosing someone else (or Nobody) puts it back instead of clearing it.
 function setOut(r,q){
- const o=S.out[r];
- if(o>=0&&num(S.base[r][o])===outValue(r,o))S.base[r][o]="";
+ const o=S.out[r],hd=S.hold||(S.hold={}),kept=hd[r];delete hd[r];
+ if(o>=0){
+  if(kept&&kept.p===o){S.base[r][o]=kept.base;S.jk[r][o]=kept.jk;}
+  else if(num(S.base[r][o])===outValue(r,o))S.base[r][o]="";
+ }
  if(q<0||o===q){S.out[r]=-1;return;}
+ hd[r]={p:q,base:S.base[r][q],jk:S.jk[r][q]};
  S.out[r]=q;S.base[r][q]=String(outValue(r,q));S.jk[r][q]=0;
 }
 function scrollFlow(){const el=$('flow');if(el&&el.getBoundingClientRect().top<0)el.scrollIntoView({block:'start'});}
@@ -785,6 +1118,7 @@ function applyOrder(order){
  [S.base,S.jk,S.mp].forEach(g=>g.forEach((row,i)=>{g[i]=order.map(o=>row[o]);}));
  const m=x=>x>=0?inv[x]:x;
  S.out=S.out.map(m);S.dealt=S.dealt.map(m);S.picked=S.picked.map(m);S.nextPick=m(S.nextPick);
+ if(S.hold)for(const k in S.hold)S.hold[k].p=m(S.hold[k].p);
  S.picked.forEach((p,i)=>{if(p>=0)S.dealt[i]=dealerOf(p);});
 }
 function movePlayer(from,to){
@@ -894,61 +1228,69 @@ function renderSettings(){
  +'<button class="btn sm" id="addp">Add player</button>'
  +'<p class="dnote" style="margin-top:14px">Scoring values are under Rules.</p>';
 }
-let rulesEdit=false;
+let rulesEdit=false,ruleTab='quick';
 const para=s=>esc(s).split('\n').filter(x=>x.trim()).map(x=>'<p>'+x+'</p>').join('');
-const JUMP=[['rs-basics','Basics'],['rs-rules','Rules'],['rs-score','Scoring'],['rs-house','House rules']];
+const TABS=[['quick','Quick start'],['rules','Rules'],['score','Scoring'],['house','House']];
+function showRules(tab,edit){rulesEdit=!!edit;if(tab)ruleTab=tab;renderRules();if(!$('rd').open)$('rd').showModal();$('rd').scrollTop=0;}
+function goingOutLine(){return R.outPick===R.outOther?fmt(R.outPick):fmt(R.outPick)+' if you picked the rule, '+fmt(R.outOther)+' if not';}
 function renderRules(){
  $('rhead').innerHTML=rulesEdit?'<button class="btn" id="rcancel">Cancel</button><button class="btn primary" id="rsaveRules">Save</button>'
   :'<button class="btn" id="redit">Edit</button><button class="btn" id="rdone">Done</button>';
- $('rjump').innerHTML=rulesEdit?'':JUMP.map(([id,l])=>'<button data-jump="'+id+'">'+l+'</button>').join('');
+ $('rjump').innerHTML=rulesEdit?'':TABS.map(([k,l])=>'<button role="tab" aria-selected="'+(ruleTab===k)+'" data-rtab="'+k+'">'+l+'</button>').join('');
  if(rulesEdit){renderRulesEdit();return;}
- const n=S.names.length,ex=k=>n>=4?nm(k):['Ana','Ben','Cem','Dee'][k];
- const every=R.every.trim();
- const status=i=>i===S.live?'<span class="tag now">Now</span>':isDone(i)?'<span class="tag">Played</span>':'';
- const sc=(label,val)=>'<tr><td>'+label+'</td><td>'+val+'</td></tr>';
- const hand=12,jkTxt=hand+' × '+R.joker+' = '+hand*R.joker,mpTxt='9 + '+R.misplay+' = '+(9+R.misplay);
- $('rbody').innerHTML=
- '<h3 id="rs-basics">The aim</h3><p class="lead">Get rid of your cards before anyone else. After '+N+' rounds, the lowest total wins.</p>'
- +'<h3>Each round</h3><ol class="steps">'
- +'<li><b>Pick.</b> It’s one player’s turn to choose which rule to play. The player before them shuffles and deals.'+(R.finalLast?' Final is always played last.':'')+'</li>'
- +'<li><b>Open.</b> Before you can lay any cards down, you have to show that round’s combination.'+(every?' '+esc(every):'')+'</li>'
- +'<li><b>Go out.</b> The round ends as soon as someone gets rid of all their cards.</li>'
- +'<li><b>Count.</b> Everyone else scores the cards left in their hand.</li></ol>'
- +'<h3>The words you’ll hear</h3><dl class="terms">'
- +'<dt>Küt (a set)</dt><dd>The same number in different suits.'+meld([['7','h'],['7','s'],['7','c']],'Set of 3')+'</dd>'
- +'<dt>Seri (a run)</dt><dd>Numbers in a row, all the same suit.'+meld([['4','d'],['5','d'],['6','d']],'Run of 3')+'</dd>'
- +'<dt>Pair</dt><dd>Two of the exact same card, number and suit.'+meld([['9','c'],['9','c']],'Pair')+'</dd>'
- +'<dt>Joker</dt><dd>Stands in for any card, including when you open. Here it’s the 5♦.'+meld([['4','d'],'jk',['6','d']],'Run of 3 with a joker as the 5 of diamonds')+'</dd></dl>'
- +'<h3 id="rs-rules">The '+N+' rules</h3><p class="muted">The combination you need to open with. Pick them in any order'+(R.finalLast?', but Final comes last':'')+'.</p>'
- +'<ul class="rl">'+ROUNDS.map((r,i)=>'<li'+(i===S.live?' class="now"':'')+'><div class="rlh"><b>'+r[0]+'</b>'+status(i)+'</div>'+shapeCards(i)+'<span>'+esc(desc(i))+'</span></li>').join('')+'</ul>'
- +'<h3 id="rs-score">Scoring</h3><table class="stbl"><tbody>'
- +sc('Went out, picked the rule','<b>'+fmt(R.outPick)+'</b>')
- +sc('Went out, didn’t pick','<b>'+fmt(R.outOther)+'</b>')
- +sc('Everyone else','Points left in hand')
- +sc('Joker left in hand','Hand × '+R.joker)
- +sc('Each misplay','+'+R.misplay+', even if you went out')
- +'</tbody></table>'
- +'<div class="ex"><b>Example.</b> '+ex(1)+' picked the rule, and '+ex(3)+' went out first.<table class="stbl"><tbody>'
- +sc(ex(3)+': went out, didn’t pick','<b>'+fmt(R.outOther)+'</b>')
- +sc(ex(0)+': 18 left in hand','<b>18</b>')
- +sc(ex(2)+': 12 left, holding a joker',jkTxt.replace(/(\d+)$/,'<b>$1</b>'))
- +sc(ex(1)+': 9 left, one misplay',mpTxt.replace(/(\d+)$/,'<b>$1</b>'))
- +'</tbody></table><p class="muted">Going out would have scored '+ex(1)+' '+fmt(R.outPick)+', because they picked the rule.</p></div>'
- +'<p>After the last round, the lowest total wins. If two players tie, they share the win.</p>'
- +'<h3 id="rs-house">House rules</h3>'+(R.notes.trim()?para(R.notes):'<p class="muted">None yet. Tap Edit to add your own, such as card values.</p>')
- +'<details><summary>Using the scoreboard</summary><p><b>Pick:</b> check whose turn it is, then tap the rule they choose. <b>Play:</b> tap Misplay for a player as soon as it happens. <b>Score:</b> tap Round over, choose who went out, type everyone else’s hand points, tick Joker where needed, then Save round.</p>'
- +'<p>To change seating order, press and hold a player’s tile at the top and drag it sideways. To correct a played round, tap it in the list.</p></details>';
+ const sc=(label,val)=>'<tr><td>'+label+'</td><td>'+val+'</td></tr>',every=R.every.trim();
+ let b='';
+ if(ruleTab==='quick'){
+  if(S.live>=0)b+='<div class="nowcard"><span class="lab">This round</span><b>'+ROUNDS[S.live][0]+'</b>'+shapeCards(S.live)+'<p>'+(SHAPES[S.live]?'To open: ':'')+esc(desc(S.live))+'</p></div>';
+  b+='<p class="lead" id="rs-basics">Get rid of your cards first. After the last round, the lowest total wins.</p>'
+  +'<h3>A round</h3><ol class="steps">'
+  +'<li><b>Pick.</b> One player picks the rule. The player before them deals.</li>'
+  +'<li><b>Open.</b> Lay down that rule’s combination before any other cards.'+(every?' '+esc(every):'')+'</li>'
+  +'<li><b>Go out.</b> The first to get rid of all their cards ends the round.</li>'
+  +'<li><b>Count.</b> Everyone else scores what’s left in their hand.</li></ol>'
+  +'<h3>Sets and runs</h3><div class="tworow">'
+  +'<div><b>Küt</b> (a set)'+meld([['7','h'],['7','s'],['7','c']],'Set of 3')+'<small>Same number, different suits</small></div>'
+  +'<div><b>Seri</b> (a run)'+meld([['4','d'],['5','d'],['6','d']],'Run of 3')+'<small>Same suit, in a row</small></div></div>'
+  +'<p class="muted">A joker stands in for any card, even when opening.</p>'
+  +'<h3>Scores</h3><table class="stbl"><tbody>'
+  +sc('Going out',goingOutLine())+sc('Cards left in hand','Their points')
+  +(R.joker!==1?sc('Joker left in hand',jokerTxt()):'')+sc('Each misplay','+'+R.misplay)
+  +'</tbody></table>'
+  +'<div class="morebtns"><button class="btn sm" data-rtab="rules">See all the rules</button><button class="btn sm" data-rtab="score">Scoring example</button></div>';
+ }else if(ruleTab==='rules'){
+  const status=i=>i===S.live?'<span class="tag now">Now</span>':isDone(i)?'<span class="tag">Played</span>':S.skip[i]?'<span class="tag">Left out</span>':'';
+  b='<p class="muted" id="rs-rules">What you need to open with. Pick them in any order'+(R.finalLast?', Final last':'')+'.</p>'
+  +'<ul class="rl">'+ROUNDS.map((r,i)=>'<li'+(i===S.live?' class="now"':'')+'><div class="rlh"><b>'+r[0]+'</b>'+status(i)+'</div>'+shapeCards(i)+'<span>'+esc(desc(i))+'</span></li>').join('')+'</ul>';
+ }else if(ruleTab==='score'){
+  const n=S.names.length,ex=k=>n>=4?nm(k):['Ana','Ben','Cem','Dee'][k];
+  const hand=12,jkTxt=R.joker===1?'<b>12</b>':hand+' × '+R.joker+' = <b>'+hand*R.joker+'</b>';
+  b='<h3 id="rs-score">Scoring'+(levelOf()!=='custom'?': '+LEVELS[levelOf()].name:'')+'</h3><table class="stbl"><tbody>'
+  +sc('Went out, picked the rule','<b>'+fmt(R.outPick)+'</b>')+sc('Went out, didn’t pick','<b>'+fmt(R.outOther)+'</b>')
+  +sc('Everyone else','Points left in hand')+sc('Joker left in hand',jokerTxt())+sc('Each misplay, even if you went out','+'+R.misplay)
+  +'</tbody></table>'
+  +'<div class="ex"><b>Example.</b> '+ex(1)+' picked the rule, and '+ex(3)+' went out first.<table class="stbl"><tbody>'
+  +sc(ex(3)+': went out, didn’t pick','<b>'+fmt(R.outOther)+'</b>')
+  +sc(ex(0)+': 18 left in hand','<b>18</b>')
+  +sc(ex(2)+': 12 left, holding a joker',jkTxt)
+  +sc(ex(1)+': 9 left, one misplay','9 + '+R.misplay+' = <b>'+(9+R.misplay)+'</b>')
+  +'</tbody></table><p class="muted">Going out would have scored '+ex(1)+' '+fmt(R.outPick)+', because they picked the rule.</p></div>'
+  +'<p>After the last round, the lowest total wins. If two players tie, they share the win.</p>';
+ }else{
+  b='<h3 id="rs-house">House rules</h3>'+(R.notes.trim()?para(R.notes):'<p class="muted">None yet. Tap Edit to add your own, such as what each card is worth.</p>')
+  +'<details><summary>Using the scoreboard</summary><p><b>Pick:</b> check whose turn it is, then tap the rule they choose. <b>Play:</b> tap Misplay for a player as soon as it happens. <b>Score:</b> tap Round over, choose who went out, type everyone else’s hand points, then Save round.</p>'
+  +'<p>Undo is at the top. To correct a played round, tap it in the list. Players, rounds and history are in the ☰ menu.</p></details>';
+ }
+ $('rbody').innerHTML=b;
 }
 function renderRulesEdit(){
  const f=(id,label,v,mode)=>'<label class="fld">'+label+'<input id="'+id+'" inputmode="'+(mode||'numeric')+'" value="'+v+'"></label>';
  $('rbody').innerHTML='<p class="muted">Scoring changes apply to the whole game, including rounds already played.</p>'
+ +'<h3>Start from a level</h3><div id="elvl">'+levelPicker('elvl',levelOf())+'</div>'
  +'<h3>Scoring</h3>'
  +f('r-op','Going out, picked the rule',R.outPick,'text')+f('r-oo','Going out, anyone else',R.outOther,'text')
- +f('r-mp','Each misplay adds',R.misplay)+f('r-jk','Joker in hand multiplies by',R.joker)
+ +f('r-mp','Each misplay adds',R.misplay)+f('r-jk','Joker left in hand multiplies the hand by (1 = no penalty)',R.joker)
  +'<label class="fld">Final is always played last<input type="checkbox" id="r-fl"'+(R.finalLast?' checked':'')+'></label>'
- +'<h3>Every round</h3><label class="dl" for="r-ev">Reminder shown while playing</label><textarea id="r-ev" rows="2">'+esc(R.every)+'</textarea>'
- +'<h3>The rules</h3><p class="muted">Leave a description empty to go back to the original.</p>'
- +ROUNDS.map((r,i)=>'<label class="dl" for="r-d'+i+'">'+r[0]+'</label><textarea id="r-d'+i+'" rows="2">'+esc(desc(i))+'</textarea>').join('')
+ +'<h3>Every round</h3><label class="dl" for="r-ev">Extra rule for every round (shown under How to play)</label><textarea id="r-ev" rows="2">'+esc(R.every)+'</textarea>'
  +'<h3>House rules</h3><textarea id="r-notes" rows="6" placeholder="Card values, how you settle disputes, anything else">'+esc(R.notes)+'</textarea>';
 }
 function saveRules(){
@@ -960,7 +1302,6 @@ function saveRules(){
  }
  Object.assign(R,nums);
  R.finalLast=$('r-fl').checked;R.every=v('r-ev').trim();R.notes=v('r-notes').trim();
- R.desc=ROUNDS.map((r,i)=>{const t=v('r-d'+i).trim();return t&&t!==r[1]?t:null;});
  store(RKEY,R);rulesEdit=false;render();renderRules();$('rd').scrollTop=0;toast('Rules saved');
 }
 function renderHistory(){
@@ -978,8 +1319,19 @@ function renderHistory(){
   +'<small>Average '+fmt(Math.round(v.sum/v.rounds))+' a round. Best game '+fmt(v.best)+', worst '+fmt(v.worst)+'.'+(v.known?' Went out '+v.outs+' time'+(v.outs===1?'':'s')+'.':'')+'</small></div>').join('');
  $('hist').innerHTML=H.map((g,k)=>'<div class="hrow"><div>'+new Date(g.date).toLocaleDateString('en-GB')+', won by <b>'+g.winners.map(esc).join(' and ')+'</b><small>'+g.names.map((x,p)=>esc(x)+' '+fmt(g.totals[p])).join(', ')+'</small></div><button class="btn sm" data-delg="'+k+'">Delete</button></div>').join('')+'<button class="btn sm clear" id="clearh">Clear history</button>';
 }
+// Asks before something can't easily be undone. Uses the app's own sheet, not the phone's pop-up,
+// which iPhones don't always show. yes/no are run when a button is tapped.
+let askCb=null;
+function ask(msg,yes,no,yesLabel,noLabel,danger){$('askm').textContent=msg;$('askYes').textContent=yesLabel||'OK';$('askNo').textContent=noLabel||'Cancel';$('askYes').classList.toggle('danger',!!danger);askCb={yes,no};const d=$('askd');if(d.open)d.close();d.showModal();$('askYes').focus();}
+function askDone(ok){const c=askCb;askCb=null;if($('askd').open)$('askd').close();if(c){const f=ok?c.yes:c.no;if(f)f();}}
+function removePlayer(p){
+ snap();S.names.splice(p,1);S.col.splice(p,1);[S.base,S.jk,S.mp].forEach(g=>g.forEach(r=>r.splice(p,1)));
+ const fix=o=>o===p?-1:o>p?o-1:o;S.out=S.out.map(fix);S.dealt=S.dealt.map(fix);S.picked=S.picked.map(fix);S.nextPick=fix(S.nextPick);
+ if(S.hold)for(const k in S.hold){const x=S.hold[k];if(x.p===p)delete S.hold[k];else x.p=fix(x.p);}
+ render();renderSettings();
+}
 function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',2000);}
-function summary(){const {t,played}=totals();return 'Amerikano, '+new Date().toLocaleDateString('en-GB')+' ('+played+'/'+N+' rounds)\n'+S.names.map((x,p)=>[x,t[p]]).sort((a,b)=>a[1]-b[1]).map((x,k)=>(k+1)+'. '+x[0]+': '+x[1]).join('\n');}
+function summary(){const {t,played}=totals();return 'Amerikano, '+new Date().toLocaleDateString('en-GB')+' ('+played+'/'+totalRounds()+' rounds)\n'+S.names.map((x,p)=>[x,t[p]]).sort((a,b)=>a[1]-b[1]).map((x,k)=>(k+1)+'. '+x[0]+': '+x[1]).join('\n');}
 const PKEY='amerikano-prev';
 // Keep the game being replaced, so it can be brought back.
 function newGame(savedDate){
@@ -1014,7 +1366,7 @@ document.addEventListener('keydown',e=>{
 });
 document.addEventListener('change',e=>{
  const el=e.target,d=el.dataset;
- if(d.np!==undefined){snap();S.nextPick=+el.value;render();return;}
+ if(d.np!==undefined){snap();S.nextPick=+el.value;UI.turn=false;render();return;}
  if(d.pk!==undefined){
   snap();const i=+d.pk,b=outBefore(),dn=doneOrder();S.picked[i]=+el.value;S.dealt[i]=dealerOf(S.picked[i]);reapplyOut(b);
   // Correcting the most recent round also corrects whose turn is next.
@@ -1025,12 +1377,18 @@ document.addEventListener('change',e=>{
  if(pending){undoStack.push(pending);pending=null;}
 });
 document.addEventListener('click',e=>{
- const b=e.target.closest('button');if(!b)return;
+ const b=e.target.closest('button');
+ if(!b){if(e.target.id==='menu')$('menu').close();return;}
+ if(b.closest('#menu'))$('menu').close();
  const d=b.dataset;
  if(d.pick!==undefined){startRound(+d.pick);return;}
  if(d.sdel!==undefined){setupRemove(+d.sdel);return;}
+ if(d.fp!==undefined){S.nextPick=+d.fp;render();return;}
+ if(d.rsel!==undefined){const i=+d.rsel;if(i===FINAL||isDone(i)||i===S.live)return;snap();S.skip[i]=!S.skip[i];render();if($('rsd').open)renderRoundsDialog();return;}
+ if(d.lvl!==undefined){Object.assign(R,LEVELS[d.lvl]);delete R.name;delete R.blurb;store(RKEY,R);render();toast(LEVELS[d.lvl].name+' rules');return;}
+ if(d.elvl!==undefined){const L=LEVELS[d.elvl];$('r-op').value=L.outPick;$('r-oo').value=L.outOther;$('r-mp').value=L.misplay;$('r-jk').value=L.joker;$('r-fl').checked=L.finalLast;$('elvl').innerHTML=levelPicker('elvl',d.elvl);return;}
  if(d.sname!==undefined){setupAdd(d.sname);return;}
- if(d.jump!==undefined){const t=$(d.jump);if(t)t.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});return;}
+ if(d.rtab!==undefined){ruleTab=d.rtab;renderRules();$('rd').scrollTop=0;return;}
  if(d.open!==undefined){S.open=+d.open;render();scrollToRow(S.open);return;}
  if(d.out!==undefined){snap();setOut(+d.r,+d.out);render();return;}
  if(d.k){
@@ -1038,22 +1396,21 @@ document.addEventListener('click',e=>{
   if(d.k==='j')S.jk[r][p]=S.jk[r][p]?0:1;
   else if(d.k==='m+')S.mp[r][p]=Math.min(9,S.mp[r][p]+1);
   else if(d.k==='m-')S.mp[r][p]=Math.max(0,S.mp[r][p]-1);
-  render();return;
+  render();
+  if(d.k!=='j'&&!RM())document.querySelectorAll('[data-k="m+"][data-r="'+r+'"][data-p="'+p+'"]').forEach(b=>{const n=b.parentElement.querySelector('b');if(n)n.classList.add('bump');});
+  return;
  }
  if(d.del!==undefined){
   if(S.names.length<=2){toast('You need at least two players');return;}
-  const p=+d.del;if(!confirm('Remove '+S.names[p]+' and their scores?'))return;
-  snap();S.names.splice(p,1);S.col.splice(p,1);[S.base,S.jk,S.mp].forEach(g=>g.forEach(r=>r.splice(p,1)));
-  const fix=o=>o===p?-1:o>p?o-1:o;S.out=S.out.map(fix);S.dealt=S.dealt.map(fix);S.picked=S.picked.map(fix);S.nextPick=fix(S.nextPick);
-  render();renderSettings();return;
+  const p=+d.del;ask('Remove '+S.names[p]+' and their scores?',()=>removePlayer(p),null,'Remove',null,true);return;
  }
  if(d.mv!==undefined){
   const [p,dir]=d.mv.split(',').map(Number);movePlayer(p,p+dir);renderSettings();
   const nb=document.querySelector('[data-mv="'+(p+dir)+','+dir+'"]:not([disabled])')||document.querySelector('[data-mv="'+(p+dir)+','+(-dir)+'"]');if(nb)nb.focus();return;
  }
  if(d.delg!==undefined){
-  const g=H[+d.delg];if(!g||!confirm('Delete the game from '+new Date(g.date).toLocaleDateString('en-GB')+' won by '+andList(g.winners)+'?'))return;
-  H.splice(+d.delg,1);store(HKEY,H);renderHistory();toast('Game deleted');return;
+  const k=+d.delg,g=H[k];if(!g)return;
+  ask('Delete the game from '+new Date(g.date).toLocaleDateString('en-GB')+' won by '+andList(g.winners)+'?',()=>{const j=H.indexOf(g);if(j>=0)H.splice(j,1);store(HKEY,H);renderHistory();toast('Game deleted');},null,'Delete',null,true);return;
  }
  switch(d.act||b.id){
   case 'rover':snap();S.stage='score';render();scrollFlow();break;
@@ -1063,26 +1420,50 @@ document.addEventListener('click',e=>{
   case 'edone':S.open=-1;render();break;
   case 'playersBtn':renderSettings();$('pd').showModal();break;
   case 'pdone':$('pd').close();break;
-  case 'rulesBtn':rulesEdit=false;renderRules();$('rd').showModal();$('rd').scrollTop=0;break;
+  case 'rulesBtn':showRules('quick');break;
   case 'sadd':{setupAdd('');const i=document.querySelector('input[data-sn="'+(S.names.length-1)+'"]');if(i)i.focus();break;}
-  case 'srand':S.nextPick=Math.floor(Math.random()*S.names.length);render();toast((S.names[S.nextPick]||'Player '+(S.nextPick+1))+' picks first');break;
+  case 'srand':S.nextPick=Math.floor(Math.random()*S.names.length);UI.turn=false;render();toast((S.names[S.nextPick]||'Player '+(S.nextPick+1))+' picks first');break;
   case 'sstart':startGame();break;
-  case 'srulesView':rulesEdit=false;renderRules();$('rd').showModal();$('rd').scrollTop=0;break;
-  case 'srulesEdit':rulesEdit=true;renderRules();$('rd').showModal();$('rd').scrollTop=0;break;
+  case 'srulesView':showRules('quick');break;
+  case 'srulesEdit':showRules(null,true);break;
   case 'cin':$('serr').textContent='';$('sd').showModal();$('semail').focus();break;
   case 'scancel':$('sd').close();break;
   case 'sforgot':{const em=$('semail').value.trim();if(!em){$('serr').textContent='Type your email first, then tap Forgot password.';break;}
    CL.fb.sendPasswordResetEmail(CL.auth,em).catch(()=>{}).then(()=>{$('serr').textContent='If that email has an account, a reset link is on its way.';});break;}
-  case 'cout':if(confirm('Sign out? Scores stay on this phone but stop saving to the cloud.')){syLoad();delete SY.hash;delete SY.rev;sySave();CL.fb.signOut(CL.auth);}break;
+  case 'cout':ask('Sign out? Scores stay on this phone but stop saving to the cloud.',()=>{syLoad();delete SY.hash;delete SY.rev;sySave();CL.fb.signOut(CL.auth);},null,'Sign out');break;
   case 'cretry':CL.status='saving';syLoad();delete SY.hash;sySave();cloudPush();break;
   case 'prevback':{
    const p=load(PKEY),g=p&&fixState(p.game);if(!g){toast('Couldn\u2019t bring the last game back');break;}
-   if(!confirm('Bring back your last game?'+(p.saved?' It will be taken out of Past games so it isn\u2019t counted twice.':'')))break;
    if(p.saved){H=H.filter(x=>x.date!==p.saved);store(HKEY,H);}
    S=g;migrate();S.setup=false;undoStack=[];try{localStorage.removeItem(PKEY)}catch(e){}
-   render();window.scrollTo(0,0);toast('Last game brought back');break;
+   render();window.scrollTo(0,0);toast(p.saved?'Last game brought back and taken out of Past games':'Last game brought back');break;
   }
-  case 'rhelp':rulesEdit=false;renderRules();$('rd').showModal();$('rs-rules').scrollIntoView({block:'start'});break;
+  case 'menuBtn':$('menu').showModal();break;
+  case 'mSaving':renderCloud();$('svd').showModal();break;
+  case 'mHistory':renderHistory();$('hd').showModal();break;
+  case 'hdone':$('hd').close();break;
+  case 'svdone':$('svd').close();break;
+  case 'mSkip':skipToFinal();break;
+  case 'tchange':UI.turn=true;render();{const s=document.querySelector('.flow select[data-np]');if(s)s.focus();}break;
+  case 'mRounds':case 'mRounds2':renderRoundsDialog();$('rsd').showModal();break;
+  case 'rsdone':$('rsd').close();break;
+  case 'skipfinal':skipToFinal();break;
+  case 'rall':snap();S.skip=Array(N).fill(false);render();break;
+  case 'carryback':if(S.carry)startRound(S.carry.from);break;
+  case 'mHome':showTitle();break;
+  case 'tCont':hideTitle();break;
+  case 'tNew':
+   if(gameInProgress())newGame();   // no pop-up: the setup screen offers "Bring it back"
+   else if(!S.setup){S.setup=true;render();}
+   hideTitle();window.scrollTo(0,0);break;
+  case 'tHow':showRules('quick');break;
+  case 'tHist':renderHistory();$('hd').showModal();break;
+  case 'askYes':askDone(true);break;
+  case 'askNo':askDone(false);break;
+  case 'mAwake':{const on=!awakeOn();try{localStorage.setItem(WKEY,on?'on':'off')}catch(e){}renderAwake();syncAwake();toast(on?'The screen will stay on during games':'The screen will sleep as normal');break;}
+  case 'tInstall':if(installEvt){const e=installEvt;installEvt=null;e.prompt();e.userChoice.finally(renderInstall);}break;
+  case 'tInstallNo':try{localStorage.setItem(IKEY,'off')}catch(e){}renderInstall();break;
+  case 'rhelp':showRules('rules');break;
   case 'redit':rulesEdit=true;renderRules();$('rd').scrollTop=0;break;
   case 'rcancel':rulesEdit=false;renderRules();$('rd').scrollTop=0;break;
   case 'rsaveRules':saveRules();break;
@@ -1090,21 +1471,22 @@ document.addEventListener('click',e=>{
   case 'addp':if(S.names.length>=6){toast('Six players is the maximum');break;}snap();S.col.push([0,1,2,3,4,5].find(c=>!S.col.includes(c)));S.names.push('Player '+(S.names.length+1));S.base.forEach(r=>r.push(''));S.jk.forEach(r=>r.push(0));S.mp.forEach(r=>r.push(0));render();renderSettings();break;
   case 'undo':{const s=undoStack.pop();if(!s){toast('Nothing to undo');break;}S=JSON.parse(s);render();toast('Undone');break;}
   case 'share':(async()=>{const txt=summary();try{if(navigator.share){await navigator.share({text:txt});return;}}catch(e){if(e.name==='AbortError')return;}copyText(txt,'Copied');})();break;
-  case 'finish':{const {t,played}=totals();if(!played){toast('No scores yet');break;}if(!confirm((S.live>=0?ROUNDS[S.live][0]+' is still in progress; anything entered for it so far will count. ':'')+'Save this game to history and start a new one?'))break;const min=Math.min(...t);H.unshift({date:new Date().toISOString(),names:S.names.slice(),totals:t,winners:S.names.filter((x,p)=>t[p]===min),played,outs:outCounts()});store(HKEY,H);newGame(H[0].date);toast('Game saved');break;}
-  case 'newg':if(confirm('Start a new game without saving? This clears all scores.'))newGame();break;
-  case 'clearh':if(confirm('Delete all past games?')){H=[];store(HKEY,H);renderHistory();}break;
+  case 'finish':{const {t,played}=totals();if(!played){toast('No scores yet');break;}ask((S.live>=0?ROUNDS[S.live][0]+' is still in progress; anything entered for it so far will count. ':'')+'Save this game to history and start a new one?',()=>{const min=Math.min(...t);H.unshift({date:new Date().toISOString(),names:S.names.slice(),totals:t,winners:S.names.filter((x,p)=>t[p]===min),played,outs:outCounts()});store(HKEY,H);newGame(H[0].date);toast('Game saved');},null,'Save game');break;}
+  case 'newg':ask('Start a new game without saving this one? You can bring it back from the setup screen.',()=>newGame(),null,'New game');break;
+  case 'clearh':ask('Delete all past games? This can\u2019t be undone.',()=>{H=[];store(HKEY,H);renderHistory();},null,'Delete all',null,true);break;
   case 'bcopy':copyText(JSON.stringify({app:'amerikano',v:2,game:S,history:H,rules:R}),'Backup copied. Paste it somewhere safe.');break;
   case 'brestore':{
    const txt=prompt('Paste your backup here');if(!txt)break;
    let o,g;try{o=JSON.parse(txt);g=fixState(o.game);}catch(err){}
    if(!g||!Array.isArray(o.history)){toast("That isn't an Amerikano backup");break;}
-   if(!confirm('Replace the current game and history with this backup?'))break;
-   snap();if(o.rules){R=fixRules(o.rules);store(RKEY,R);}S=g;migrate();H=o.history;store(HKEY,H);render();toast('Backup restored');break;
+   ask('Replace the current game and history with this backup?',()=>{snap();if(o.rules){R=fixRules(o.rules);store(RKEY,R);}S=g;migrate();H=o.history;store(HKEY,H);render();toast('Backup restored');},null,'Replace',null,true);break;
   }
  }
 });
 render();
+showTitle();
 $('sform').addEventListener('submit',cloudSignIn);
+$('askd').addEventListener('cancel',e=>{e.preventDefault();askDone(false);});
 cloudInit();
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script></body></html>

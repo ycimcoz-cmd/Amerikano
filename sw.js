@@ -3,12 +3,14 @@
 // when offline it falls back to the last copy saved on this phone.
 // Only the app's own files, its fonts and the Firebase code are cached.
 // Sign-in and cloud-save traffic is never touched.
-const CACHE = 'amerikano-v2';
+const CACHE = 'amerikano-v4';
 const CDN = ['www.gstatic.com', 'fonts.googleapis.com', 'fonts.gstatic.com'];
 
 self.addEventListener('install', e => {
   self.skipWaiting();
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', './index.html'])));
+  // Each file is added on its own, so one missing file can't stop the app working offline.
+  const files = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './apple-touch-icon.png'];
+  e.waitUntil(caches.open(CACHE).then(c => Promise.all(files.map(f => c.add(f).catch(() => {})))));
 });
 
 self.addEventListener('activate', e => e.waitUntil(
