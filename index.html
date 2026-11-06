@@ -886,7 +886,7 @@ function migrate(){
 let R=fixRules(load(RKEY),load(KEY));store(RKEY,R);
 let S=fixState(load(KEY));
 if(!S){const o=load("amerikano-v1");if(o)S=fixState(Object.assign(blank(o.names||[]),{base:o.base,jk:o.jk,mp:o.mp}));}
-if(!S){S=blank(["Hebe","Clara","Sam","Yusuf"]);S.setup=true;}
+if(!S){S=blank(["Player 1","Player 2","Player 3","Player 4"]);S.setup=true;}
 migrate();
 let H=load(HKEY)||[],undoStack=[],pending=null,chartModel=null;
 function snap(){undoStack.push(JSON.stringify(S));if(undoStack.length>50)undoStack.shift();}
