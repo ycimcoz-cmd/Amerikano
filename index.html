@@ -238,7 +238,7 @@ body.setup .stand,body.setup #rounds,body.setup .chartd{display:none}
 .seat>i{flex:none;width:12px;height:12px;border-radius:50%;background:var(--pc)}
 .seat input{flex:1;min-width:0;height:46px;border:0;border-radius:10px;background:var(--card);padding:0 12px;font-size:17px;font-weight:700;color:var(--pc);box-shadow:inset 0 0 0 1.5px rgba(42,26,18,.55)}
 .seat input::placeholder{color:var(--kohl-2);font-weight:500;opacity:.7}
-.grip,.xbtn{flex:none;width:40px;height:46px;border-radius:10px;border:0;background:transparent;color:var(--kohl);box-shadow:inset 0 0 0 1.5px rgba(42,26,18,.3);font-size:20px;line-height:1;cursor:pointer;padding:0}
+.grip,.xbtn{flex:none;width:40px;height:42px;border-radius:10px;border:0;background:transparent;color:var(--kohl);box-shadow:inset 0 0 0 1.5px rgba(42,26,18,.3);font-size:20px;line-height:1;cursor:pointer;padding:0}
 .grip{touch-action:none;cursor:grab}
 .xbtn:disabled{opacity:.3;cursor:default}
 .seat.lift{z-index:3;background:var(--screen);box-shadow:0 8px 0 rgba(42,26,18,.25)}
@@ -293,7 +293,7 @@ dialog .rsc.on{background:#FFFCF4;box-shadow:inset 0 0 0 1.5px var(--paper-line)
 .tip b{min-width:2.6em;text-align:right}
 
 /* ---------- Paper: dialogs ---------- */
-dialog{border:0;border-radius:16px;padding:18px;width:min(92vw,420px);max-height:86vh;overflow:auto;background:var(--grain-soft) 0 0/200px 200px,var(--paper);color:var(--kohl);box-shadow:0 6px 0 rgba(0,0,0,.45)}
+dialog{border:0;border-radius:16px;padding:18px;width:min(92vw,420px);max-height:min(86vh,calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 32px));overflow:auto;background:var(--grain-soft) 0 0/200px 200px,var(--paper);color:var(--kohl);box-shadow:0 6px 0 rgba(0,0,0,.45)}
 dialog::backdrop{background:rgba(20,11,7,.62)}
 .dhead{display:flex;justify-content:space-between;align-items:center;position:sticky;top:-18px;z-index:2;background:var(--grain-soft) 0 0/200px 200px,var(--paper);margin:-18px -18px 0;padding:18px 18px 10px}
 .dhead h2{margin:0;font-size:26px;font-weight:800}
@@ -301,7 +301,7 @@ dialog::backdrop{background:rgba(20,11,7,.62)}
 .dnote{font-size:14px;color:var(--muted);margin:6px 0 10px}
 .dsub{font-size:17px;font-weight:750;margin:18px 0 4px}
 #hd,#svd{width:min(92vw,480px)}
-#rd{height:min(86vh,760px)}
+#rd{height:min(86vh,760px,calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 32px))}
 .hb{display:flex;gap:8px}
 .srow{display:flex;gap:8px;align-items:center;margin:8px 0}
 .srow i{flex:none;width:12px;height:12px;border-radius:50%}
@@ -380,7 +380,7 @@ dialog .grip,dialog .xbtn{color:var(--kohl-2);box-shadow:inset 0 0 0 1.5px var(-
 
 /* Menu */
 .burger{width:44px;height:44px;border-radius:50%;border:0;background:var(--raised);color:var(--ivory);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
-#menu{margin:62px max(12px,calc((100vw - 560px)/2 + 12px)) auto auto;width:min(290px,calc(100vw - 24px));padding:6px 0;border-radius:16px}
+#menu{margin:calc(62px + env(safe-area-inset-top)) max(12px,calc((100vw - 560px)/2 + 12px)) auto auto;width:min(290px,calc(100vw - 24px));padding:6px 0;border-radius:16px}
 #menu::backdrop{background:rgba(20,11,7,.4)}
 .mgroup{padding:6px 0;border-top:1px solid var(--line)}
 .mgroup:first-child{border-top:0}
@@ -511,6 +511,74 @@ dialog[open]::backdrop{animation:fade .22s ease-out}
 .final.enter li.win{animation:rise .42s var(--ease) both,hop 1.1s ease-out both;animation-delay:var(--d),calc(var(--d) + .35s)}
 .delta{position:absolute;left:50%;top:-6px;font-size:15px;font-weight:800;color:var(--pc);background:var(--ivory);border-radius:8px;padding:0 6px;box-shadow:0 2px 0 var(--ivory-edge);pointer-events:none;white-space:nowrap;animation:floatup 1.3s var(--ease) forwards}
 
+
+/* ---------- One screen, two pages: Game and Rounds, side by side ---------- */
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+.wrap{height:100dvh;display:flex;flex-direction:column;padding-bottom:0;box-sizing:border-box}
+.top{flex:none}
+#board{flex:1;min-height:0;display:flex;flex-direction:column}
+.stand{position:relative;top:auto;flex:none}
+.pager{flex:1;min-height:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:none;margin:0 -12px}
+.pager::-webkit-scrollbar{display:none}
+.pane{flex:0 0 100%;min-width:0;box-sizing:border-box;scroll-snap-align:start;scroll-snap-stop:always;overflow-y:auto;overscroll-behavior-y:contain;padding:0 12px calc(14px + env(safe-area-inset-bottom))}
+body.setup .pager{overflow-x:hidden}
+body.setup #prounds{visibility:hidden}
+/* the tabs take the title's place once a game is going */
+.ptabs{display:flex;gap:16px}
+body.setup .ptabs,body:not(.setup) .top h1{display:none}
+.ptabs button{border:0;background:none;padding:0 0 3px;font:inherit;font-size:28px;font-weight:800;font-stretch:78%;line-height:1;color:var(--kohl-2);cursor:pointer;position:relative;transition:color .2s}
+.ptabs button[aria-selected=true]{color:var(--ivory)}
+.ptabs button::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:3px;border-radius:2px;background:var(--saffron);transform:scaleX(0);transform-origin:0 50%;transition:transform .28s var(--spring)}
+.ptabs button[aria-selected=true]::after{transform:none}
+.ptabs button:focus-visible{outline:2px solid var(--saffron);outline-offset:4px;border-radius:4px}
+/* rounds page: compact rows; the chart swaps in for the list; editing a round shows just that round */
+.rounds>li{scroll-margin-top:0}
+.rb{padding:8px 0}
+.lhd{padding:12px 0 4px}
+.rempty{padding:28px 0;text-align:center;color:var(--muted);font-size:15px}
+.chartd{margin-top:2px;border-top:0;border-bottom:1px solid var(--line)}
+.chartd>summary{display:flex;justify-content:space-between;align-items:center;list-style:none;padding:12px 0}
+.chartd>summary::-webkit-details-marker{display:none}
+.chartd>summary::after{content:"Show chart \203A";font-weight:400;font-size:14px;color:var(--muted)}
+.chartd[open]>summary::after{content:"Show rounds \203A"}
+.chartd[open]{border-bottom:0}
+#prounds:has(#chartd[open]) .rounds{display:none}
+.rounds:has(>li.open)>li:not(.open){display:none}
+#prounds:has(li.open) #chartd{display:none}
+.rounds>li.open{margin-top:14px}
+
+/* tighter so each step fits one screen */
+.labrow{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:12px 0 6px}
+.labrow .lab{margin:0}
+.labrow .linkbtn{font-size:14px;color:var(--muted)}
+.wout .labrow{margin-top:0}
+.pchip{height:36px;padding:0 13px;font-size:15px}
+.pchips{gap:7px}
+.prow{padding:5px 0}
+.prow input{height:42px}
+.seat{padding:3px 0}
+.seat input{height:42px}
+.fold>summary{padding:10px 0}
+.stand{padding:10px 0}
+.flow,.final{margin-top:8px}
+.setup-panel .labrow{margin-top:12px}
+.setup-panel .labrow .lab{font-size:15px;color:var(--ink)}
+
+.chartd>summary{font-size:15px;padding:10px 0 8px}
+.chartd .s1 small{display:block;font-weight:400;font-size:13px;color:var(--muted)}
+.chartd[open] .s1,.chartd:not([open]) .s2{display:none}
+#prounds:has(#chartd:not([hidden])) .lhd{display:none}
+.rb{padding:7px 0}
+
+/* five or six players: slimmer rows so the step still fits */
+:is(.flow,.rounds>li.open):has(.prow~.prow~.prow~.prow~.prow) .prow{padding:2px 0}
+:is(.flow,.rounds>li.open):has(.prow~.prow~.prow~.prow~.prow) .prow input{height:38px}
+:is(.flow,.rounds>li.open):has(.prow~.prow~.prow~.prow~.prow) .tg :is(button,.step){height:34px}
+:is(.flow,.rounds>li.open):has(.prow~.prow~.prow~.prow~.prow) .pchip{height:32px;padding:0 11px}
+.seats:has(li:nth-child(5)) .seat{padding:2px 0}
+.seats:has(li:nth-child(5)) .seat input{height:38px}
+.seats:has(li:nth-child(5)) :is(.grip,.xbtn){height:38px}
+
 @media (prefers-reduced-motion: reduce){*,*::before,*::after,::backdrop{animation:none!important;transition:none!important}}
 </style></head><body>
 <div id="title" class="title" role="dialog" aria-modal="true" aria-labelledby="ttl">
@@ -524,13 +592,14 @@ dialog[open]::backdrop{animation:fade .22s ease-out}
  </div>
 </div>
 <div class="wrap">
-<header class="top"><div class="tl"><h1>Amerikano</h1><span class="cstat" id="cstat" role="status"></span></div><div class="hr"><button class="btn sm" id="undo" hidden>Undo</button><button class="burger" id="menuBtn" aria-label="Menu" aria-haspopup="dialog"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div></header>
+<header class="top"><div class="tl"><h1>Amerikano</h1><div class="ptabs" id="ptabs" role="tablist" aria-label="Pages"><button role="tab" id="tabGame" data-page="0" aria-selected="true" aria-controls="pgame">Game</button><button role="tab" id="tabRounds" data-page="1" aria-selected="false" aria-controls="prounds">Rounds</button></div><span class="cstat" id="cstat" role="status"></span></div><div class="hr"><button class="btn sm" id="undo" hidden>Undo</button><button class="burger" id="menuBtn" aria-label="Menu" aria-haspopup="dialog"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div></header>
 <div id="board">
  <div class="stand grid" id="stand"></div>
- <div id="flow"></div>
- <ol class="rounds" id="rounds"></ol>
+ <div class="pager" id="pager">
+  <section class="pane" id="pgame" role="tabpanel" aria-labelledby="tabGame"><div id="flow"></div></section>
+  <section class="pane" id="prounds" role="tabpanel" aria-labelledby="tabRounds"><details class="chartd" id="chartd" data-ui="chart" hidden><summary><span class="s1">Played rounds<small>Tap one to correct it</small></span><span class="s2">Running totals</span></summary><div class="chart" id="chart" tabindex="0" aria-label="Running totals chart. Tap or use arrow keys to read each round."></div></details><ol class="rounds" id="rounds"></ol></section>
+ </div>
 </div>
-<details class="chartd" id="chartd" data-ui="chart" hidden><summary>Running totals</summary><div class="chart" id="chart" tabindex="0" aria-label="Running totals chart. Tap or use arrow keys to read each round."></div></details>
 </div>
 <dialog id="hd" aria-labelledby="hdt">
  <div class="dhead"><h2 id="hdt">History</h2><div class="hb"><button class="btn" id="hdone">Done</button></div></div>
@@ -978,7 +1047,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 function renderAwake(){const b=$('mAwake');if(!b)return;b.hidden=!('wakeLock' in navigator);b.setAttribute('aria-checked',String(awakeOn()));}
 function render(){
  lockOuts();
- document.body.classList.toggle('setup',!!S.setup);
+ document.body.classList.toggle('setup',!!S.setup);if(S.setup&&page)setPage(0);else markPage(page);
  const n=S.names.length;
  $('board').style.setProperty('--n',n);
  // Tiles are only rebuilt when the players change, so totals and the leader animate from where they were.
@@ -987,8 +1056,8 @@ function render(){
   $('stand').innerHTML='<div class="slead"><b>Total</b><span id="prog"></span></div>'+S.names.map((x,p)=>'<div class="tile" data-p="'+p+'" id="tile'+p+'" style="'+pc(p)+'"><span class="tn">'+esc(x)+'</span><span class="tt" id="tot'+p+'">0</span><span class="tb" id="beh'+p+'"></span><span class="pips" id="pip'+p+'"></span></div>').join('');}
  renderFlow();
  const d=doneOrder();
- $('rounds').innerHTML=d.length?'<li class="lhd">Played rounds<span>Tap one to correct it</span></li>'+d.map(i=>i===S.open?editRow(i):
-  '<li id="row'+i+'" class="done"><button class="rb grid" data-open="'+i+'"><span class="rname">'+ROUNDS[i][0]+'</span>'+S.names.map((x,p)=>'<span class="rc" id="c'+i+'_'+p+'" style="'+pc(p)+'"></span>').join('')+'</button></li>').join(''):'';
+ $('rounds').innerHTML=!d.length?'<li class="rempty">Rounds you finish will show up here.</li>':'<li class="lhd">Played rounds<span>Tap one to correct it</span></li>'+d.map(i=>i===S.open?editRow(i):
+  '<li id="row'+i+'" class="done"><button class="rb grid" data-open="'+i+'"><span class="rname">'+ROUNDS[i][0]+'</span>'+S.names.map((x,p)=>'<span class="rc" id="c'+i+'_'+p+'" style="'+pc(p)+'"></span>').join('')+'</button></li>').join('');
  renderHistory();calc();renderAwake();syncAwake();
  const dn=d.length;
  if(doneCount!==null&&dn>doneCount&&!RM()){const r=$('row'+d[dn-1]);if(r)r.classList.add('enter');}
@@ -1007,8 +1076,8 @@ function mpCtl(i,p){
   :'<button class="mbtn" data-k="m+"'+a+'>Misplay</button>';
 }
 function outChips(i){
- return '<div class="wout"><span class="lab">Who went out?</span><div class="pchips">'+S.names.map((x,p)=>'<button class="pchip" style="'+pc(p)+'" data-out="'+p+'" data-r="'+i+'" aria-pressed="'+(S.out[i]===p)+'">'+esc(x)+'</button>').join('')
- +'<button class="pchip none" data-out="-1" data-r="'+i+'">Nobody</button></div></div>';
+ return '<div class="wout"><div class="labrow"><span class="lab">Who went out?</span><button class="linkbtn" data-out="-1" data-r="'+i+'">Nobody went out</button></div><div class="pchips">'+S.names.map((x,p)=>'<button class="pchip" style="'+pc(p)+'" data-out="'+p+'" data-r="'+i+'" aria-pressed="'+(S.out[i]===p)+'">'+esc(x)+'</button>').join('')
+ +'</div></div>';
 }
 function scoreRows(i,full){
  return S.names.map((x,p)=>{
@@ -1051,9 +1120,9 @@ function setupPanel(){
  if(UI.players===null)UI.players=!H.length;           // first ever game: names probably need setting
  return '<section class="flow setup-panel">'+prevBanner()
  +'<div class="ohead"><h2>New game</h2><button class="linkbtn" id="srulesView">How to play</button></div>'
- +'<span class="lab">Who picks first?</span><div class="pchips fp" role="radiogroup" aria-label="Who picks first">'
+ +'<div class="labrow"><span class="lab">Who picks first?</span><button class="linkbtn" id="srand">Pick at random</button></div><div class="pchips fp" role="radiogroup" aria-label="Who picks first">'
   +S.names.map((x,p)=>'<button class="pchip" role="radio" style="'+pc(p)+'" data-fp="'+p+'" aria-checked="'+(S.nextPick===p)+'">'+esc(x||'Player '+(p+1))+'</button>').join('')
-  +'<button class="pchip none" id="srand">Random</button></div>'
+  +'</div>'
  +'<p class="hint" id="sdeal">'+dealLine()+'</p>'
  +'<details class="fold" data-ui="players"'+openAttr('players')+'><summary><span>Players</span><span class="sv">'+n+' players</span></summary>'
   +'<p class="hint">In seating order. Drag ≡ to move someone.</p>'
@@ -1061,7 +1130,7 @@ function setupPanel(){
    +'<input data-sn="'+p+'" value="'+esc(x)+'" placeholder="Player '+(p+1)+'" autocomplete="off" autocapitalize="words" enterkeyhint="next" aria-label="Seat '+(p+1)+' name">'
    +'<button class="grip" data-grip="'+p+'" aria-label="Move '+esc(x||'player')+'. Use the up and down arrow keys.">≡</button>'
    +'<button class="xbtn" data-sdel="'+p+'" aria-label="Remove '+esc(x||'player')+'"'+(n<=2?' disabled':'')+'>×</button></li>').join('')+'</ol>'
-  +(n<6?'<button class="btn sm" id="sadd">Add player</button>':'<p class="hint">Six players is the maximum.</p>')
+  +(n<6?'<button class="btn sm" id="sadd">Add player</button>':'')
   +(past.length&&n<6?'<div class="past"><span class="hint">From past games</span><div class="pchips">'+past.map(x=>'<button class="pchip none" data-sname="'+esc(x)+'">+ '+esc(x)+'</button>').join('')+'</div></div>':'')
  +'</details>'
  +'<details class="fold" data-ui="options"'+openAttr('options')+'><summary><span>Game options</span><span class="sv">'+optionsSummary()+'</span></summary>'
@@ -1156,7 +1225,7 @@ function pickPanel(){
 function playPanel(i){
  return '<section class="flow">'+head(i,roundNo())+'<p class="sub muted">'+roleLine(i)+'</p>'+shapeCards(i)+'<p class="rule">'+(SHAPES[i]?'To open: ':'')+esc(desc(i))+'</p>'
  +'<span class="lab">Misplays</span>'+S.names.map((x,p)=>'<div class="mrow" style="'+pc(p)+'"><b>'+esc(x)+'</b>'+mpCtl(i,p)+'</div>').join('')
- +'<div class="ofoot"><button class="linkbtn" id="rchange">Wrong rule?</button><button class="btn primary" id="rover">Round over</button></div></section>';
+ +'<div class="ofoot"><button class="btn sm" id="rchange">Back</button><button class="btn primary" id="rover">Round over</button></div></section>';
 }
 // Step 3: who went out, then everyone else's hand points.
 function scorePanel(i){
@@ -1252,8 +1321,16 @@ function setOut(r,q){
  hd[r]={p:q,base:S.base[r][q],jk:S.jk[r][q]};
  S.out[r]=q;S.base[r][q]=String(outValue(r,q));S.jk[r][q]=0;
 }
-function scrollFlow(){const el=$('flow');if(el&&el.getBoundingClientRect().top<0)el.scrollIntoView({block:'start'});}
-function scrollToRow(i){const el=$('row'+i);if(el)el.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});}
+// Two pages side by side: the game (current step) and the played rounds. Swipe or use the tabs.
+let page=0;
+function markPage(k){page=k;[['tabGame','pgame'],['tabRounds','prounds']].forEach(([t,pn],j)=>{$(t).setAttribute('aria-selected',String(j===k));$(t).tabIndex=j===k?0:-1;$(pn).inert=j!==k;});}
+function setPage(k,smooth){const pg=$('pager');if(S.setup)k=0;markPage(k);const x=k*pg.clientWidth;if(pg.scrollTo)pg.scrollTo({left:x,behavior:smooth&&!RM()?'smooth':'auto'});else pg.scrollLeft=x;}
+$('pager').addEventListener('scroll',()=>{const pg=$('pager'),k=Math.round(pg.scrollLeft/Math.max(1,pg.clientWidth));if(k!==page)markPage(k);},{passive:true});
+addEventListener('resize',()=>setPage(page));
+function scrollFlow(){setPage(0,true);$('pgame').scrollTop=0;}
+function scrollToRow(i){setPage(1,true);const el=$('row'+i),pn=$('prounds');if(el)pn.scrollTop=Math.max(0,el.offsetTop-pn.offsetTop-8);}
+// iOS can shift the whole page up for the keyboard; put it back once typing ends.
+document.addEventListener('focusout',()=>setTimeout(()=>{const a=document.activeElement;if((!a||a===document.body)&&scrollY)scrollTo(0,0);},60));
 
 // ---------- Seating order ----------
 // order[newSeat] = old player index.
@@ -1537,6 +1614,7 @@ document.addEventListener('click',e=>{
  if(d.elvl!==undefined){const L=LEVELS[d.elvl];$('r-op').value=L.outPick;$('r-oo').value=L.outOther;$('r-mp').value=L.misplay;$('r-jk').value=L.joker;$('r-fl').checked=L.finalLast;$('elvl').innerHTML=levelPicker('elvl',d.elvl);return;}
  if(d.sname!==undefined){setupAdd(d.sname);return;}
  if(d.rtab!==undefined){ruleTab=d.rtab;renderRules();$('rd').scrollTop=0;return;}
+ if(d.page!==undefined){setPage(+d.page,true);return;}
  if(d.open!==undefined){S.open=+d.open;render();scrollToRow(S.open);return;}
  if(d.out!==undefined){snap();setOut(+d.r,+d.out);render();return;}
  if(d.k){
