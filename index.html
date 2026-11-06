@@ -8,38 +8,73 @@
 <meta name="apple-mobile-web-app-title" content="Amerikano">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#ECEFEA" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#141715" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1F1510">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&display=swap" rel="stylesheet">
 <style>
+/* Amerikano: the shadow-theatre look.
+   A dark coffeehouse room; the round is played on the lit Karagöz screen,
+   under its fringed pelmet. Ivory cards with hard edges, ochre for the next
+   thing to press, a dark silhouette for what's chosen. Grain everywhere, like cloth and paper. */
 :root{
- --bg:#ECEFEA;--surface:#F7F8F5;--ink:#1C1F1D;--muted:#646C66;--line:#D3D9D1;
- --tile:#FFFDF7;--tile-edge:#D9D2BF;--tile-depth:#E3DCC8;
- --pen:#B3261E;--pen-bg:#FBE4E1;--focus:#1E5AA8;--card-red:#C62828;
- --p0:#C62828;--p1:#8A5E00;--p2:#1E5AA8;--p3:#1C1F1D;--p4:#276C44;--p5:#7B3F8C;
+ --page:#1F1510;--raised:#2B1D15;--hair:#46321F;
+ --ivory:#F4E9D2;--ivory-edge:#CDB68D;--paper:#FBF4E4;--paper-2:#F1E5CB;--paper-line:#DCCBA8;
+ --card:#FFF8EA;
+ --kohl:#2A1A12;--kohl-2:#6B5340;
+ --screen:#EEE1C3;--screen-2:#E2D1AB;--screen-line:#CDBA93;
+ --pelmet:#8E2A1E;
+ --red:#B3261F;
+ --saffron:#E8AC38;--saffron-edge:#A3701A;--saffron-ink:#8A5800;
+ --grain-dark:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.1 0 0 0 0 0.07 0.5 0 0 0 -0.23'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E");
+ --grain-soft:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.1 0 0 0 0 0.07 0.3 0 0 0 -0.14'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E");
+ --grain-light:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.95 0 0 0 0 0.85 0.28 0 0 0 -0.13'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E");
+ --fringe:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='14' viewBox='0 0 18 14'%3E%3Crect width='18' height='7' fill='%238E2A1E'/%3E%3Cpath d='M0 6.5H18A9 6.5 0 0 1 0 6.5Z' fill='%238E2A1E'/%3E%3Cpath d='M0 2.6H18' stroke='%23D8A23A' stroke-width='1.2'/%3E%3C/svg%3E");
+ --tassels:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='14' viewBox='0 0 18 14'%3E%3Cpath d='M9 0.5V4.5' stroke='%23D8A23A' stroke-width='1.2'/%3E%3Cpath d='M9 3.5C6.6 5.5 6.8 10.5 9 12.5C11.2 10.5 11.4 5.5 9 3.5Z' fill='%23D8A23A' stroke='%235A2E0C' stroke-width='.8'/%3E%3C/svg%3E");
+ /* context tokens: what the current surface is made of (the room by default) */
+ --bg:var(--page);--surface:var(--raised);--ink:var(--ivory);--muted:#BCA58A;--line:var(--hair);
+ --pen:#F2735A;--focus:var(--saffron);
+ --btn:var(--ivory);--btn-ink:var(--kohl);--btn-line:transparent;--btn-edge:var(--ivory-edge);--pri-edge:var(--saffron-edge);
+ /* players, light on the dark room */
+ --p0:#F2735A;--p1:#EDB443;--p2:#94ADF7;--p3:#F4E9D2;--p4:#8FCB82;--p5:#C9A0EC;
+ --ease:cubic-bezier(.2,.8,.2,1);
+ --spring:cubic-bezier(.34,1.56,.64,1);
+ color-scheme:dark;
+}
+/* Anything light shows players in their deep colours */
+.tile,.pchip,.seat,.rchip,dialog,.final li,.tip,.flow,.final,.rounds>li.open{--p0:#B3261F;--p1:#7A4D00;--p2:#2340A0;--p3:#2A1A12;--p4:#24602C;--p5:#6C2A8C}
+/* The screen: where the current round is played */
+.flow,.final,.rounds>li.open{
+ --surface:var(--screen);--ink:var(--kohl);--muted:var(--kohl-2);--line:var(--screen-line);--bg:var(--card);
+ --pen:var(--red);--focus:var(--kohl);
+ --btn:var(--card);--btn-line:var(--kohl);--btn-edge:var(--kohl);--pri-edge:var(--kohl);
  color-scheme:light;
 }
-@media (prefers-color-scheme:dark){:root{
- --bg:#141715;--surface:#1C201D;--ink:#E9ECE7;--muted:#9AA39C;--line:#2E3430;
- --tile:#232825;--tile-edge:#363D38;--tile-depth:#0E100F;
- --pen:#FF8A80;--pen-bg:#3A201E;--focus:#74A7F2;--card-red:#FF7A6E;
- --p0:#FF7A6E;--p1:#E8B23A;--p2:#74A7F2;--p3:#E9ECE7;--p4:#63C98C;--p5:#C690DA;
- color-scheme:dark;
-}}
+/* Paper: menus, sheets and the rules */
+dialog{
+ --surface:var(--paper);--ink:var(--kohl);--muted:var(--kohl-2);--line:var(--paper-line);--bg:var(--paper-2);
+ --pen:var(--red);--pen-bg:#F6D6CB;--focus:var(--kohl);
+ --btn:var(--paper-2);--btn-line:transparent;--btn-edge:var(--ivory-edge);
+ color-scheme:light;
+}
+
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;font-family:"Barlow Semi Condensed",system-ui,sans-serif;font-size:16px;line-height:1.35;color:var(--ink);background:var(--bg);font-variant-numeric:tabular-nums}
-button,input,select{font:inherit;color:inherit}
+html{-webkit-text-size-adjust:100%;background:var(--page)}
+body{margin:0;font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:16px;line-height:1.35;font-stretch:92%;color:var(--ink);background:var(--grain-light) 0 0/200px 200px,var(--page);font-variant-numeric:tabular-nums;-webkit-tap-highlight-color:transparent}
+/* keeps scrolling content out from under the status bar in the Home Screen app */
+body::before{content:"";position:fixed;left:0;right:0;top:0;height:env(safe-area-inset-top);background:var(--page);z-index:20}
+button,input,select,textarea{font:inherit;color:inherit;font-stretch:inherit}
 :focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+h1,h2,h3,.tword,.tt,.ft,.rk{font-stretch:78%}
+h2,h3,.askm,.tsub,.rule,.dnote{text-wrap:balance}
 .wrap{max-width:560px;margin:0 auto;padding:0 max(12px,env(safe-area-inset-right)) calc(48px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
-.top{display:flex;align-items:center;justify-content:space-between;padding:calc(14px + env(safe-area-inset-top)) 0 4px}
+.top{display:flex;align-items:center;justify-content:space-between;padding:calc(14px + env(safe-area-inset-top)) 0 6px}
 .hr{display:flex;align-items:center;gap:8px}
 .hr .btn[hidden]{display:none}
 .tl{display:flex;flex-direction:column}
-.cstat{font-size:12px;color:var(--muted);min-height:15px;line-height:15px}
+h1{font-size:32px;font-weight:800;margin:0;letter-spacing:-.01em;line-height:1}
+.cstat{font-size:12px;color:var(--muted);min-height:15px;line-height:15px;margin-top:3px}
 .cstat.ok::before{content:"\2713  "}
 .cstat.bad{color:var(--pen);font-weight:600}
 .cloud .bnote.bad{color:var(--pen)}
@@ -48,89 +83,243 @@ button,input,select{font:inherit;color:inherit}
 .bkd summary{font-weight:600;cursor:pointer}
 .bkd .bnote{margin-top:8px}
 .sfld{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600;margin:10px 0}
-.sfld input{height:44px;border:1px solid var(--line);border-radius:9px;background:var(--bg);padding:0 12px;font-size:16px;font-weight:400}
+.sfld input{height:46px;border:1.5px solid var(--paper-line);border-radius:10px;background:#FFFCF4;color:var(--kohl);padding:0 12px;font-size:16px;font-weight:400}
 .serr{min-height:20px;color:var(--pen);font-size:14px;margin:6px 0 0}
 .sfoot{text-align:center;margin:12px 0 0}
-h1{font-size:28px;font-weight:700;margin:0;letter-spacing:-.01em}
-.btn{font-size:15px;font-weight:600;height:40px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer}
-.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.btn.sm{height:36px;font-size:14px;padding:0 10px}
-.grid{display:grid;grid-template-columns:4.75rem repeat(var(--n),minmax(0,1fr));gap:6px;align-items:center}
 
-/* Standings: okey tiles */
-.stand{position:sticky;top:env(safe-area-inset-top);z-index:5;background:var(--bg);padding:8px 0 12px;border-bottom:1px solid var(--line)}
-.slead{font-size:13px;color:var(--muted);line-height:1.25}
-.slead b{display:block;color:var(--ink);font-size:15px;font-weight:600}
-.tile{min-width:0;display:flex;flex-direction:column;align-items:center;padding:6px 3px 7px;background:var(--tile);border:1px solid var(--tile-edge);border-radius:9px;box-shadow:0 3px 0 var(--tile-depth)}
-.tile.lead{border-color:var(--ink);box-shadow:0 3px 0 var(--ink)}
-.tn{font-size:13px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tt{font-size:26px;font-weight:700;line-height:1.05;color:var(--pc)}
-.tb{font-size:12px;color:var(--muted);min-height:16px}
+/* Buttons: flat cards with a hard edge; pressing pushes them down */
+.btn{font-size:15px;font-weight:650;height:42px;padding:0 15px;border-radius:10px;border:0;background:var(--btn);color:var(--btn-ink);box-shadow:inset 0 0 0 1.5px var(--btn-line),0 3px 0 var(--btn-edge);cursor:pointer;transition:transform .08s,box-shadow .12s,background-color .16s,color .16s}
+.btn:active:not(:disabled){transform:translateY(2px);box-shadow:inset 0 0 0 1.5px var(--btn-line),0 1px 0 var(--btn-edge)}
+.btn.primary{background:var(--saffron);color:var(--kohl);box-shadow:inset 0 0 0 1.5px var(--btn-line),0 3px 0 var(--pri-edge)}
+.btn.primary:active:not(:disabled){box-shadow:inset 0 0 0 1.5px var(--btn-line),0 1px 0 var(--pri-edge)}
+.btn.sm{height:36px;font-size:14px;padding:0 11px;border-radius:9px}
+.btn:disabled{opacity:.4;cursor:default}
+.linkbtn{border:0;background:none;padding:0;color:var(--ink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;font-size:13px;cursor:pointer}
+.grid{display:grid;grid-template-columns:4.75rem repeat(var(--n),minmax(0,1fr));gap:6px;align-items:end}
+
+/* State changes ease in rather than snapping */
+.pchip,.tg button,.mbtn,.lvl button,.rtabs button,.rsc,.step,.rchip,.burger{transition:background-color .16s,color .16s,box-shadow .16s,transform .12s}
+
+/* Standings: one ivory card per player; the leader sits up in an ochre frame */
+.stand{position:sticky;top:env(safe-area-inset-top);z-index:5;padding:12px 0 14px}
+/* the room colour runs out to the screen edges so nothing shows either side while scrolling */
+.stand::before{content:"";position:absolute;inset:0 -12px;background:var(--grain-light) 0 0/200px 200px,var(--page);z-index:-1}
+.slead{font-size:13px;color:var(--muted);line-height:1.25;padding-bottom:6px}
+.slead b{display:block;color:var(--ink);font-size:16px;font-weight:700}
+.tile{min-width:0;display:flex;flex-direction:column;align-items:center;padding:7px 3px 6px;background:var(--grain-soft) 0 0/200px 200px,var(--ivory);color:var(--kohl);border-radius:10px;box-shadow:0 4px 0 var(--ivory-edge);transition:transform .55s var(--spring),box-shadow .3s ease}
+.tile.lead{transform:translateY(-6px);box-shadow:0 0 0 2.5px var(--saffron),0 6px 0 2.5px var(--saffron-edge)}
+.tn{font-size:13px;font-weight:600;color:var(--kohl-2);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tt{font-size:28px;font-weight:800;line-height:1.05;color:var(--pc)}
+.tt.roll{animation:roll .42s var(--spring)}
+.tb{font-size:12px;color:var(--kohl-2);min-height:16px}
+.tile.lead .tb{color:var(--saffron-ink);font-weight:700}
 .pips{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;min-height:5px;max-width:100%}
 .pips i{width:5px;height:5px;border-radius:50%;background:var(--pc)}
+.tile{touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:grab;position:relative}
+.tile.lift{z-index:7;transform:translateY(-10px) rotate(-3deg);box-shadow:0 10px 0 rgba(0,0,0,.35);cursor:grabbing;transition:none}
+.tile.drop{outline:2px dashed var(--saffron);outline-offset:3px}
 
-/* Rounds */
+/* Played rounds, in the room */
 .rounds{list-style:none;margin:0;padding:0}
-.rounds>li{border-bottom:1px solid var(--line);scroll-margin-top:124px}
-.rb{width:100%;background:none;border:0;padding:11px 0;text-align:left;cursor:pointer}
+.rounds>li{border-bottom:1px solid var(--line);scroll-margin-top:132px}
+.rb{width:100%;background:none;border:0;padding:12px 0;text-align:left;cursor:pointer;align-items:center}
 .rname{font-size:14px;line-height:1.2;color:var(--muted)}
 .done .rname{color:var(--ink)}
 .rc{text-align:center;font-size:16px}
-.rc.out{color:var(--pc);font-weight:700}
+.rc.out{color:var(--pc);font-weight:800}
+.lhd{display:flex;justify-content:space-between;align-items:baseline;padding:18px 0 6px;font-weight:700;font-size:15px}
+.lhd span{font-weight:400;font-size:13px;color:var(--muted)}
 
-.rounds>li.open{background:var(--surface);border:1px solid var(--ink);border-radius:14px;margin:10px -6px;padding:12px 12px 14px}
+/* ---------- The screen, lit from behind, under a fringed pelmet ---------- */
+.flow,.final,.rounds>li.open{
+ position:relative;color:var(--ink);border-radius:10px;
+ background:var(--grain-dark) 0 0/200px 200px,radial-gradient(ellipse 80% 70% at 50% 42%,var(--screen) 55%,var(--screen-2) 100%);
+}
+.flow::before,.final::before,.rounds>li.open::before{content:"";position:absolute;left:0;right:0;top:0;height:14px;border-radius:10px 10px 0 0;background:var(--fringe) 50% 0/18px 14px repeat-x;pointer-events:none}
+.flow::after,.final::after,.rounds>li.open::after{content:"";position:absolute;left:0;right:0;top:12px;height:14px;background:var(--tassels) 50% 0/18px 14px repeat-x;transform-origin:50% 0;pointer-events:none}
+#flow{scroll-margin-top:132px}
+.flow,.final{margin:14px -6px 8px;padding:38px 14px 16px}
+.rounds>li.open{margin:12px -6px;padding:36px 14px 16px;border-bottom:0}
 .ohead{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-.ohead h2{margin:0;font-size:22px;font-weight:700}
-.ohead span{font-size:13px;color:var(--muted);white-space:nowrap}
-.rule{margin:4px 0 10px;font-size:14px;color:var(--muted)}
-.prow{display:grid;grid-template-columns:minmax(0,1fr) 4.25rem auto;gap:8px;align-items:center;padding:7px 0;border-top:1px solid var(--line)}
-.pn{min-width:0}
-.pn b{display:block;font-weight:600;color:var(--pc);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pn small{display:block;font-size:12px;color:var(--pen)}
-.pn small.ok{color:var(--muted)}
-.prow input[readonly]{background:transparent;color:var(--ink)}
-.tg button:disabled{opacity:.35;cursor:default}
-.prow input{width:100%;height:44px;font-size:19px;font-weight:600;text-align:center;border:1px solid var(--line);border-radius:9px;background:var(--bg)}
-.prow.out input{border-color:var(--ink);border-width:2px}
-.tg{display:flex;gap:4px}
-.tg button{height:36px;padding:0 8px;font-size:13px;font-weight:600;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
-.tg button.pen[aria-pressed=true]{background:var(--pen-bg);color:var(--pen);border-color:transparent}
+.ohead h2{margin:0;font-size:26px;font-weight:800;line-height:1.1}
+.ohead>span{font-size:13px;color:var(--muted);white-space:nowrap}
+.sub{margin:4px 0 0;font-size:15px}
+.sub.muted{color:var(--muted)}
+.rule{margin:6px 0 12px;font-size:15px;line-height:1.4}
+.hint{font-size:13px;color:var(--muted);margin:10px 0 0}
+.lab{display:block;font-size:14px;font-weight:650;margin:14px 0 4px;color:var(--muted)}
+.pn b,.mrow>b{display:block;font-weight:700;color:var(--pc);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Pick: whose turn, then the rule */
+.turn{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:8px 0 4px}
+.turn label{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600}
+.turn p{margin:0;font-size:14px;color:var(--muted)}
+.turn .turnline{margin:0;font-size:17px;color:var(--ink)}
+.turn .turnline b{font-weight:750}
+.turn .tsel{display:none}
+.turn.editing .tsel{display:inline}
+.turn .linkbtn,.ofoot .linkbtn,.hint .linkbtn,.flow .ohead .linkbtn{color:var(--muted);font-size:14px}
+.rchips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 8px;margin-top:14px}
+.rchip{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;min-height:62px;border-radius:10px;border:0;background:var(--card);color:var(--kohl);box-shadow:inset 0 0 0 1.5px var(--kohl),0 3px 0 var(--kohl);text-align:left;padding:6px 11px;cursor:pointer;transition:transform .08s,box-shadow .08s}
+.rchip:active:not(:disabled){transform:translateY(2px);box-shadow:inset 0 0 0 1.5px var(--kohl),0 1px 0 var(--kohl)}
+.rchip .rk{font-size:26px;font-weight:800;line-height:1}
+.rchip small{display:block;font-size:13px;font-weight:550;color:var(--kohl-2);margin-top:3px;line-height:1.1}
+.rchip:disabled{background:transparent;color:var(--kohl-2);box-shadow:none;outline:1.5px dashed var(--kohl-2);outline-offset:-1.5px;cursor:default}
+
+/* Play: misplays as they happen */
+.flow .cards{margin:12px 0 2px}
+.mrow{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
+.mrow>b{font-size:17px}
+.mbtn{height:36px;font-size:13px;font-weight:650;border-radius:9px;border:0;background:transparent;color:var(--kohl);box-shadow:inset 0 0 0 1.5px rgba(42,26,18,.3);cursor:pointer;padding:0}
+.step{display:inline-flex;align-items:center;justify-content:space-between;height:36px;border-radius:9px;background:var(--card);color:var(--red);box-shadow:inset 0 0 0 1.5px var(--red)}
+.step button{width:30px;height:36px;border:0;background:none;color:inherit;font-size:20px;font-weight:700;line-height:1;cursor:pointer;padding:0}
+.step b{min-width:14px;text-align:center;font-size:17px;font-weight:800}
+.step,.mbtn{width:76px}
+.mrow .mbtn,.mrow .step{width:124px;height:44px;font-size:15px}
+.mrow .step button{width:44px;height:44px;font-size:20px}
+.ofoot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px;padding-top:12px;border-top:1px solid var(--line)}
 .ofoot .btn{flex:none;white-space:nowrap}
+.ofoot label{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px}
+
+/* Score: who went out, then hand points */
+.wout{margin:12px 0 8px}
+.wout .lab{margin-top:0}
+.pchips{display:flex;flex-wrap:wrap;gap:8px}
+.pchip{height:40px;padding:0 15px;border-radius:20px;border:0;background:var(--card);color:var(--pc);box-shadow:inset 0 0 0 1.5px var(--kohl),0 2px 0 var(--kohl);font-weight:700;cursor:pointer}
+.pchip.none{color:var(--kohl-2);font-weight:600}
+/* chosen: a dark silhouette, like a puppet against the screen */
+.pchip[aria-pressed=true],.fp .pchip[aria-checked=true]{background:var(--kohl);color:var(--screen)}
+.prow{display:grid;grid-template-columns:minmax(0,1fr) 4.4rem auto;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.pn{min-width:0}
+.pn small{display:block;font-size:12px;color:var(--pen);margin-top:2px}
+.pn small.ok{color:var(--muted)}
+.prow input{width:100%;height:46px;font-size:20px;font-weight:750;text-align:center;border:0;border-radius:10px;background:var(--card);color:var(--kohl);box-shadow:inset 0 0 0 1.5px rgba(42,26,18,.55)}
+.prow input:focus{outline:2.5px solid var(--kohl);outline-offset:1px}
+.prow.out input,.prow input[readonly]{background:var(--kohl);color:var(--screen);box-shadow:none}
+.tg{display:flex;gap:4px;justify-content:flex-end}
+.tg button{height:36px;padding:0 9px;font-size:13px;font-weight:650;border-radius:9px;border:0;background:transparent;color:var(--kohl);box-shadow:inset 0 0 0 1.5px rgba(42,26,18,.3);cursor:pointer}
+.tg button.pen[aria-pressed=true]{background:var(--red);color:var(--card);box-shadow:none}
+.tg button:disabled{opacity:.35;cursor:default}
+.tg .step{width:76px}
+.tg .step button{width:30px;padding:0;background:none;box-shadow:none;color:inherit;font-size:20px;font-weight:700}
+.hasmp .prow .tg{width:136px}
+.hasmp.nojk .prow .tg{width:76px}
 .osl.two{margin-top:8px;padding-top:0;border-top:0}
 .btn.mv{width:36px;padding:0;flex:none}
-.btn:disabled{opacity:.35;cursor:default}
-.ofoot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;padding-top:10px;border-top:1px solid var(--line)}
-.ofoot label{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px}
-select{font-size:16px;height:38px;border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:0 6px}
+select{font-size:16px;height:40px;border:0;border-radius:9px;background:var(--bg);color:var(--kohl);padding:0 8px}
+.flow select,.rounds>li.open select{background:var(--card);box-shadow:inset 0 0 0 1.5px rgba(42,26,18,.55)}
 
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:18px 0 0}
-.sec h2{font-size:18px;font-weight:700;margin:30px 0 6px}
-.lrow,.hrow{padding:9px 0;border-bottom:1px solid var(--line);font-size:15px}
-.lrow{display:flex;justify-content:space-between;gap:8px}
-.lrow span,.hrow small{color:var(--muted)}
-.hrow small{display:block;font-size:13px}
+.sec h2{font-size:17px;font-weight:700;margin:30px 0 6px}
 .empty{color:var(--muted);font-size:14px;margin:4px 0}
 .clear{margin-top:12px}
 
-/* Players dialog */
-dialog{border:0;border-radius:16px;padding:18px;width:min(92vw,420px);max-height:86vh;overflow:auto;background:var(--surface);color:var(--ink)}
-.hb{display:flex;gap:8px}
-.step,.mbtn{width:76px}
-.mbtn{height:36px;font-size:13px;font-weight:600;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer;padding:0}
-.step{display:inline-flex;align-items:center;justify-content:space-between;height:36px;border-radius:8px;background:var(--pen-bg);color:var(--pen)}
-.step button{width:30px;height:36px;border:0;background:none;color:inherit;font-size:19px;font-weight:600;line-height:1;cursor:pointer;padding:0}
-.step b{min-width:14px;text-align:center;font-size:16px}
-.rules{font-size:15px}
+/* Bring back the last game / wrong rule banner */
+.prevb{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--screen-2);border-radius:10px;padding:8px 8px 8px 12px;margin:-4px -2px 14px;font-size:14px}
+.prevb .btn{flex:none}
+
+/* ---------- Setup ---------- */
+body.setup .stand,body.setup #rounds,body.setup .chartd{display:none}
+.setup-panel .ohead{align-items:center}
+.setup-panel .lab{margin-top:16px;color:var(--ink);font-size:15px}
+.setup-panel .hint{margin:4px 0 6px}
+.setup-panel .turn{margin-top:4px}
+.fp{margin-top:4px}
+.fold{border-top:1px solid var(--line);margin-top:14px}
+.fold>summary{display:flex;justify-content:space-between;align-items:center;gap:10px;list-style:none;cursor:pointer;padding:13px 0;font-weight:700;font-size:16px}
+.fold>summary::-webkit-details-marker{display:none}
+.fold>summary .sv{font-weight:400;font-size:14px;color:var(--muted);text-align:right}
+.fold>summary .sv::after{content:" \203A";display:inline-block;margin-left:4px;transition:transform .15s}
+.fold[open]>summary .sv::after{transform:rotate(90deg)}
+.fold>.lab:first-of-type{margin-top:0}
+.fold .linkbtn{font-size:14px;margin:6px 0 2px;color:var(--muted)}
+.seats{list-style:none;margin:0 0 10px;padding:0}
+.seat{display:flex;align-items:center;gap:8px;padding:5px 0;position:relative;border-radius:11px}
+.seat>i{flex:none;width:12px;height:12px;border-radius:50%;background:var(--pc)}
+.seat input{flex:1;min-width:0;height:46px;border:0;border-radius:10px;background:var(--card);padding:0 12px;font-size:17px;font-weight:700;color:var(--pc);box-shadow:inset 0 0 0 1.5px rgba(42,26,18,.55)}
+.seat input::placeholder{color:var(--kohl-2);font-weight:500;opacity:.7}
+.grip,.xbtn{flex:none;width:40px;height:46px;border-radius:10px;border:0;background:transparent;color:var(--kohl);box-shadow:inset 0 0 0 1.5px rgba(42,26,18,.3);font-size:20px;line-height:1;cursor:pointer;padding:0}
+.grip{touch-action:none;cursor:grab}
+.xbtn:disabled{opacity:.3;cursor:default}
+.seat.lift{z-index:3;background:var(--screen);box-shadow:0 8px 0 rgba(42,26,18,.25)}
+.seat.drop{outline:2px dashed var(--kohl);outline-offset:1px}
+.past{margin-top:12px}
+.past .pchip{height:36px;font-size:15px}
+.srules{display:flex;gap:8px;margin-top:6px}
+.sbig{width:100%;height:54px;font-size:20px;font-weight:750;margin-top:20px;border-radius:12px}
+.btn.sbig{box-shadow:inset 0 0 0 1.5px var(--btn-line),0 4px 0 var(--pri-edge)}
+
+/* Levels and rounds (setup and the Rounds sheet) */
+.lvl{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:12px;background:var(--screen-2);margin-top:4px}
+dialog .lvl{background:var(--paper-2)}
+.lvl button{height:40px;border:0;border-radius:9px;background:transparent;font-size:16px;font-weight:650;color:var(--muted);cursor:pointer}
+.lvl button[aria-checked=true]{background:var(--kohl);color:var(--screen)}
+.lvlhint{margin-top:6px!important}
+.rsel{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:8px 0}
+.rsc{min-height:40px;padding:4px 10px;border-radius:10px;border:0;background:transparent;color:var(--muted);box-shadow:inset 0 0 0 1.5px currentColor;font-size:14px;font-weight:600;text-align:left;cursor:pointer;text-decoration:line-through;opacity:.75}
+.rsc.on{background:var(--card);color:var(--kohl);box-shadow:inset 0 0 0 1.5px var(--kohl),0 2px 0 var(--kohl);text-decoration:none;opacity:1}
+dialog .rsc.on{background:#FFFCF4;box-shadow:inset 0 0 0 1.5px var(--paper-line),0 3px 0 var(--paper-line)}
+.rsc:disabled{opacity:.6;cursor:default}
+.skiprow{display:flex;gap:8px;margin-top:10px}
+
+/* ---------- End of game: the standings dealt out as cards ---------- */
+.final h2{margin:0 0 10px;font-size:26px;font-weight:800}
+.final ol{list-style:none;margin:0;padding:0}
+.final li{display:grid;grid-template-columns:2.6rem 1fr auto;align-items:baseline;gap:6px;padding:10px 14px;margin:0 0 9px;background:var(--card);color:var(--kohl);border-radius:10px;box-shadow:inset 0 0 0 1.5px var(--kohl),0 3px 0 var(--kohl)}
+.final .place{color:var(--kohl-2);font-size:14px;font-weight:600}
+.final li b{font-size:20px;color:var(--pc);font-weight:750}
+.final .ft{font-size:20px;font-weight:800}
+.final li.win{padding:14px;box-shadow:0 0 0 3px var(--saffron),0 0 0 4.5px var(--kohl),0 6px 0 4.5px var(--kohl);margin:4px 0 16px}
+.final li.win b{font-size:26px}
+.final li.win .ft{font-size:28px}
+.factions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+
+/* ---------- Chart, folded under the game ---------- */
+.chartd{margin-top:18px;border-top:1px solid var(--line)}
+.chartd>summary{padding:13px 0;font-weight:700;font-size:17px;cursor:pointer}
+.chartd[hidden]{display:none}
+.chart{position:relative;outline-offset:4px}
+.chart svg{display:block;width:100%;height:auto;touch-action:pan-y}
+.chartd.draw polyline{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .9s var(--ease) forwards}
+.chartd.draw circle,.chartd.draw text.el{animation:fade .3s .7s both}
+.chart text{font-family:inherit;font-size:11px;fill:var(--muted)}
+.chart text.el{fill:var(--ink);font-size:12px;font-weight:650}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:6px;font-size:14px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i,.tip i{width:14px;height:3px;border-radius:2px;background:var(--pc)}
+.tip{position:absolute;top:2px;pointer-events:none;background:var(--ivory);color:var(--kohl);border-radius:9px;padding:6px 9px;font-size:13px;box-shadow:0 3px 0 var(--ivory-edge);display:none;white-space:nowrap}
+.tip .th{color:var(--kohl-2);font-size:12px;margin-bottom:2px}
+.tip .r{display:flex;align-items:center;gap:6px}
+.tip b{min-width:2.6em;text-align:right}
+
+/* ---------- Paper: dialogs ---------- */
+dialog{border:0;border-radius:16px;padding:18px;width:min(92vw,420px);max-height:86vh;overflow:auto;background:var(--grain-soft) 0 0/200px 200px,var(--paper);color:var(--kohl);box-shadow:0 6px 0 rgba(0,0,0,.45)}
+dialog::backdrop{background:rgba(20,11,7,.62)}
+.dhead{display:flex;justify-content:space-between;align-items:center;position:sticky;top:-18px;z-index:2;background:var(--grain-soft) 0 0/200px 200px,var(--paper);margin:-18px -18px 0;padding:18px 18px 10px}
+.dhead h2{margin:0;font-size:26px;font-weight:800}
 .dhead{flex-wrap:wrap}
-.rtabs{display:grid;grid-template-columns:repeat(4,auto);flex-basis:100%;margin-top:10px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.rtabs:empty{display:none}
+.dnote{font-size:14px;color:var(--muted);margin:6px 0 10px}
+.dsub{font-size:17px;font-weight:750;margin:18px 0 4px}
+#hd,#svd{width:min(92vw,480px)}
 #rd{height:min(86vh,760px)}
-.rtabs button{height:36px;padding:0 4px;border:0;border-left:1px solid var(--line);background:var(--bg);font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
-.rtabs button:first-child{border-left:0}
-.rtabs button[aria-selected=true]{background:var(--ink);color:var(--bg)}
-.nowcard{background:var(--bg);border-radius:12px;padding:10px 12px;margin:8px 0 4px}
+.hb{display:flex;gap:8px}
+.srow{display:flex;gap:8px;align-items:center;margin:8px 0}
+.srow i{flex:none;width:12px;height:12px;border-radius:50%}
+.srow input,.osl input{height:42px;border:1.5px solid var(--paper-line);border-radius:10px;background:#FFFCF4;color:var(--kohl);padding:0 10px;font-size:16px}
+.srow input{flex:1;min-width:0}
+.osl{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:15px}
+.osl input{width:80px;text-align:center}
+dialog .grip,dialog .xbtn{color:var(--kohl-2);box-shadow:inset 0 0 0 1.5px var(--paper-line)}
+
+/* Rules */
+.rules{font-size:15px}
+.rtabs{display:grid;grid-template-columns:repeat(4,auto);gap:3px;flex-basis:100%;margin-top:12px;padding:3px;border-radius:11px;background:var(--paper-2)}
+.rtabs:empty{display:none}
+.rtabs button{height:36px;padding:0 4px;border:0;border-radius:8px;background:transparent;font-size:14px;font-weight:650;color:var(--kohl-2);cursor:pointer;white-space:nowrap}
+.rtabs button[aria-selected=true]{background:var(--kohl);color:var(--paper)}
+.nowcard{background:var(--paper-2);border-radius:12px;padding:10px 12px;margin:8px 0 4px}
 .nowcard .lab{margin:0 0 2px;font-size:12px;color:var(--muted)}
-.nowcard>b{font-size:19px}
+.nowcard>b{font-size:20px;font-weight:800;font-stretch:80%}
 .nowcard p{margin:4px 0 0;font-size:14px}
 .tworow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:6px 0}
 .tworow .meld{display:flex;margin:6px 0 4px}
@@ -139,194 +328,121 @@ dialog{border:0;border-radius:16px;padding:18px;width:min(92vw,420px);max-height
 .rules .lead{font-size:17px;margin-top:4px}
 .steps{padding-left:22px;margin:6px 0}
 .steps li{margin:8px 0}
+.steps li::marker{font-weight:800;color:var(--red)}
 .terms{margin:6px 0}
-.terms dt{font-weight:700;margin-top:12px}
+.terms dt{font-weight:750;margin-top:12px}
 .terms dd{margin:2px 0 0}
 .terms .meld{display:flex;margin-top:6px}
-.cards{display:flex;flex-wrap:wrap;gap:6px 12px;margin:8px 0 4px}
-.meld{display:inline-flex;gap:3px}
-.card{width:26px;height:36px;border-radius:5px;background:var(--tile);border:1px solid var(--tile-edge);box-shadow:0 2px 0 var(--tile-depth);display:inline-flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;font-weight:700;line-height:1.05;color:var(--ink)}
-.card i{font-style:normal;font-size:13px}
-.card.r{color:var(--card-red)}
-.card.jk{color:var(--p5)}
-.card.jk i{font-size:18px}
 .rl{list-style:none;padding:0;margin:6px 0}
 .rl li{margin:0;padding:10px 0;border-top:1px solid var(--line)}
 .rl li>span{display:block;color:var(--muted);font-size:14px}
-.rl li.now{background:var(--bg);margin:0 -10px;padding:10px;border-radius:10px;border-top-color:transparent}
+.rl li.now{background:var(--paper-2);margin:0 -10px;padding:10px;border-radius:10px;border-top-color:transparent}
 .rlh{display:flex;align-items:center;gap:8px}
-.tag{font-size:12px;font-weight:600;padding:1px 8px;border-radius:9px;background:var(--line);color:var(--muted)}
-.tag.now{background:var(--ink);color:var(--bg)}
+.tag{font-size:12px;font-weight:650;padding:1px 8px;border-radius:9px;background:var(--paper-2);color:var(--muted)}
+.tag.now{background:var(--kohl);color:var(--paper)}
 .stbl{width:100%;border-collapse:collapse;margin:6px 0;font-size:15px}
 .stbl td{padding:7px 0;border-bottom:1px solid var(--line);vertical-align:top}
 .stbl td:last-child{text-align:right;padding-left:12px;white-space:nowrap}
-.ex{background:var(--bg);border-radius:12px;padding:10px 12px;margin:12px 0}
+.ex{background:var(--paper-2);border-radius:12px;padding:10px 12px;margin:12px 0}
 .ex .stbl td{font-size:14px}
 .ex .stbl tr:last-child td{border-bottom:0}
 .rules details{margin-top:18px;border-top:1px solid var(--line);padding-top:10px}
-.rules summary{font-weight:700;font-size:17px;cursor:pointer}
-.linkbtn{border:0;background:none;padding:0;color:var(--ink);text-decoration:underline;text-underline-offset:2px;font-size:13px;cursor:pointer}
-.flow .cards{margin:10px 0 2px}
+.rules summary{font-weight:750;font-size:17px;cursor:pointer}
 .rules .muted{color:var(--muted);font-size:14px}
 .rules .fld{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:8px 0}
-.rules .fld input:not([type]){width:80px;height:40px;text-align:center;border:1px solid var(--line);border-radius:9px;background:var(--bg);font-size:16px}
-.rules input[type=checkbox]{width:22px;height:22px;accent-color:var(--ink)}
-.rules .dl{display:block;font-weight:600;margin:12px 0 4px}
-.rules textarea{display:block;width:100%;font:inherit;font-size:16px;line-height:1.35;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);padding:8px 10px;resize:vertical}
-.rules h3{font-size:17px;margin:18px 0 4px}
+.rules .fld input:not([type]){width:80px;height:42px;text-align:center;border:1.5px solid var(--paper-line);border-radius:10px;background:#FFFCF4;color:var(--kohl);font-size:16px}
+.rules input[type=checkbox]{width:22px;height:22px;accent-color:var(--kohl)}
+.rules .dl{display:block;font-weight:650;margin:12px 0 4px}
+.rules textarea{display:block;width:100%;font-size:16px;line-height:1.35;border:1.5px solid var(--paper-line);border-radius:10px;background:#FFFCF4;color:var(--kohl);padding:8px 10px;resize:vertical}
+.rules h3{font-size:17px;font-weight:750;margin:18px 0 4px}
 .rules p{margin:6px 0}
 
-dialog::backdrop{background:rgba(14,16,15,.5)}
-.dhead{display:flex;justify-content:space-between;align-items:center;position:sticky;top:-18px;z-index:2;background:var(--surface);margin:-18px -18px 0;padding:18px 18px 10px}
-.dhead h2{margin:0;font-size:22px}
-.dnote{font-size:14px;color:var(--muted);margin:6px 0 10px}
-.srow{display:flex;gap:8px;align-items:center;margin:8px 0}
-.srow i{flex:none;width:12px;height:12px;border-radius:50%}
-.srow input,.osl input{height:40px;border:1px solid var(--line);border-radius:9px;background:var(--bg);padding:0 10px;font-size:16px}
-.srow input{flex:1;min-width:0}
-.osl{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:15px}
-.osl input{width:80px;text-align:center}
+/* Playing cards, wherever they're drawn */
+.cards{display:flex;flex-wrap:wrap;gap:6px 12px;margin:8px 0 4px}
+.meld{display:inline-flex;gap:3px}
+.card{width:26px;height:36px;border-radius:5px;background:#FFFCF4;box-shadow:0 0 0 1px rgba(42,26,18,.3),0 2px 0 var(--ivory-edge);display:inline-flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;font-weight:800;line-height:1.05;color:var(--kohl);font-stretch:85%}
+.flow .card{box-shadow:0 0 0 1.5px var(--kohl),0 2px 0 var(--kohl)}
+.card i{font-style:normal;font-size:13px}
+.card.r{color:var(--red)}
+.card.jk{color:#2340A0}
+.card.jk i{font-size:17px}
 
-/* Round flow: pick, play, score */
-#flow{scroll-margin-top:124px}
-.flow{background:var(--surface);border:1px solid var(--ink);border-radius:14px;margin:12px -6px 8px;padding:12px 12px 14px}
-.sub{margin:4px 0 0;font-size:14px}
-.turn{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:10px 0 4px}
-.turn label{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600}
-.turn p{margin:0;font-size:14px;color:var(--muted)}
-.rchips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-.rchip{height:48px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-size:16px;font-weight:600;text-align:left;padding:0 12px;cursor:pointer}
-.rchip:disabled{opacity:.4;cursor:default}
-.hint{font-size:13px;color:var(--muted);margin:8px 0 0}
-.lab{display:block;font-size:14px;font-weight:600;margin:12px 0 4px}
-.mrow{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
-.mrow b{color:var(--pc);font-weight:600;font-size:17px}
-.mrow .mbtn,.mrow .step{width:124px;height:44px;font-size:15px}
-.mrow .step button{width:44px;height:44px;font-size:22px}
-.wout{margin:10px 0 8px}
-.pchips{display:flex;flex-wrap:wrap;gap:6px}
-.pchip{height:40px;padding:0 14px;border-radius:20px;border:1px solid var(--line);background:var(--bg);color:var(--pc);font-weight:600;cursor:pointer}
-.pchip.none{color:var(--muted)}
-.pchip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.lhd{display:flex;justify-content:space-between;align-items:baseline;padding:16px 0 6px;font-weight:600;font-size:15px}
-.lhd span{font-weight:400;font-size:13px;color:var(--muted)}
-.tile{touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:grab}
-.tile.lift{position:relative;z-index:7;box-shadow:0 12px 24px rgba(0,0,0,.25);cursor:grabbing}
-.tile.drop{outline:2px dashed var(--ink);outline-offset:2px}
-
-/* Bring back the last game */
-.prevb{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg);border-radius:10px;padding:8px 10px;margin:-2px 0 12px;font-size:14px}
-.prevb .btn{flex:none}
-
-/* Menu */
-.burger{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
-#menu{margin:58px max(12px,calc((100vw - 560px)/2 + 12px)) auto auto;width:min(280px,calc(100vw - 24px));padding:6px 0;border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.25)}
-#menu::backdrop{background:rgba(14,16,15,.25)}
-.mgroup{padding:6px 0;border-top:1px solid var(--line)}
-.mgroup:first-child{border-top:0}
-.mlab{display:block;font-size:12px;color:var(--muted);padding:4px 16px}
-.mlist button{display:block;width:100%;text-align:left;background:none;border:0;padding:0 16px;height:46px;font-size:17px;font-weight:600;color:var(--ink);cursor:pointer}
-.mlist button:hover,.mlist button:focus-visible{background:var(--bg)}
-body.setup #menu .ingame{display:none}
-
-/* Pick: whose turn */
-.turn .turnline{margin:0;font-size:16px;color:var(--ink)}
-.tg{justify-content:flex-end}
-.hasmp .prow .tg{width:136px}
-.hasmp.nojk .prow .tg{width:76px}
-.turn .tsel{display:none}
-.turn.editing .tsel{display:inline}
-.rchip small{display:block;font-size:11px;font-weight:600;color:var(--muted)}
-.sub.muted{color:var(--muted);font-size:14px}
-.ofoot .linkbtn{font-size:14px;color:var(--muted)}
-/* Chart, folded under the game */
-.chartd{margin-top:18px;border-top:1px solid var(--line)}
-.chartd>summary{padding:12px 0;font-weight:700;font-size:17px;cursor:pointer}
-.chartd[hidden]{display:none}
-/* History and saving screens */
-.dsub{font-size:16px;margin:16px 0 4px}
-#hd,#svd{width:min(92vw,480px)}
-.mlist button[hidden]{display:none}
-
-/* Levels and rounds */
-.lvl{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:4px}
-.lvl button{height:42px;border:0;border-left:1px solid var(--line);background:var(--bg);font-size:16px;font-weight:600;color:var(--muted);cursor:pointer}
-.lvl button:first-child{border-left:0}
-.lvl button[aria-checked=true]{background:var(--ink);color:var(--bg)}
-.lvlhint{margin-top:6px!important}
-.rsel{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 0}
-.rsc{min-height:40px;padding:4px 10px;border-radius:9px;border:1px dashed var(--line);background:transparent;color:var(--muted);font-size:14px;font-weight:600;text-align:left;cursor:pointer;text-decoration:line-through}
-.rsc.on{border:1px solid var(--ink);background:var(--bg);color:var(--ink);text-decoration:none}
-.rsc:disabled{opacity:.55;cursor:default}
-.skiprow{display:flex;gap:8px;margin-top:10px}
-
-/* Setup */
-body.setup .stand,body.setup #rounds,body.setup .chartd{display:none}
-.setup-panel .ohead{align-items:center}
-.fp{margin-top:2px}
-.fp .pchip[aria-checked=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.fold{border-top:1px solid var(--line);margin-top:12px}
-.fold>summary{display:flex;justify-content:space-between;align-items:center;gap:10px;list-style:none;cursor:pointer;padding:12px 0;font-weight:600;font-size:16px}
-.fold>summary::-webkit-details-marker{display:none}
-.fold>summary .sv{font-weight:400;font-size:14px;color:var(--muted);text-align:right}
-.fold>summary .sv::after{content:" \203A";display:inline-block;margin-left:4px;transition:transform .15s}
-.fold[open]>summary .sv::after{transform:rotate(90deg)}
-.fold>.lab:first-of-type{margin-top:0}
-.fold .linkbtn{font-size:14px;margin:4px 0 2px}
-.setup-panel .sbig{margin-top:16px}
-.setup-panel .lab{margin-top:16px}
-.setup-panel .hint{margin:2px 0 6px}
-.seats{list-style:none;margin:0 0 8px;padding:0}
-.seat{display:flex;align-items:center;gap:8px;padding:5px 0;background:var(--surface);position:relative}
-.seat>i{flex:none;width:12px;height:12px;border-radius:50%;background:var(--pc)}
-.seat input{flex:1;min-width:0;height:44px;border:1px solid var(--line);border-radius:9px;background:var(--bg);padding:0 10px;font-size:17px;font-weight:600;color:var(--pc)}
-.grip,.xbtn{flex:none;width:40px;height:44px;border-radius:9px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:22px;line-height:1;cursor:pointer;padding:0}
-.grip{touch-action:none;cursor:grab}
-.xbtn:disabled{opacity:.3;cursor:default}
-.seat.lift{z-index:3;box-shadow:0 10px 22px rgba(0,0,0,.22);border-radius:10px}
-.seat.drop{outline:2px dashed var(--ink);outline-offset:1px;border-radius:10px}
-.past{margin-top:10px}
-.past .pchip{height:36px;font-size:15px}
-.setup-panel .turn{margin-top:4px}
-.srules{display:flex;gap:8px;margin-top:6px}
-.sbig{width:100%;height:50px;font-size:18px;margin-top:18px}
-
-/* End of game */
-.final{background:var(--surface);border:1px solid var(--ink);border-radius:14px;padding:14px 12px;margin:12px -6px 8px}
-.final h2{margin:0 0 6px;font-size:22px}
-.final ol{list-style:none;margin:0;padding:0}
-.final li{display:grid;grid-template-columns:2.6rem 1fr auto;align-items:baseline;gap:6px;padding:8px 0;border-top:1px solid var(--line)}
-.final .place{color:var(--muted);font-size:14px}
-.final li b{font-size:18px;color:var(--pc)}
-.final li:first-child b{font-size:24px}
-.final .ft{font-size:20px;font-weight:700}
-.factions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-
-/* Chart */
-.chart{position:relative;outline-offset:4px}
-.chart svg{display:block;width:100%;height:auto;touch-action:pan-y}
-.chart text{font-family:inherit;font-size:11px;fill:var(--muted)}
-.chart text.el{fill:var(--ink);font-size:12px;font-weight:600}
-.legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:6px;font-size:14px}
-.legend span{display:inline-flex;align-items:center;gap:6px}
-.legend i,.tip i{width:14px;height:2px;border-radius:1px;background:var(--pc)}
-.tip{position:absolute;top:2px;pointer-events:none;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,.14);display:none;white-space:nowrap}
-.tip .th{color:var(--muted);font-size:12px;margin-bottom:2px}
-.tip .r{display:flex;align-items:center;gap:6px}
-.tip b{min-width:2.6em;text-align:right}
-
-/* History, stats, backup */
+/* History */
+.lrow,.hrow{padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
 .lrow{display:block}
 .lhead{display:flex;justify-content:space-between;gap:8px}
+.lrow span,.hrow small{color:var(--muted)}
 .lrow small{display:block;color:var(--muted);font-size:13px;margin-top:1px}
 .hrow{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.hrow small{display:block;font-size:13px}
 .bnote{font-size:14px;color:var(--muted);margin:0 0 8px}
 .bk{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 
-#toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 14px;border-radius:10px;font-size:14px;display:none;z-index:40}
+/* Menu */
+.burger{width:44px;height:44px;border-radius:50%;border:0;background:var(--raised);color:var(--ivory);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+#menu{margin:62px max(12px,calc((100vw - 560px)/2 + 12px)) auto auto;width:min(290px,calc(100vw - 24px));padding:6px 0;border-radius:16px}
+#menu::backdrop{background:rgba(20,11,7,.4)}
+.mgroup{padding:6px 0;border-top:1px solid var(--line)}
+.mgroup:first-child{border-top:0}
+.mlab{display:block;font-size:12px;color:var(--muted);padding:4px 16px}
+.mlist button{display:block;width:100%;text-align:left;background:none;border:0;padding:0 16px;height:46px;font-size:17px;font-weight:650;color:var(--kohl);cursor:pointer}
+.mlist button:hover,.mlist button:focus-visible{background:var(--paper-2)}
+.mlist button[hidden]{display:none}
+body.setup #menu .ingame{display:none}
+#mAwake{display:flex;align-items:center;justify-content:space-between;gap:12px}
+#mAwake::after{content:"";flex:none;width:42px;height:26px;border-radius:13px;background:radial-gradient(circle at 13px 50%,#fff 9px,transparent 10px),var(--paper-line)}
+#mAwake[aria-checked=true]::after{background:radial-gradient(circle at 29px 50%,#fff 9px,transparent 10px),var(--kohl)}
+
+/* Confirm sheet */
+#askd{width:min(88vw,380px);padding:20px;z-index:50}
+.askm{margin:0 0 18px;font-size:17px;line-height:1.4;white-space:pre-line}
+.askb{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.askb .btn{height:48px;font-size:16px}
+.btn.danger{background:var(--red);color:var(--ivory);box-shadow:0 3px 0 #7E1610}
+
+#toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:var(--ivory);color:var(--kohl);font-weight:600;padding:10px 15px;border-radius:12px;box-shadow:0 3px 0 var(--ivory-edge);font-size:14px;display:none;z-index:40;max-width:calc(100vw - 32px);width:max-content;animation:toastin .36s var(--spring)}
+#toast.bye{animation:toastout .2s ease-in forwards}
+
+/* Install tip */
+.tinstall{margin-top:22px;padding:12px 14px;border-radius:13px;background:var(--raised);font-size:14px;color:var(--muted);text-align:center}
+.tinstall p{margin:0 0 8px}
+.tinstall b{color:var(--ivory)}
+.tinstall .btn{width:100%;margin-bottom:8px}
+
+/* ---------- Title: cards rise into the lit screen like puppets held from below ---------- */
+.title{position:fixed;inset:0;z-index:30;background:var(--grain-light) 0 0/200px 200px,var(--page);display:flex;align-items:center;justify-content:center;padding:calc(24px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));overflow:auto}
+.title[hidden]{display:none}
+.title.out{animation:out .22s ease-in forwards}
+body.titled{overflow:hidden}
+.tin{width:100%;max-width:360px;text-align:center}
+.stage{position:relative;height:184px;margin:0 0 28px;border-radius:10px;overflow:hidden;background:var(--grain-dark) 0 0/200px 200px,radial-gradient(ellipse 75% 85% at 50% 60%,var(--screen) 45%,var(--screen-2) 100%)}
+.stage::before{content:"";position:absolute;left:0;right:0;top:0;height:14px;z-index:3;background:var(--fringe) 50% 0/18px 14px repeat-x}
+.stage::after{content:"";position:absolute;left:0;right:0;top:12px;height:14px;z-index:3;background:var(--tassels) 50% 0/18px 14px repeat-x;transform-origin:50% 0;animation:breeze 5s ease-in-out infinite alternate}
+.fan{position:absolute;inset:0}
+/* the lamp behind the screen */
+.fan::before{content:"";position:absolute;left:50%;bottom:-70px;width:340px;height:280px;margin-left:-170px;background:radial-gradient(closest-side,rgba(255,196,96,.42),rgba(255,196,96,.14) 60%,rgba(255,196,96,0));animation:lamp 4.2s linear infinite}
+/* puppets on rods: backlit, swaying a little, each to its own time */
+.fan .card{position:absolute;left:50%;bottom:-16px;width:72px;height:102px;margin-left:-36px;border-radius:10px;font-size:26px;line-height:1;transform-origin:50% 210%;transform:rotate(var(--a));box-shadow:0 0 0 1.5px var(--kohl),0 5px 0 var(--kohl);justify-content:flex-start;align-items:flex-start;padding:8px 0 0 9px;
+ background:radial-gradient(ellipse 90% 80% at 50% 40%,#FFFBEF,#F5E1B8);
+ animation:sway calc(3.4s + var(--k) * .55s) ease-in-out calc(var(--k) * -.9s) infinite}
+.fan .card i{font-size:20px;margin-top:2px}
+.fan .card.jk i{font-size:32px;margin:0}
+.title.play .fan .card{animation:deal .7s var(--ease) calc(var(--k) * 80ms + 120ms) both,sway calc(3.4s + var(--k) * .55s) ease-in-out calc(var(--k) * -.9s) infinite}
+.tword{font-size:64px;font-weight:800;letter-spacing:-.015em;line-height:.95;margin:0;color:var(--ivory)}
+.tsub{color:var(--muted);margin:10px 0 28px;font-size:16px}
+.tact{display:grid;gap:12px}
+.tbig{min-height:64px;height:auto;font-size:20px;font-weight:750;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:9px 16px}
+.btn.tbig{box-shadow:0 4px 0 var(--saffron-edge)}
+.tbig small{font-size:14px;font-weight:500;opacity:.85;margin-top:2px}
+.tbig2{height:52px;font-size:17px;border-radius:13px}
+.tlinks{display:flex;justify-content:center;gap:26px;margin-top:22px}
+.tlinks .linkbtn{font-size:15px;color:var(--muted)}
+.title.play .tword{animation:rise .5s var(--ease) both;animation-delay:.42s}
+.title.play .tsub{animation:rise .5s var(--ease) both;animation-delay:.5s}
+.title.play .tact{animation:rise .5s var(--ease) both;animation-delay:.58s}
+.title.play .tlinks{animation:fade .5s ease-out both;animation-delay:.7s}
 
 /* ---------- Motion ---------- */
-:root{--ease:cubic-bezier(.2,.8,.2,1)}
 @keyframes rise{from{opacity:0;transform:translateY(10px)}}
 @keyframes fade{from{opacity:0}}
 @keyframes pop{from{opacity:0;transform:translateY(8px) scale(.98)}}
@@ -334,65 +450,66 @@ body.setup .stand,body.setup #rounds,body.setup .chartd{display:none}
 @keyframes bump{40%{transform:scale(1.45)}}
 @keyframes floatup{0%{opacity:0;transform:translate(-50%,6px)}15%{opacity:1;transform:translate(-50%,-4px)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-26px)}}
 @keyframes deal{from{opacity:0;transform:translateY(60px) rotate(0deg)}}
-@keyframes win{0%{transform:scale(.96)}60%{transform:scale(1.03)}}
+@keyframes hop{0%,100%{transform:none}18%{transform:translateY(-10px) rotate(-1.5deg)}36%{transform:none}52%{transform:translateY(-5px) rotate(1deg)}68%{transform:none}80%{transform:translateY(-2px)}}
+@keyframes sway{0%,100%{rotate:-1.1deg;translate:0 0}50%{rotate:1.1deg;translate:0 -4px}}
+@keyframes lamp{0%,100%{opacity:.82}9%{opacity:.95}17%{opacity:.86}31%{opacity:1}44%{opacity:.9}58%{opacity:.97}71%{opacity:.84}86%{opacity:.93}}
+@keyframes breeze{from{transform:skewX(-5deg)}to{transform:skewX(5deg)}}
+@keyframes swing{0%{transform:none}14%{transform:skewX(16deg)}32%{transform:skewX(-11deg)}50%{transform:skewX(6deg)}68%{transform:skewX(-3deg)}84%{transform:skewX(1deg)}100%{transform:none}}
+@keyframes scene{from{opacity:0;transform:translateX(26px)}}
+@keyframes dealin{from{opacity:0;transform:translateY(16px) rotate(-4deg) scale(.94)}}
+@keyframes roll{from{opacity:0;transform:translateY(-.5em)}}
+@keyframes tap{from{transform:scale(.9)}}
+@keyframes toastin{from{opacity:0;transform:translate(-50%,18px) scale(.96)}}
+@keyframes toastout{to{opacity:0;transform:translate(-50%,10px)}}
+@keyframes draw{to{stroke-dashoffset:0}}
 @keyframes out{to{opacity:0}}
-.flow.enter,.final.enter{animation:pop .26s var(--ease) both}
+.flow.enter>*,.final.enter>*{animation:scene .45s var(--ease) both}
+.flow.enter>:nth-child(2){animation-delay:35ms}
+.flow.enter>:nth-child(3){animation-delay:70ms}
+.flow.enter>:nth-child(4){animation-delay:105ms}
+.flow.enter>:nth-child(5){animation-delay:140ms}
+.flow.enter>:nth-child(6){animation-delay:175ms}
+.flow.enter>:nth-child(7){animation-delay:210ms}
+.flow.enter>:nth-child(8){animation-delay:245ms}
+.flow.enter>:nth-child(9){animation-delay:280ms}
+.flow.enter>:nth-child(10){animation-delay:315ms}
+.flow.enter>:nth-child(11){animation-delay:350ms}
+.flow.enter>:nth-child(12){animation-delay:350ms}
+.flow.enter>.rchips{animation:none}
+.flow.enter .rchip{animation:dealin .45s var(--spring) both;animation-delay:calc(90ms + var(--i) * 28ms)}
+.rchip:nth-child(1){--i:0}
+.rchip:nth-child(2){--i:1}
+.rchip:nth-child(3){--i:2}
+.rchip:nth-child(4){--i:3}
+.rchip:nth-child(5){--i:4}
+.rchip:nth-child(6){--i:5}
+.rchip:nth-child(7){--i:6}
+.rchip:nth-child(8){--i:7}
+.rchip:nth-child(9){--i:8}
+.rchip:nth-child(10){--i:9}
+.rchip:nth-child(11){--i:10}
+.rchip:nth-child(12){--i:11}
+.rchip:nth-child(13){--i:12}
+.flow.enter::after,.final.enter::after{animation:swing 1.5s ease-out}
+.tap{animation:tap .34s var(--spring)}
 #rounds li.enter{animation:rise .32s var(--ease) both}
 .step b.bump{display:inline-block;animation:bump .28s var(--ease)}
-dialog[open]{animation:pop .22s var(--ease)}
+dialog[open]{animation:pop .24s var(--spring)}
+dialog{transition:opacity .18s ease-in,translate .18s ease-in,overlay .18s allow-discrete,display .18s allow-discrete}
+dialog:not([open]){opacity:0;translate:0 8px}
+dialog::backdrop{transition:opacity .18s,overlay .18s allow-discrete,display .18s allow-discrete}
+dialog:not([open])::backdrop{opacity:0}
 dialog[open]::backdrop{animation:fade .22s ease-out}
 #menu[open]{animation:menuin .18s var(--ease);transform-origin:top right}
 .final.enter li{animation:rise .42s var(--ease) both;animation-delay:var(--d)}
-.final.enter li.win{animation:rise .42s var(--ease) both,win .5s var(--ease) both;animation-delay:var(--d),calc(var(--d) + .3s)}
-.tile{position:relative}
-.delta{position:absolute;left:50%;top:-4px;font-size:15px;font-weight:700;color:var(--pc);background:var(--surface);border-radius:8px;padding:0 5px;pointer-events:none;white-space:nowrap;animation:floatup 1.3s var(--ease) forwards}
-
-/* ---------- Install tip, screen-on switch ---------- */
-.tinstall{margin-top:22px;padding:12px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line);font-size:14px;color:var(--muted);text-align:center}
-.tinstall p{margin:0 0 6px}
-.tinstall b{color:var(--ink)}
-.tinstall .btn{width:100%;margin-bottom:6px}
-#mAwake{display:flex;align-items:center;justify-content:space-between;gap:12px}
-#mAwake::after{content:"";flex:none;width:40px;height:24px;border-radius:12px;background:radial-gradient(circle at 12px 50%,#fff 8px,transparent 9px),var(--line)}
-#mAwake[aria-checked=true]::after{background:radial-gradient(circle at 28px 50%,#fff 8px,transparent 9px),var(--ink)}
-
-/* ---------- Confirm sheet ---------- */
-#askd{width:min(88vw,380px);padding:20px}
-.askm{margin:0 0 18px;font-size:17px;line-height:1.4;white-space:pre-line}
-.askb{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.askb .btn{height:46px;font-size:16px}
-.btn.danger{background:var(--pen);border-color:var(--pen);color:#fff}
-#askd{z-index:50}
-
-/* ---------- Title screen ---------- */
-.title{position:fixed;inset:0;z-index:30;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:calc(24px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));overflow:auto}
-.title[hidden]{display:none}
-.title.out{animation:out .22s ease-in forwards}
-body.titled{overflow:hidden}
-.tin{width:100%;max-width:360px;text-align:center}
-.fan{position:relative;height:150px;width:260px;margin:0 auto 40px}
-.fan .card{position:absolute;left:50%;bottom:0;width:70px;height:100px;margin-left:-35px;border-radius:10px;font-size:22px;line-height:1;transform-origin:50% 210%;transform:rotate(var(--a));box-shadow:0 4px 0 var(--tile-depth),0 14px 28px rgba(0,0,0,.10);justify-content:flex-start;align-items:flex-start;padding:8px 0 0 9px}
-.fan .card i{font-size:20px;margin-top:2px}
-.fan .card.jk i{font-size:30px;margin:0}
-.title.play .fan .card{animation:deal .7s var(--ease) both;animation-delay:calc(var(--k) * 80ms)}
-.tword{font-size:58px;font-weight:700;letter-spacing:-.02em;line-height:1;margin:0}
-.tsub{color:var(--muted);margin:10px 0 28px;font-size:16px}
-.tact{display:grid;gap:10px}
-.tbig{min-height:60px;height:auto;font-size:20px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 16px}
-.tbig small{font-size:14px;font-weight:400;opacity:.8;margin-top:2px}
-.tbig2{height:52px;font-size:17px;border-radius:14px}
-.tlinks{display:flex;justify-content:center;gap:24px;margin-top:20px}
-.tlinks .linkbtn{font-size:15px}
-.title.play .tword{animation:rise .5s var(--ease) both;animation-delay:.3s}
-.title.play .tsub{animation:rise .5s var(--ease) both;animation-delay:.38s}
-.title.play .tact{animation:rise .5s var(--ease) both;animation-delay:.46s}
-.title.play .tlinks{animation:fade .5s ease-out both;animation-delay:.6s}
+.final.enter li.win{animation:rise .42s var(--ease) both,hop 1.1s ease-out both;animation-delay:var(--d),calc(var(--d) + .35s)}
+.delta{position:absolute;left:50%;top:-6px;font-size:15px;font-weight:800;color:var(--pc);background:var(--ivory);border-radius:8px;padding:0 6px;box-shadow:0 2px 0 var(--ivory-edge);pointer-events:none;white-space:nowrap;animation:floatup 1.3s var(--ease) forwards}
 
 @media (prefers-reduced-motion: reduce){*,*::before,*::after,::backdrop{animation:none!important;transition:none!important}}
 </style></head><body>
 <div id="title" class="title" role="dialog" aria-modal="true" aria-labelledby="ttl">
  <div class="tin">
-  <div class="fan" id="fan" aria-hidden="true"></div>
+  <div class="stage"><div class="fan" id="fan" aria-hidden="true"></div></div>
   <h1 id="ttl" class="tword">Amerikano</h1>
   <p class="tsub">Scores, turns and rules for your card nights</p>
   <div class="tact" id="tact"></div>
@@ -786,7 +903,7 @@ function renderTitle(){
  let h;
  if(gameInProgress()){
   const {t,played}=totals(),min=Math.min(...t),lead=S.names.filter((x,p)=>t[p]===min),fin=S.live<0&&played>=totalRounds();
-  const sum=fin?'Finished. '+andList(lead)+(lead.length>1?' tied':' won'):'Round '+(played+1)+' of '+totalRounds()+' \u00b7 '+andList(lead)+(lead.length>1?' lead':' leads');
+  const sum=fin?'Finished. '+andList(lead)+(lead.length>1?' tied':' won'):'Round '+(played+1)+' of '+totalRounds()+', '+andList(lead)+(lead.length>1?' lead':' leads');
   h='<button class="btn primary tbig" id="tCont">Continue game<small>'+esc(sum)+'</small></button><button class="btn tbig2" id="tNew">New game</button>';
  }else h='<button class="btn primary tbig" id="tNew">'+(S.setup&&H.length===0?'Start a game':'New game')+'</button>';
  $('tact').innerHTML=h;
@@ -819,7 +936,16 @@ function hideTitle(){
 }
 // Which optional sections are open on screen. Not saved.
 const UI={players:null,options:false,turn:false,chart:false};
-document.addEventListener('toggle',e=>{const k=e.target&&e.target.dataset&&e.target.dataset.ui;if(k)UI[k]=e.target.open;},true);
+document.addEventListener('toggle',e=>{const k=e.target&&e.target.dataset&&e.target.dataset.ui;if(k)UI[k]=e.target.open;
+ if(e.target&&e.target.id==='chartd'&&e.target.open&&!RM()){const c=e.target;c.classList.add('draw');clearTimeout(c.dh);c.dh=setTimeout(()=>c.classList.remove('draw'),1100);}},true);
+// A tapped chip or toggle gives a little bounce once the screen has updated.
+document.addEventListener('click',e=>{
+ const b=e.target.closest&&e.target.closest('.pchip,.tg button,.mbtn,.step button,.lvl button,.rsc');
+ if(!b||RM()||typeof CSS==='undefined'||!CSS.escape)return;
+ const sel=[...b.attributes].filter(a=>a.name.startsWith('data-')).map(a=>'['+a.name+'="'+CSS.escape(a.value)+'"]').join('');
+ if(!sel)return;
+ setTimeout(()=>{const n=document.querySelector(sel);if(!n)return;const t=n.closest('.step')||n;t.classList.remove('tap');void t.offsetWidth;t.classList.add('tap');},0);
+},true);
 const openAttr=k=>UI[k]?' open':'';
 
 function totals(){const n=S.names.length,t=Array(n).fill(0);for(let i=0;i<N;i++)for(let p=0;p<n;p++){const s=score(i,p);if(s!==null)t[p]+=s;}return{t,played:doneOrder().length};}
@@ -864,7 +990,7 @@ function who(key,val,extra){
 }
 function head(i,right){return '<div class="ohead"><h2>'+ROUNDS[i][0]+'</h2>'+right+'</div>';}
 function roundNo(){return '<span>Round '+(doneOrder().length+1)+' of '+totalRounds()+'</span>';}
-function roleLine(i){const p=S.picked[i];return p>=0?nm(p)+' picked \u00b7 '+nm(dealerOf(p))+' dealt':'Nobody is set as picking the rule.';}
+function roleLine(i){const p=S.picked[i];return p>=0?nm(p)+' picked, '+nm(dealerOf(p))+' dealt':'Nobody is set as picking the rule.';}
 function outNote(i){const p=S.picked[i];return p>=0?'Going out scores '+fmt(R.outPick)+' for '+nm(p)+', '+fmt(R.outOther)+' for anyone else.':'Set who picked the rule so going out scores correctly.';}
 function mpCtl(i,p){
  const m=S.mp[i][p],a=' data-r="'+i+'" data-p="'+p+'"';
@@ -909,7 +1035,7 @@ function pastPlayers(){
 function dealLine(){const np=S.nextPick,d=dealerOf(np);return np>=0?esc(S.names[d]||'Player '+(d+1))+' shuffles and deals.':'Choose who picks first, or tap Random.';}
 function optionsSummary(){
  const t=totalRounds(),lv=levelOf();
- return (t===N?'All '+N+' rounds':t+' of '+N+' rounds')+' · '+(lv==='custom'?'Custom rules':LEVELS[lv].name+' rules');
+ return (t===N?'All '+N+' rounds':t+' of '+N+' rounds')+', '+(lv==='custom'?'custom rules':LEVELS[lv].name.toLowerCase()+' rules');
 }
 function setupPanel(){
  const n=S.names.length,past=pastPlayers();
@@ -997,15 +1123,24 @@ function vEnd(e,commit){
 document.addEventListener('pointerup',e=>vEnd(e,true));
 document.addEventListener('pointercancel',e=>vEnd(e,false));
 
+// Short labels for the rule buttons: the numbers big, the kind of meld small.
+function chipLabel(i){
+ const n=ROUNDS[i][0];let m;
+ if((m=n.match(/^(\d)\u00d7 (\d) (k\u00fct|seri)$/)))return[m[1]+'\u00d7'+m[2],m[3]];
+ if((m=n.match(/^(\d) k\u00fct \+ (\d) seri$/)))return[m[1]+'+'+m[2],'k\u00fct and seri'];
+ if((m=n.match(/^(\d)li seri$/)))return[m[1]+'li','seri'];
+ if(n==='Pairs')return['4','pairs'];
+ return[n,''];
+}
 // Step 1: whose turn it is, and which rule they pick.
 function pickPanel(){
  const np=S.nextPick,rem=[];for(let i=0;i<N;i++)if(!isDone(i)&&inPlay(i))rem.push(i);
  const lockFinal=R.finalLast&&rem.length>1,editing=UI.turn||np<0;
  const c=S.carry,cb=c&&ROUNDS[c.from]?'<div class="prevb"><span>Tap the right rule.'+(c.mp.some(Boolean)||c.base.some(v=>v!=='')?' What\u2019s been logged moves across.':'')+'</span><button class="btn sm" id="carryback">Back to '+ROUNDS[c.from][0]+'</button></div>':'';
  return '<section class="flow">'+(cb||prevBanner())+'<div class="ohead"><h2>'+(c?'Choose the right rule':'Pick the next rule')+'</h2>'+roundNo()+'</div>'
- +'<div class="turn'+(editing?' editing':'')+'"><p class="turnline">'+(np>=0?'<b>'+nm(np)+'</b> picks · '+nm(dealerOf(np))+' deals':'Who picks this rule?')+'</p>'
+ +'<div class="turn'+(editing?' editing':'')+'"><p class="turnline">'+(np>=0?'<b>'+nm(np)+'</b> picks, '+nm(dealerOf(np))+' deals':'Who picks this rule?')+'</p>'
   +(editing?'':'<button class="linkbtn" id="tchange">Change</button>')+'<span class="tsel">'+who('np',np)+'</span></div>'
- +'<div class="rchips">'+rem.map(i=>'<button class="rchip" data-pick="'+i+'"'+(i===FINAL&&lockFinal?' disabled aria-label="Final, played last"':'')+'>'+ROUNDS[i][0]+(i===FINAL&&lockFinal?'<small>last</small>':'')+'</button>').join('')+'</div>'
+ +'<div class="rchips">'+rem.map(i=>{const l=chipLabel(i),lk=i===FINAL&&lockFinal;return '<button class="rchip" data-pick="'+i+'" aria-label="'+(lk?'Final, played last':esc(ROUNDS[i][0]))+'"'+(lk?' disabled':'')+'><b class="rk">'+l[0]+'</b>'+(lk?'<small>played last</small>':l[1]?'<small>'+l[1]+'</small>':'')+'</button>';}).join('')+'</div>'
  +'<p class="hint"><button class="linkbtn" id="rhelp">What do these rules mean?</button></p></section>';
 }
 // Step 2: the round is being played. Log misplays as they happen.
@@ -1037,7 +1172,8 @@ function calc(){
  const min=Math.min(...t),wins=outCounts(),any=t.some((v,p)=>v!==0)||played>0;
  $('prog').textContent=played+' of '+totalRounds()+' played';
  t.forEach((v,p)=>{
-  $('tot'+p).textContent=fmt(v);
+  const te=$('tot'+p),nv=fmt(v);
+  if(te.textContent!==nv){const was=te.textContent;te.textContent=nv;if(was!==''&&!calc.typing&&!RM()){te.classList.remove('roll');void te.offsetWidth;te.classList.add('roll');}}
   const lead=any&&v===min;
   $('tile'+p).classList.toggle('lead',!!lead);
   $('beh'+p).textContent=!any?'':lead?'Leads':'+'+(v-min);
@@ -1173,7 +1309,7 @@ function drawChart(idx){
  s+='<text x="2" y="'+(HH-6)+'">Round</text>';
  idx.forEach((i,k)=>s+='<text x="'+X(k+1)+'" y="'+(HH-6)+'" text-anchor="middle">'+(k+1)+'</text>');
  s+='<line id="xh" y1="'+T+'" y2="'+(HH-B)+'" stroke="var(--muted)" stroke-width="1" visibility="hidden"/>';
- series.forEach((v,p)=>{s+='<polyline fill="none" stroke="'+cv(p)+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="'+v.map((y,k)=>X(k)+','+Y(y)).join(' ')+'"/>';});
+ series.forEach((v,p)=>{s+='<polyline pathLength="1" fill="none" stroke="'+cv(p)+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="'+v.map((y,k)=>X(k)+','+Y(y)).join(' ')+'"/>';});
  series.forEach((v,p)=>{s+='<circle cx="'+X(m)+'" cy="'+Y(v[m])+'" r="4" fill="'+cv(p)+'" stroke="var(--bg)" stroke-width="2"/>';});
  const labs=series.map((v,p)=>({p,y:Y(v[m])})).sort((a,b)=>a.y-b.y);
  for(let j=1;j<labs.length;j++)if(labs[j].y<labs[j-1].y+13)labs[j].y=labs[j-1].y+13;
@@ -1330,7 +1466,10 @@ function removePlayer(p){
  if(S.hold)for(const k in S.hold){const x=S.hold[k];if(x.p===p)delete S.hold[k];else x.p=fix(x.p);}
  render();renderSettings();
 }
-function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',2000);}
+function toast(m){
+ const t=$('toast');t.textContent=m;t.classList.remove('bye');t.style.display='block';clearTimeout(toast.h);clearTimeout(toast.g);
+ toast.h=setTimeout(()=>{if(RM()){t.style.display='none';return;}t.classList.add('bye');toast.g=setTimeout(()=>{t.style.display='none';t.classList.remove('bye');},200);},2000);
+}
 function summary(){const {t,played}=totals();return 'Amerikano, '+new Date().toLocaleDateString('en-GB')+' ('+played+'/'+totalRounds()+' rounds)\n'+S.names.map((x,p)=>[x,t[p]]).sort((a,b)=>a[1]-b[1]).map((x,k)=>(k+1)+'. '+x[0]+': '+x[1]).join('\n');}
 const PKEY='amerikano-prev';
 // Keep the game being replaced, so it can be brought back.
@@ -1349,7 +1488,7 @@ document.addEventListener('input',e=>{
  if(d.sn!==undefined){S.names[+d.sn]=el.value.slice(0,20);if(el.value.length>20)el.value=S.names[+d.sn];setupRefresh();store(KEY,S);return;}
  if(d.r===undefined||el.tagName!=='INPUT')return;
  const v=el.value.replace(/\D/g,'').slice(0,4);if(v!==el.value)el.value=v;
- S.base[d.r][d.p]=v;calc();
+ S.base[d.r][d.p]=v;calc.typing=true;calc();calc.typing=false;
 });
 document.addEventListener('keydown',e=>{
  const el=e.target;
