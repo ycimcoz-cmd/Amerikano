@@ -603,6 +603,37 @@ body.setup .ptabs,body:not(.setup) .top h1{display:none}
 .srh span:nth-child(2){text-align:right}
 .srr small{color:var(--muted)}
 
+/* Stats visuals */
+.dsub small{font-weight:400;font-size:12px;color:var(--muted);margin-left:6px}
+#stv .dsub{margin-top:16px}
+.wbars{display:grid;gap:7px}
+.wb{display:grid;grid-template-columns:5.2rem minmax(0,1fr) 3.4rem;align-items:center;gap:8px;font-size:15px}
+.wb b{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wb .bar{height:14px;border-radius:7px;background:var(--paper-2);overflow:hidden}
+.wb .bar i{display:block;height:100%;border-radius:7px;background:var(--kohl-2);transform-origin:0 50%;animation:grow .7s var(--ease) both}
+.wb.top .bar i{background:var(--saffron)}
+.wb .wn{font-weight:800;font-variant-numeric:tabular-nums;text-align:right}
+.wb .wn small{font-weight:400;color:var(--muted);font-size:12px}
+@keyframes grow{from{transform:scaleX(0)}}
+.form{display:flex;gap:4px;align-items:center}
+.form i{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:12px;font-weight:800;color:var(--kohl-2);box-shadow:inset 0 0 0 1.5px var(--paper-line)}
+.form i.f1{background:var(--saffron);color:var(--kohl);box-shadow:none}
+.form i.f2{box-shadow:inset 0 0 0 1.5px var(--kohl-2);color:var(--kohl)}
+.sgrid.g4{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px 8px}
+.sgrid.g4 dt{font-size:11px;line-height:1.2}
+.pstat .lhead{align-items:center}
+.heat{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(calc(var(--c) + 1),minmax(0,1fr));gap:3px;font-size:13px;margin-top:6px}
+.heat .hh{font-size:11px;color:var(--muted);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-bottom:2px}
+.heat .hr{font-size:13px;display:flex;align-items:center;line-height:1.15}
+.heat .hc{display:flex;align-items:center;justify-content:center;height:30px;border-radius:6px;font-weight:700;font-variant-numeric:tabular-nums;background:var(--card)}
+.heat .hc.none{color:var(--muted);font-weight:400}
+.heat .avg{color:var(--muted)}
+.heat .hc.avg{background:transparent;font-weight:600}
+.key{white-space:nowrap;margin-left:4px}
+.key i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.kb{background:rgb(145,148,197)}
+.kw{background:rgb(217,143,132)}
+
 @media (prefers-reduced-motion: reduce){*,*::before,*::after,::backdrop{animation:none!important;transition:none!important}}
 </style></head><body>
 <div id="title" class="title" role="dialog" aria-modal="true" aria-labelledby="ttl">
@@ -1560,12 +1591,13 @@ let statTab='players';
 // Everything the stats need, worked out from saved games. Players are matched by name.
 function statsModel(){
  const P={},rules=ROUNDS.map(()=>({sum:0,n:0,outs:{}}));let detailGames=0;
- const pl=x=>P[x]=P[x]||{name:x,g:0,w:0,sum:0,rounds:0,best:Infinity,worst:-Infinity,outs:0,outsKnown:false,mp:0,jk:0,dg:0,rule:ROUNDS.map(()=>({s:0,n:0})),big:null,streak:0,streakDone:false};
+ const pl=x=>P[x]=P[x]||{name:x,g:0,w:0,sum:0,rounds:0,best:Infinity,worst:-Infinity,outs:0,outsKnown:false,mp:0,jk:0,dg:0,rule:ROUNDS.map(()=>({s:0,n:0})),big:null,streak:0,streakDone:false,form:[]};
  H.forEach(g=>{ // newest first, so the first games seen make up the current streak
   g.names.forEach((x,p)=>{
    const s=pl(x),v=g.totals[p],won=g.winners.includes(x);
    s.g++;s.sum+=v;s.rounds+=g.played||N;s.best=Math.min(s.best,v);s.worst=Math.max(s.worst,v);if(won)s.w++;
    if(!s.streakDone){if(won)s.streak++;else s.streakDone=true;}
+   if(s.form.length<6)s.form.push(1+g.totals.filter(t=>t<v).length); // finishing place, newest first
    if(g.outs){s.outs+=g.outs[p]||0;s.outsKnown=true;}
   });
   if(!Array.isArray(g.rd))return;
@@ -1601,11 +1633,16 @@ function renderHistory(){
  }
  if(statTab==='rules'){
   if(!M.detailGames){v.innerHTML='<p class="empty">Rule stats start with the next game you save.</p>';return;}
-  const rows=M.rules.map((r,i)=>({i,a:r.n?r.sum/r.n:null,top:Object.entries(r.outs).sort((a,b)=>b[1]-a[1])[0]})).filter(r=>r.a!==null);
+  // Heat map: each player's average on each rule against the table's average for that rule.
+  const ps=M.P.filter(s=>s.dg).sort((a,b)=>b.dg-a.dg).slice(0,6),rows=M.rules.map((r,i)=>({i,a:r.n?r.sum/r.n:null})).filter(r=>r.a!==null);
+  let span=10;rows.forEach(r=>ps.forEach(s=>{const c=s.rule[r.i];if(c.n)span=Math.max(span,Math.abs(c.s/c.n-r.a));}));
+  const mix=(t)=>{const a=t<0?[35,64,160]:[179,38,31],k=Math.min(1,Math.abs(t))*.5,c=[255,248,234];return 'rgb('+c.map((x,j)=>Math.round(x+(a[j]-x)*k)).join(',')+')';};
   const hard=rows.slice().sort((a,b)=>b.a-a.a)[0];
-  v.innerHTML='<p class="snote">Average score per player, going out included, and who goes out most.'+(hard?' Toughest so far: <b>'+rn(hard.i)+'</b>.':'')+'</p>'
-   +'<div class="stbl"><div class="srh"><span>Rule</span><span>Average</span><span>Out most</span></div>'
-   +rows.map(r=>'<div class="srr"><span>'+rn(r.i)+'</span><b>'+fmt(Math.round(r.a))+'</b><span>'+(r.top?esc(r.top[0])+' <small>×'+r.top[1]+'</small>':'–')+'</span></div>').join('')+'</div>'
+  v.innerHTML='<p class="snote">Each player’s average score on each rule. <span class="key"><i class="kb"></i>better than the table</span> <span class="key"><i class="kw"></i>worse</span></p>'
+   +'<div class="heat" style="--c:'+ps.length+'"><span class="hh"></span>'+ps.map(s=>'<span class="hh">'+esc(s.name)+'</span>').join('')+'<span class="hh avg">All</span>'
+   +rows.map(r=>'<span class="hr">'+rn(r.i)+'</span>'+ps.map(s=>{const c=s.rule[r.i];if(!c.n)return '<span class="hc none">–</span>';const v=c.s/c.n;
+     return '<span class="hc" style="background:'+mix((v-r.a)/span)+'" title="'+esc(s.name)+', '+rn(r.i)+': '+fmt(Math.round(v))+'">'+fmt(Math.round(v))+'</span>';}).join('')+'<span class="hc avg">'+fmt(Math.round(r.a))+'</span>').join('')
+   +'</div>'+(hard?'<p class="snote">Toughest so far: <b>'+rn(hard.i)+'</b>, averaging '+fmt(Math.round(hard.a))+'.</p>':'')
    +(M.detailGames<H.length?later:'');
   return;
  }
@@ -1615,14 +1652,15 @@ function renderHistory(){
  const mpTop=P.filter(s=>s.dg).sort((a,b)=>b.mp-a.mp)[0];if(mpTop&&mpTop.mp)hi.push(['Butterfingers',esc(mpTop.name)+', '+mpTop.mp+' misplay'+(mpTop.mp===1?'':'s')]);
  const big=P.filter(s=>s.big).sort((a,b)=>b.big.v-a.big.v)[0];if(big&&big.big.v>0)hi.push(['Biggest hand',esc(big.name)+', '+fmt(big.big.v)+' on '+rn(big.big.i)]);
  const hot=P.slice().sort((a,b)=>b.streak-a.streak)[0];if(hot&&hot.streak>=2)hi.push(['On a roll',esc(hot.name)+', '+hot.streak+' wins in a row']);
+ const maxW=Math.max(1,...P.map(s=>s.w)),ord=['1st','2nd','3rd','4th','5th','6th'];
  v.innerHTML=(hi.length?'<div class="shi">'+hi.map(([k,x])=>'<div><span>'+k+'</span><b>'+x+'</b></div>').join('')+'</div>':'')
+  +'<h3 class="dsub">Wins</h3><div class="wbars">'+P.map((s,k)=>'<div class="wb'+(k===0&&s.w?' top':'')+'"><b>'+esc(s.name)+'</b><span class="bar"><i style="width:'+(100*s.w/maxW)+'%"></i></span><span class="wn">'+s.w+'<small> of '+s.g+'</small></span></div>').join('')+'</div>'
+  +'<h3 class="dsub">Players <small>recent places, newest on the right</small></h3>'
   +P.map(s=>{
-   const ex=ruleExtremes(s),cell=(k,x)=>'<div><dt>'+k+'</dt><dd>'+x+'</dd></div>';
-   return '<div class="pstat"><div class="lhead"><b>'+esc(s.name)+'</b><span>'+s.w+' win'+(s.w===1?'':'s')+' from '+s.g+' game'+(s.g===1?'':'s')+'</span></div><dl class="sgrid">'
-    +cell('Win rate',Math.round(100*s.w/s.g)+'%')+cell('Average a round',fmt(Math.round(s.sum/s.rounds)))
-    +cell('Went out',s.outsKnown?s.outs:'–')+cell('Misplays',s.dg?s.mp:'–')
-    +cell('Best rule',ex?rn(ex.best.i):'–')+cell('Toughest rule',ex?rn(ex.worst.i):'–')
-    +'</dl><small>Best game '+fmt(s.best)+', worst '+fmt(s.worst)+'.'+(s.dg&&s.jk?' Caught with a joker '+s.jk+' time'+(s.jk===1?'':'s')+'.':'')+'</small></div>';
+   const cell=(k,x)=>'<div><dt>'+k+'</dt><dd>'+x+'</dd></div>';
+   return '<div class="pstat"><div class="lhead"><b>'+esc(s.name)+'</b><span class="form" aria-label="Recent places: '+s.form.slice().reverse().map(x=>ord[x-1]).join(', ')+'">'+s.form.slice().reverse().map(x=>'<i class="f'+x+'">'+x+'</i>').join('')+'</span></div><dl class="sgrid g4">'
+    +cell('Per round',fmt(Math.round(s.sum/s.rounds)))+cell('Went out',s.outsKnown?s.outs:'–')+cell('Misplays',s.dg?s.mp:'–')+cell('Best game',fmt(s.best))
+    +'</dl></div>';
   }).join('')+(M.detailGames<H.length?later:'');
 }
 // Asks before something can't easily be undone. Uses the app's own sheet, not the phone's pop-up,
