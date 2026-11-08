@@ -252,7 +252,7 @@ body.setup .stand,body.setup #rounds,body.setup .chartd{display:none}
 .btn.sbig{box-shadow:inset 0 0 0 1.5px var(--btn-line),0 4px 0 var(--pri-edge)}
 
 /* Levels and rounds (setup and the Rounds sheet) */
-.lvl{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:12px;background:var(--screen-2);margin-top:4px}
+.lvl{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:4px;border-radius:12px;background:var(--screen-2);margin-top:4px}
 dialog .lvl{background:var(--paper-2)}
 .lvl button{height:40px;border:0;border-radius:9px;background:transparent;font-size:16px;font-weight:650;color:var(--muted);cursor:pointer}
 .lvl button[aria-checked=true]{background:var(--kohl);color:var(--screen)}
@@ -633,6 +633,16 @@ body.setup .ptabs,body:not(.setup) .top h1{display:none}
 /* five or six players: smaller totals so −10 and 121 fit their tiles */
 .stand:has(.tile:nth-of-type(5)) .tt{font-size:23px;letter-spacing:-.02em}
 
+.lenrow{display:flex;gap:18px;flex-wrap:wrap}
+.lvl button{font-size:15px}
+/* Live scores: link dialog and the read-only view */
+.lvlink{width:100%;box-sizing:border-box;height:44px;margin:12px 0 0;padding:0 12px;border:1.5px solid var(--paper-line);border-radius:10px;background:#FFFCF4;color:var(--kohl);font-size:14px}
+.lvoff{margin-top:18px}
+.bnote.bad{color:var(--red)}
+body.view #menuBtn,body.view #undo{display:none}
+.flow.view .vstage{display:inline-block;margin-top:10px;padding:6px 12px;border-radius:999px;background:var(--kohl);color:var(--screen);font-size:14px;font-weight:700}
+.flow.view .vfoot{margin:18px 0 4px;font-size:14px;color:var(--muted)}
+
 @media (prefers-reduced-motion: reduce){*,*::before,*::after,::backdrop{animation:none!important;transition:none!important}}
 </style></head><body>
 <div id="title" class="title" role="dialog" aria-modal="true" aria-labelledby="ttl">
@@ -659,6 +669,10 @@ body.setup .ptabs,body:not(.setup) .top h1{display:none}
  <div class="dhead"><h2 id="hdt">Stats</h2><div class="hb"><button class="btn" id="hdone">Done</button></div>
   <div class="rtabs stabs" role="tablist" aria-label="Stats"><button role="tab" data-stab="players" aria-selected="true">Players</button><button role="tab" data-stab="rules" aria-selected="false">Rules</button><button role="tab" data-stab="games" aria-selected="false">Games</button></div></div>
  <div id="stv"></div>
+</dialog>
+<dialog id="lvd" aria-labelledby="lvdt">
+ <div class="dhead"><h2 id="lvdt">Live scores</h2><div class="hb"><button class="btn" id="lvdone">Done</button></div></div>
+ <div id="lvbody"></div>
 </dialog>
 <dialog id="svd" aria-labelledby="svdt">
  <div class="dhead"><h2 id="svdt">Saving</h2><div class="hb"><button class="btn" id="svdone">Done</button></div></div>
@@ -691,6 +705,7 @@ body.setup .ptabs,body:not(.setup) .top h1{display:none}
   <div class="mgroup"><button id="mHome">Home screen</button></div>
   <div class="mgroup ingame"><span class="mlab">This game</span>
    <button id="share">Share results</button>
+   <button id="mLive">Live scores link</button>
    <button id="mRounds">Change rounds</button>
    <button id="mSkip">Skip to Final</button>
    <button id="finish">Save game to history</button>
@@ -748,7 +763,7 @@ const TR={
 'Who picks first?':'İlk kim seçiyor?','Who picks first':'İlk kim seçiyor','Pick at random':'Rastgele seç','Players':'Oyuncular',
 'In seating order. Drag ≡ to move someone.':'Oturma sırasına göre. Birini taşımak için ≡ işaretini sürükle.',
 'Add player':'Oyuncu ekle','From past games':'Geçmiş oyunlardan','Game options':'Oyun ayarları','Change the numbers':'Puanları değiştir',
-'Play all rounds':'Bütün elleri oyna','Start game':'Oyunu başlat','Rules level':'Kural seviyesi','Easy':'Kolay','Medium':'Orta','Hard':'Zor',
+'Play all rounds':'Bütün elleri oyna','Start game':'Oyunu başlat','Rules level':'Kural seviyesi','Classic':'Klasik','No bonus for going out: you just score 0. Misplays cost 25. Count a joker left in hand as 25 points.':'Bitmenin bonusu yok, biten 0 yazar. Hata başına 25 ceza. Elde kalan joker 25 puan sayılır.','Short game (7 rounds)':'Kısa oyun (7 el)','Short game: {n} rounds':'Kısa oyun: {n} el','Easy':'Kolay','Medium':'Orta','Hard':'Zor',
 'Anyone who goes out gets the bonus. Misplays cost 25 and there’s no joker penalty. Good for learning.':'Biten herkes bonusu alır. Hata başına 25 ceza var, joker cezası yok. Öğrenmek için ideal.',
 'Only the player who picked the rule gets the bonus for going out. Misplays cost 50 and a joker left in hand doubles it.':'Bitme bonusunu yalnızca kuralı seçen alır. Hata başına 50 ceza, elde kalan joker eli ikiye katlar.',
 'Like Medium, but mistakes hurt: misplays cost 100 and a joker left in hand triples it.':'Orta gibi ama hatalar pahalı: hata başına 100 ceza, elde kalan joker eli üçe katlar.',
@@ -841,11 +856,22 @@ const TR={
 'That email and password don’t match.':'E-posta ve şifre eşleşmiyor.','Too many tries. Wait a few minutes and try again.':'Çok fazla deneme. Birkaç dakika bekleyip tekrar dene.',
 'No connection. Try again when you’re online.':'Bağlantı yok. Çevrimiçi olunca tekrar dene.','This account has been turned off in Firebase.':'Bu hesap Firebase’de kapatılmış.',
 // misc
-'and':'ve','Standings after {a} of {b} rounds':'{a}. elden sonra sıralama','Player {n}':'Oyuncu {n}','Amerikano':'Amerikano','1st':'1.','2nd':'2.','3rd':'3.','4th':'4.','5th':'5.','6th':'6.'
+'and':'ve','Live scores':'Canlı skor','Live scores link':'Canlı skor bağlantısı','Create link':'Bağlantı oluştur','Share link':'Paylaş','Copy link':'Kopyala',
+'Turn off link':'Bağlantıyı kapat','Turn off':'Kapat','Link copied':'Bağlantı kopyalandı','Live link turned off':'Canlı bağlantı kapatıldı','Follow our Amerikano scores live':'Amerikano skorumuzu canlı takip et',
+'Turn off the live link? People watching will stop seeing updates.':'Canlı bağlantı kapatılsın mı? İzleyenler artık güncellemeleri görmeyecek.',
+'Live links need cloud saving, which isn’t set up in this copy of the app.':'Canlı bağlantı için bulut kaydı gerekiyor, bu uygulamada kurulu değil.',
+'Let others follow the scores on their own phones. Sign in to cloud saving first.':'Başkaları skoru kendi telefonlarından takip etsin. Önce bulut kaydına giriş yap.',
+'Anyone with the link can watch the scores update on their own phone. They can’t change anything, and you can turn the link off at any time.':'Bağlantısı olan herkes skorun güncellenişini kendi telefonundan izleyebilir. Hiçbir şeyi değiştiremezler, bağlantıyı istediğin zaman kapatabilirsin.',
+'Firebase refused the live link. Add the live scores rule to your Firestore rules, then tap Try again.':'Firebase canlı bağlantıyı reddetti. Canlı skor kuralını Firestore kurallarına ekle, sonra Tekrar dene’ye dokun.',
+'Couldn’t update the live link. It will try again with your next change.':'Canlı bağlantı güncellenemedi. Bir sonraki değişiklikte tekrar denenecek.',
+'The link is live. Scores update for everyone watching as you play.':'Bağlantı canlı. Siz oynadıkça izleyen herkes için skor güncellenir.',
+'Can’t reach the live scores right now.':'Şu an canlı skora ulaşılamıyor.','This live link has been turned off.':'Bu canlı bağlantı kapatıldı.',
+'Open my own scoreboard':'Kendi puan tabloma geç','Waiting for the game to start.':'Oyunun başlaması bekleniyor.','Counting scores':'Puanlar sayılıyor','Playing':'Oynanıyor',
+'Choosing the next rule':'Sıradaki kural seçiliyor','Standings after {a} of {b} rounds':'{a}. elden sonra sıralama','Player {n}':'Oyuncu {n}','Amerikano':'Amerikano','1st':'1.','2nd':'2.','3rd':'3.','4th':'4.','5th':'5.','6th':'6.'
 };
 const SUITS_TR={hearts:'kupa',spades:'maça',diamonds:'karo',clubs:'sinek'},RANKS_TR={jack:'vale',queen:'kız',king:'papaz',ace:'as'};
 const cardTR=s=>s.split(', ').map(c=>{const m=c.match(/^(\w+) of (\w+)$/);return m?(SUITS_TR[m[2]]||m[2])+' '+(RANKS_TR[m[1]]||m[1]):c==='joker'?'joker':c;}).join(', ');
-const LVL_TR={easy:'kolay',medium:'orta',hard:'zor',custom:'özel'};
+const LVL_TR={classic:'klasik',easy:'kolay',medium:'orta',hard:'zor',custom:'özel'};
 const TRP=[
  [/^(\d+) of (\d+) played$/,'$1/$2 oynandı'],
  [/^Round (\d+) of (\d+)$/,'El $1/$2'],
@@ -859,7 +885,7 @@ const TRP=[
  [/^(\d+) of (\d+) rounds\. Tap one to leave it out or bring it back\. Final is always played\.$/,'$2 elden $1 tanesi oynanacak. Çıkarmak ya da geri eklemek için birine dokun. Final her zaman oynanır.'],
  [/^All (\d+) rounds, (\w+) rules$/,(m,a,b)=>'Bütün '+a+' el, '+(LVL_TR[b]||b)+' kurallar'],
  [/^(\d+) of (\d+) rounds, (\w+) rules$/,(m,a,b,c)=>b+' elden '+a+', '+(LVL_TR[c]||c)+' kurallar'],
- [/^(Easy|Medium|Hard) rules$/,(m,a)=>tr(a)+' kurallar'],[/^Scoring: (.+)$/,(m,a)=>'Puanlama: '+tr(a)],
+ [/^(Classic|Easy|Medium|Hard) rules$/,(m,a)=>tr(a)+' kurallar'],[/^Scoring: (.+)$/,(m,a)=>'Puanlama: '+tr(a)],
  [/^(\d+) players$/,'$1 oyuncu'],[/^(.+) \(now\)$/,'$1 (şimdi)'],[/^(.+) \(played\)$/,'$1 (oynandı)'],
  [/^Back to (.+)$/,(m,a)=>'Geri: '+tr(a)],[/^To open: (.+)$/,(m,a)=>'Açmak için: '+tr(a)],
  [/^(Set|Run) of (\d+): (.+)$/,(m,k,n,c)=>n+'’'+(+n===5?'li':'lü')+' '+(k==='Set'?'küt':'seri')+': '+cardTR(c)],[/^Pair: (.+)$/,(m,c)=>'Çift: '+cardTR(c)],
@@ -889,6 +915,7 @@ const TRP=[
  [/^(.+) is still in progress; anything entered for it so far will count\.$/,(m,a)=>tr(a)+' hâlâ oynanıyor; şimdiye kadar girilenler sayılacak.'],
  [/^Everything is saved to the cloud(?: \(last save (.+)\))?\.$/,(m,a)=>'Her şey buluta kaydedildi'+(a?' (son kayıt '+a+')':'')+'.'],
  [/^Something went wrong saving to the cloud \((.+)\)\.$/,'Buluta kaydederken bir sorun oldu ($1).'],[/^Couldn’t sign in \((.+)\)\.$/,'Giriş yapılamadı ($1).'],
+ [/^Updated at (.+)$/,'Güncellendi: $1'],
  [/^Standings after (\d+) of (\d+) rounds$/,'$2 elden $1 sonra sıralama'],
 ];
 function tr(s){
@@ -968,6 +995,7 @@ function fixRules(r,g){
 }
 const desc=i=>ROUNDS[i][1];
 const LEVELS={
+ classic:{name:'Classic',outPick:0,outOther:0,misplay:25,joker:1,finalLast:true,blurb:'No bonus for going out: you just score 0. Misplays cost 25. Count a joker left in hand as 25 points.'},
  easy:{name:'Easy',outPick:-50,outOther:-50,misplay:25,joker:1,finalLast:true,blurb:'Anyone who goes out gets the bonus. Misplays cost 25 and there\u2019s no joker penalty. Good for learning.'},
  medium:{name:'Medium',outPick:-50,outOther:0,misplay:50,joker:2,finalLast:true,blurb:'Only the player who picked the rule gets the bonus for going out. Misplays cost 50 and a joker left in hand doubles it.'},
  hard:{name:'Hard',outPick:-50,outOther:0,misplay:100,joker:3,finalLast:true,blurb:'Like Medium, but mistakes hurt: misplays cost 100 and a joker left in hand triples it.'}
@@ -989,6 +1017,9 @@ function roundChips(){
   return '<button class="rsc'+(on?' on':'')+'" data-rsel="'+i+'" aria-pressed="'+on+'"'+(now||played||fin?' disabled':'')+'>'+r[0]+note+'</button>';
  }).join('')+'</div>';
 }
+// A short game: the 3-card rules, the two single 4-card rules and Final.
+const SHORT=[0,1,2,3,5,6,FINAL];
+function isShortGame(){return ROUNDS.every((r,i)=>!S.skip[i]===SHORT.includes(i));}
 function roundsHint(){const t=totalRounds();return t+' of '+N+' rounds. Tap one to leave it out or bring it back. Final is always played.';}
 function remainingBeforeFinal(){const r=[];for(let i=0;i<N;i++)if(i!==FINAL&&inPlay(i)&&!isDone(i)&&i!==S.live)r.push(i);return r;}
 const SUIT={h:['\u2665','hearts',1],d:['\u2666','diamonds',1],s:['\u2660','spades',0],c:['\u2663','clubs',0]};
@@ -1010,7 +1041,10 @@ function andList(a){return a.length<2?a.join(''):a.slice(0,-1).join(', ')+' '+T(
 function grid(n,v){return ROUNDS.map(()=>Array(n).fill(v));}
 function blank(names){const n=names.length;return{names:names.slice(),base:grid(n,""),jk:grid(n,0),mp:grid(n,0),out:Array(N).fill(-1),dealt:Array(N).fill(-1),picked:Array(N).fill(-1),skip:Array(N).fill(false),col:names.map((x,p)=>p%6),seq:[],outScore:-50,outOther:0,live:-1,stage:null,nextPick:-1,open:-1};}
 function load(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
-function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}if(k===KEY||k===HKEY||k===RKEY)cloudTouch();}
+const LIVE_CODE=(location.hash.match(/[#&]live=([A-Za-z0-9]{20,40})/)||[])[1]||null,VIEW=!!LIVE_CODE;
+const LVKEY='amerikano-live';
+const LV={code:VIEW?null:(load(LVKEY)||{}).code||null,timer:null,err:'',at:null,gone:false,watchErr:false};
+function store(k,v){if(VIEW)return;try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}if(k===KEY||k===HKEY||k===RKEY)cloudTouch();}
 // ---------- Cloud saving (Firebase) ----------
 // The settings below identify your Firebase project. They are public by design:
 // what protects your scores are the database rules, which only let your account in.
@@ -1033,7 +1067,7 @@ function cloudPayload(){return{game:JSON.stringify(S),history:JSON.stringify(H),
 function payHash(d){return hashStr((d.game||'')+'\u0000'+(d.history||'')+'\u0000'+(d.rules||''));}
 function localHash(){return payHash(cloudPayload());}
 function hasLocalGames(){return H.length>0||doneOrder().length>0||S.live>=0;}
-function cloudTouch(){
+function cloudTouch(){liveTouch();
  if(!CL.user||CL.applying)return;
  if(!CL.ready){CL.pending=true;return;}
  clearTimeout(CL.timer);CL.timer=setTimeout(cloudPush,1200);
@@ -1109,7 +1143,7 @@ function signInErr(e){
  if(c.includes('user-disabled'))return 'This account has been turned off in Firebase.';
  return 'Couldn\u2019t sign in ('+(c||'unknown')+').';
 }
-function setCloud(s){CL.status=s;renderCloud();}
+function setCloud(s){CL.status=s;renderCloud();if($('lvd').open)renderLive();}
 const CLOUD_TXT={saved:'Saved',saving:'Saving\u2026',offline:'Offline',error:'Not saved',syncing:'Connecting\u2026'};
 function renderCloud(){
  const box=$('cloud'),chip=$('cstat');if(!box)return;
@@ -1348,7 +1382,8 @@ function scoreRows(i,full){
 }
 function renderFlow(){
  const done=doneOrder().length;let h;
- if(S.setup)h=setupPanel();
+ if(VIEW)h=viewPanel();
+ else if(S.setup)h=setupPanel();
  else if(S.live>=0)h=S.stage==='score'?scorePanel(S.live):playPanel(S.live);
  else if(done>=totalRounds())h=finalPanel();
  else h=pickPanel();
@@ -1358,6 +1393,60 @@ function renderFlow(){
  flowKey=k;
  if(k==='final')$('flow').dataset.fh=h;
 }
+// ---------- Live scores ----------
+// The owner (signed in to cloud saving) publishes a read-only copy of the game to live/<random code>.
+// Anyone with the link can read that one document; only the owner can change or delete it.
+function liveLink(){return location.origin+location.pathname+'#live='+LV.code;}
+function liveTouch(){if(VIEW||!LV.code||!CL.user)return;clearTimeout(LV.timer);LV.timer=setTimeout(livePush,800);}
+async function livePush(){
+ if(!LV.code||!CL.user||!CL.fb)return;const f=CL.fb;
+ try{await f.setDoc(f.doc(CL.db,'live',LV.code),{owner:CL.user.uid,v:JSON.stringify({g:S,r:{outPick:R.outPick,outOther:R.outOther,misplay:R.misplay,joker:R.joker,finalLast:R.finalLast}}),at:f.serverTimestamp()});LV.err='';}
+ catch(e){LV.err=String(e&&e.code||'').includes('permission-denied')?'rules':'net';}
+ if($('lvd').open)renderLive();
+}
+function liveStart(){
+ const a='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',r=new Uint8Array(24);crypto.getRandomValues(r);
+ LV.code=[...r].map(x=>a[x%62]).join('');try{localStorage.setItem(LVKEY,JSON.stringify({code:LV.code}))}catch(e){}
+ renderLive();livePush();
+}
+async function liveStop(){
+ const c=LV.code;LV.code=null;LV.err='';clearTimeout(LV.timer);try{localStorage.removeItem(LVKEY)}catch(e){}
+ if(c&&CL.user&&CL.fb){try{await CL.fb.deleteDoc(CL.fb.doc(CL.db,'live',c));}catch(e){}}
+ renderLive();toast('Live link turned off');
+}
+function renderLive(){
+ const b=$('lvbody');let h;
+ if(!FIREBASE_CONFIG)h='<p class="bnote">Live links need cloud saving, which isn’t set up in this copy of the app.</p>';
+ else if(!CL.user)h='<p class="bnote">Let others follow the scores on their own phones. Sign in to cloud saving first.</p><button class="btn primary" id="cin">Sign in</button>';
+ else if(!LV.code)h='<p class="bnote">Anyone with the link can watch the scores update on their own phone. They can’t change anything, and you can turn the link off at any time.</p><button class="btn primary" id="lvon">Create link</button>';
+ else h=(LV.err==='rules'?'<p class="bnote bad">Firebase refused the live link. Add the live scores rule to your Firestore rules, then tap Try again.</p><button class="btn" id="lvretry">Try again</button>'
+   :LV.err?'<p class="bnote bad">Couldn’t update the live link. It will try again with your next change.</p>':'<p class="bnote">The link is live. Scores update for everyone watching as you play.</p>')
+  +'<input class="lvlink" readonly value="'+esc(liveLink())+'" aria-label="Live scores link">'
+  +'<div class="bk"><button class="btn primary" id="lvshare">Share link</button><button class="btn" id="lvcopy">Copy link</button></div>'
+  +'<button class="btn danger lvoff" id="lvoff">Turn off link</button>';
+ b.innerHTML=h;
+}
+// What someone watching sees in place of the controls.
+function viewPanel(){
+ const at=LV.at?LV.at.toLocaleTimeString(LOC,{hour:'2-digit',minute:'2-digit'}):'';
+ const foot='<p class="vfoot">'+(LV.watchErr?'Can’t reach the live scores right now.':LV.gone?'This live link has been turned off.':at?'Updated at '+at:'Connecting…')+'</p><button class="linkbtn" id="vleave">Open my own scoreboard</button>';
+ if(!LV.at)return '<section class="flow view"><div class="ohead"><h2>Live scores</h2></div>'+foot+'</section>';
+ const done=doneOrder().length;let body;
+ if(S.setup)body='<div class="ohead"><h2>New game</h2></div><p class="sub muted">Waiting for the game to start.</p>';
+ else if(S.live>=0){const i=S.live;body=head(i,roundNo())+'<p class="sub muted">'+roleLine(i)+'</p>'+shapeCards(i)+'<p class="rule">'+(SHAPES[i]?'To open: ':'')+esc(desc(i))+'</p><p class="vstage">'+(S.stage==='score'?'Counting scores':'Playing')+'</p>';}
+ else if(done>=totalRounds())body=finalPanel().replace(/<div class="factions">[\s\S]*?<\/div>/,'');
+ else{const np=S.nextPick;body='<div class="ohead"><h2>Choosing the next rule</h2>'+roundNo()+'</div><p class="turnline">'+(np>=0?'<b>'+nm(np)+'</b> picks, '+nm(dealerOf(np))+' deals':'')+'</p>';}
+ return '<section class="flow view">'+body+foot+'</section>';
+}
+async function liveWatch(){
+ document.body.classList.add('view');$('title').hidden=true;document.body.classList.remove('titled');
+ if(!FIREBASE_CONFIG){LV.watchErr=true;render();return;}
+ try{
+  const f=await fbLoad(),app=f.initializeApp(FIREBASE_CONFIG,'live'),db=f.getFirestore(app);
+  f.onSnapshot(f.doc(db,'live',LIVE_CODE),s=>{if(!s.exists()){LV.gone=true;render();return;}try{liveApply(JSON.parse(s.data().v));}catch(e){}},()=>{LV.watchErr=true;render();});
+ }catch(e){LV.watchErr=true;render();}
+}
+function liveApply(o){const g=o&&fixState(o.g);if(!g)return;S=g;migrate();R=fixRules(o.r);LV.at=new Date();LV.gone=false;LV.watchErr=false;render();}
 function prevBanner(){
  const p=load(PKEY);if(!p||!p.game||doneOrder().length||S.live>=0)return '';
  return '<div class="prevb"><span>'+(p.saved?'Your last game was saved to Past games.':'Your last game was cleared.')+'</span><button class="btn sm" id="prevback">Bring it back</button></div>';
@@ -1394,7 +1483,7 @@ function setupPanel(){
  +'<details class="fold" data-ui="options"'+openAttr('options')+'><summary><span>Game options</span><span class="sv">'+optionsSummary()+'</span></summary>'
   +'<span class="lab">Rules</span>'+levelPicker('lvl',levelOf())+'<button class="linkbtn" id="srulesEdit">Change the numbers</button>'
   +'<span class="lab">Rounds</span><p class="hint">'+roundsHint()+'</p>'+roundChips()
-  +(totalRounds()<N?'<button class="linkbtn" id="rall">Play all rounds</button>':'')
+  +'<div class="lenrow">'+(totalRounds()<N?'<button class="linkbtn" id="rall">Play all rounds</button>':'')+(!isShortGame()?'<button class="linkbtn" id="rshort">Short game (7 rounds)</button>':'')+'</div>'
  +'</details>'
  +'<button class="btn primary sbig" id="sstart">Start game</button></section>';
 }
@@ -1617,7 +1706,7 @@ function endDrag(){
  if(!drag)return;clearTimeout(drag.timer);drag=null;
  document.querySelectorAll('.tile').forEach(t=>{t.classList.remove('lift','drop');t.style.transform='';});
 }
-$('stand').addEventListener('pointerdown',e=>{
+$('stand').addEventListener('pointerdown',e=>{if(VIEW)return;
  const t=e.target.closest('.tile');if(!t||e.button>0)return;
  drag={p:+t.dataset.p,el:t,x0:e.clientX,y0:e.clientY,id:e.pointerId,on:false,centers:[...document.querySelectorAll('.tile')].map(x=>{const r=x.getBoundingClientRect();return r.left+r.width/2;})};
  drag.timer=setTimeout(()=>{if(!drag)return;drag.on=true;t.classList.add('lift');try{t.setPointerCapture(drag.id)}catch(err){}if(navigator.vibrate)navigator.vibrate(12);},320);
@@ -1987,6 +2076,7 @@ document.addEventListener('click',e=>{
  if(!b){if(e.target.id==='menu')$('menu').close();return;}
  if(b.closest('#menu'))$('menu').close();
  const d=b.dataset;
+ if(VIEW){if(d.page!==undefined)setPage(+d.page,true);else if(b.id==='vleave')location.href=location.pathname;return;}
  if(d.pick!==undefined){startRound(+d.pick);return;}
  if(d.sdel!==undefined){setupRemove(+d.sdel);return;}
  if(d.fp!==undefined){S.nextPick=+d.fp;render();return;}
@@ -2039,7 +2129,7 @@ document.addEventListener('click',e=>{
   case 'sstart':startGame();break;
   case 'srulesView':showRules('quick');break;
   case 'srulesEdit':showRules(null,true);break;
-  case 'cin':$('serr').textContent='';$('sd').showModal();$('semail').focus();break;
+  case 'cin':if($('lvd').open)$('lvd').close();$('serr').textContent='';$('sd').showModal();$('semail').focus();break;
   case 'scancel':$('sd').close();break;
   case 'sforgot':{const em=$('semail').value.trim();if(!em){$('serr').textContent='Type your email first, then tap Forgot password.';break;}
    CL.fb.sendPasswordResetEmail(CL.auth,em).catch(()=>{}).then(()=>{$('serr').textContent='If that email has an account, a reset link is on its way.';});break;}
@@ -2062,6 +2152,7 @@ document.addEventListener('click',e=>{
   case 'rsdone':$('rsd').close();break;
   case 'skipfinal':skipToFinal();break;
   case 'rall':snap();S.skip=Array(N).fill(false);render();break;
+  case 'rshort':snap();S.skip=ROUNDS.map((r,i)=>!SHORT.includes(i)&&!isDone(i)&&i!==S.live);render();toast(T('Short game: {n} rounds',{n:totalRounds()}));break;
   case 'carryback':if(S.carry)startRound(S.carry.from);break;
   case 'mHome':showTitle();break;
   case 'tCont':hideTitle();break;
@@ -2084,6 +2175,13 @@ document.addEventListener('click',e=>{
   case 'addp':if(S.names.length>=6){toast('Six players is the maximum');break;}snap();S.col.push([0,1,2,3,4,5].find(c=>!S.col.includes(c)));S.names.push(T('Player {n}',{n:(S.names.length+1)}));S.base.forEach(r=>r.push(''));S.jk.forEach(r=>r.push(0));S.mp.forEach(r=>r.push(0));render();renderSettings();break;
   case 'undo':{const s=undoStack.pop();if(!s){toast('Nothing to undo');break;}S=JSON.parse(s);render();toast('Undone');break;}
   case 'share':shareResults();break;
+  case 'mLive':renderLive();$('lvd').showModal();break;
+  case 'lvdone':$('lvd').close();break;
+  case 'lvon':liveStart();break;
+  case 'lvretry':livePush();break;
+  case 'lvoff':ask('Turn off the live link? People watching will stop seeing updates.',liveStop,null,'Turn off',null,true);break;
+  case 'lvcopy':copyText(liveLink(),T('Link copied'));break;
+  case 'lvshare':(async()=>{try{if(navigator.share){await navigator.share({title:'Amerikano',text:T('Follow our Amerikano scores live'),url:liveLink()});return;}}catch(e){if(e&&e.name==='AbortError')return;}copyText(liveLink(),T('Link copied'));})();break;
   case 'finish':{const {t,played}=totals();if(!played){toast('No scores yet');break;}ask((S.live>=0?T(ROUNDS[S.live][0]+' is still in progress; anything entered for it so far will count.')+' ':'')+T('Save this game to history and start a new one?'),()=>{const min=Math.min(...t);H.unshift({date:new Date().toISOString(),names:S.names.slice(),totals:t,winners:S.names.filter((x,p)=>t[p]===min),played,outs:outCounts(),rd:roundDetail()});store(HKEY,H);newGame(H[0].date);toast('Game saved');},null,'Save game');break;}
   case 'newg':ask('Start a new game without saving this one? You can bring it back from the setup screen.',()=>newGame(),null,'New game');break;
   case 'clearh':ask('Delete all past games? This can\u2019t be undone.',()=>{H=[];store(HKEY,H);renderHistory();},null,'Delete all',null,true);break;
@@ -2097,9 +2195,9 @@ document.addEventListener('click',e=>{
  }
 });
 render();
-showTitle();
+if(!VIEW)showTitle();
 $('sform').addEventListener('submit',cloudSignIn);
 $('askd').addEventListener('cancel',e=>{e.preventDefault();askDone(false);});
-cloudInit();
+if(VIEW)liveWatch();else cloudInit();
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script></body></html>
